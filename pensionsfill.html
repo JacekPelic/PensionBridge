@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PensionsFill — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF6F1;--bg2:#F0EBE3;--bg3:#FFFFFF;--bg4:#EDE8DF;
+  --bd:rgba(0,0,0,0.07);--bd2:rgba(0,0,0,0.12);
+  --t:#1a1a1a;--t2:#444;--t3:#777;--t4:#aaa;
+  --a:#2563eb;--a2:#1d4ed8;
+  --g:#16a34a;--y:#d97706;--r:#dc2626;--bl:#2563eb;--pp:#7c3aed;
+  --f:'Outfit',sans-serif;--m:'JetBrains Mono',monospace;--rd:12px
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--t);font-family:var(--f)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}::-webkit-scrollbar-track{background:transparent}
+
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--bd);position:fixed;height:100vh;display:flex;flex-direction:column;padding:20px 0;overflow-y:auto;z-index:100}
+.main{margin-left:220px;flex:1;padding:28px 32px 60px;max-width:1060px}
+
+.s-logo{display:flex;align-items:center;gap:8px;padding:0 16px;margin-bottom:22px}
+.s-logo-i{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--a),var(--a2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff}
+.s-logo-t{font-size:14.5px;font-weight:700;letter-spacing:-.02em;color:var(--t)}
+.s-logo-sub{font-size:8px;color:var(--t4);text-transform:uppercase;letter-spacing:.1em;margin-top:1px}
+.s-sec{font-size:8.5px;color:var(--t4);text-transform:uppercase;letter-spacing:.1em;padding:12px 16px 4px;font-weight:600}
+.s-item{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;font-size:12px;color:var(--t3);transition:all .12s;border-left:2px solid transparent;font-weight:500}
+.s-item:hover{color:var(--t2);background:rgba(0,0,0,.03)}
+.s-item.active{color:var(--a);background:rgba(37,99,235,.06);border-left-color:var(--a);font-weight:600}
+.s-item .ic{font-size:14px;width:18px;text-align:center}
+.s-badge{margin-left:auto;font-size:8.5px;font-weight:700;padding:1px 6px;border-radius:8px}
+.s-badge-r{background:rgba(220,38,38,.1);color:var(--r)}.s-badge-y{background:rgba(217,119,6,.1);color:var(--y)}.s-badge-a{background:rgba(37,99,235,.1);color:var(--a)}
+.s-upgrade{margin:0 12px 12px;padding:10px 12px;border-radius:8px;background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(29,78,216,.03));border:1px solid rgba(37,99,235,.15);cursor:pointer;transition:border-color .15s}
+.s-upgrade:hover{border-color:rgba(37,99,235,.3)}
+.s-user{margin-top:auto;padding:12px 16px;border-top:1px solid var(--bd);display:flex;align-items:center;gap:8px}
+.s-avatar{width:28px;height:28px;border-radius:7px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--a);border:1px solid var(--bd)}
+
+.sec{display:none}.sec.active{display:block;animation:fadeUp .22s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.ptitle{font-size:22px;font-weight:800;letter-spacing:-.03em;margin-bottom:2px;color:var(--t)}
+.psub{font-size:12.5px;color:var(--t3);margin-bottom:22px;line-height:1.5}
+
+.card{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--rd);padding:18px;margin-bottom:12px;transition:border-color .15s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card:hover{border-color:var(--bd2)}
+.card-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-t{font-size:12.5px;font-weight:700;color:var(--t)}
+.lbl{font-size:9px;color:var(--t4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px;font-weight:600}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--rd);padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stat .v{font-family:var(--m);font-size:20px;font-weight:700;margin-top:4px;color:var(--t)}
+.stat .sub{font-size:9.5px;color:var(--t4);margin-top:2px}
+
+.bar{height:5px;border-radius:3px;background:rgba(0,0,0,.06);overflow:hidden}
+.bfill{height:100%;border-radius:3px;transition:width .5s}
+.pill{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:14px;text-transform:uppercase;letter-spacing:.04em}
+.pill-g{background:rgba(22,163,74,.1);color:var(--g)}.pill-y{background:rgba(217,119,6,.1);color:var(--y)}.pill-r{background:rgba(220,38,38,.1);color:var(--r)}.pill-bl{background:rgba(37,99,235,.1);color:var(--bl)}.pill-a{background:rgba(37,99,235,.1);color:var(--a)}
+.btn{padding:8px 16px;border-radius:7px;border:none;cursor:pointer;font-family:var(--f);font-size:11.5px;font-weight:600;transition:all .12s}
+.btn-p{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff}.btn-p:hover{opacity:.88}
+.btn-g{background:transparent;border:1px solid var(--bd2);color:var(--t3)}.btn-g:hover{border-color:var(--a);color:var(--a)}
+.btn-s{padding:5px 11px;font-size:10.5px}
+.mono{font-family:var(--m)}
+.green{color:var(--g)}.yellow{color:var(--y)}.red{color:var(--r)}.blue{color:var(--bl)}
+
+.alert{display:flex;align-items:flex-start;gap:8px;padding:11px 13px;border-radius:8px;font-size:11.5px;line-height:1.5;margin-bottom:7px}
+.alert-r{background:rgba(220,38,38,.05);border:1px solid rgba(220,38,38,.12);color:#b91c1c}
+.alert-y{background:rgba(217,119,6,.05);border:1px solid rgba(217,119,6,.12);color:#92400e}
+.alert-b{background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.12);color:#1d4ed8}
+.alert-g{background:rgba(22,163,74,.05);border:1px solid rgba(22,163,74,.12);color:#15803d}
+
+.row{display:flex;align-items:center;padding:11px 14px;border-radius:8px;background:var(--bg);border:1px solid var(--bd);margin-bottom:6px;gap:10px;transition:all .12s}
+.row:hover{border-color:var(--bd2);background:var(--bg4)}
+.row-clk{cursor:pointer}
+
+.fbadge{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
+
+.exp{display:none;padding:14px 16px;border-top:1px solid var(--bd);margin-top:8px}
+.exp.open{display:block}
+
+.spill{font-size:9px;font-weight:700;padding:2px 8px;border-radius:14px;text-transform:uppercase;letter-spacing:.04em}
+.sp-active{background:rgba(22,163,74,.1);color:var(--g)}
+.sp-frozen{background:rgba(217,119,6,.1);color:var(--y)}
+.sp-vested{background:rgba(37,99,235,.1);color:var(--bl)}
+.sp-risk{background:rgba(220,38,38,.1);color:var(--r)}
+
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--bd);margin-bottom:20px}
+.tab{padding:9px 18px;border:none;background:transparent;color:var(--t4);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--f);border-bottom:2px solid transparent;transition:all .12s}
+.tab.active{color:var(--t);border-bottom-color:var(--a)}.tab:hover{color:var(--t2)}
+
+.lock-wrap{position:relative}
+.lock-overlay{position:absolute;inset:0;background:rgba(250,246,241,.8);backdrop-filter:blur(4px);border-radius:var(--rd);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5}
+
+.pbar{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.pbar-l{font-size:10px;color:var(--t3);min-width:36px}
+.pbar-v{font-size:11px;font-weight:700;min-width:42px;text-align:right}
+
+.gbar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:14px 0}
+.gbar-legend{display:flex;gap:14px;font-size:10px;color:var(--t3)}
+
+.donut{width:90px;height:90px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+.donut-inner{position:absolute;width:60px;height:60px;border-radius:50%;background:var(--bg3);display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+.score-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--m);font-size:17px;font-weight:800}
+
+.dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.dgrid-item{background:var(--bg);border-radius:7px;padding:9px 12px;border:1px solid var(--bd)}
+.dgrid-item .lbl{margin-bottom:1px}
+.dgrid-item .val{font-size:12px;font-weight:600;margin-top:3px;color:var(--t)}
+
+.slider-wrap{margin:10px 0}
+.slider-wrap label{font-size:11px;color:var(--t3);display:block;margin-bottom:5px}
+.slider-wrap input[type=range]{width:100%;accent-color:var(--a);height:4px;cursor:pointer}
+.slider-val{font-family:var(--m);font-size:14px;font-weight:700;margin-top:4px;color:var(--t)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="s-logo">
+    <div class="s-logo-i">P</div>
+    <div><div class="s-logo-t">PensionsFill</div><div class="s-logo-sub">Cross-border pension</div></div>
+  </div>
+  <div class="s-sec">Overview</div>
+  <div class="s-item active" data-sec="overview"><span class="ic">📊</span>Dashboard</div>
+  <div class="s-sec">Planning</div>
+  <div class="s-item" data-sec="countries"><span class="ic">🌍</span>Country Hub</div>
+  <div class="s-item" data-sec="career"><span class="ic">📅</span>Career Timeline</div>
+  <div class="s-item" data-sec="benefits"><span class="ic">🏦</span>Pillar 2 Tracker</div>
+  <div class="s-item" data-sec="payout"><span class="ic">💰</span>Payout Estimation</div>
+  <div class="s-item" data-sec="bridge"><span class="ic">🔥</span>Bridge the Gap<span class="s-badge s-badge-a">NEW</span></div>
+  <div class="s-sec">Tools</div>
+  <div class="s-item" data-sec="simulator"><span class="ic">🔮</span>What-If Simulator</div>
+  <div class="s-item" data-sec="actions"><span class="ic">✅</span>Smart Actions<span class="s-badge s-badge-y">5</span></div>
+  <div class="s-sec">Protection</div>
+  <div class="s-item" data-sec="vault"><span class="ic">🔒</span>Document Vault</div>
+  <div class="s-item" data-sec="radar"><span class="ic">📡</span>Risk Radar<span class="s-badge s-badge-r">3</span></div>
+  <div class="s-item" data-sec="family"><span class="ic">👨‍👩‍👧</span>Family Access</div>
+  <div class="s-upgrade" onclick="nav('premium')">
+    <div style="font-size:11px;font-weight:700;color:var(--a);margin-bottom:3px">⭐ Upgrade to Premium</div>
+    <div style="font-size:10px;color:var(--t4);line-height:1.4">Unlock simulator, expert reviews, fund comparison & more</div>
+  </div>
+  <div class="s-user">
+    <div class="s-avatar">JS</div>
+    <div>
+      <div style="font-size:12px;font-weight:600">Javier Suescun</div>
+      <div style="font-size:9.5px;color:var(--t4)">Free plan · 4 countries</div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- 1. OVERVIEW -->
+<div class="sec active" id="sec-overview">
+  <div class="ptitle">Dashboard</div>
+  <div class="psub">Your complete cross-border retirement picture · Last synced today</div>
+
+  <div class="card" style="background:linear-gradient(135deg,#fff,var(--bg4));border-color:rgba(37,99,235,.12);padding:22px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
+      <div>
+        <div class="lbl" style="color:var(--a)">Projected Total Monthly Income at Retirement</div>
+        <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px">
+          <span class="mono" style="font-size:38px;font-weight:800;letter-spacing:-.03em">€4,120</span>
+          <span style="font-size:13px;color:var(--t3)">/month at age 67</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+          <span class="pill pill-g">✓ ES Verified</span>
+          <span class="pill pill-y">⚠ LU Estimated</span>
+          <span class="pill pill-bl">◐ FR Partial</span>
+          <span class="pill pill-g">✓ BE Verified</span>
+          <span class="pill pill-r">2 Gaps</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="lbl">Your Goal</div>
+        <div class="mono" style="font-size:26px;font-weight:800;margin-top:4px">€5,800</div>
+        <div style="font-size:11px;color:var(--t4)">/month</div>
+        <div class="mono red" style="font-size:17px;font-weight:700;margin-top:6px">−€1,680 shortfall</div>
+      </div>
+    </div>
+    <div class="gbar">
+      <div style="width:19%;background:#c2185b;border-radius:5px 0 0 5px"></div>
+      <div style="width:24%;background:var(--a)"></div>
+      <div style="width:15%;background:#0055A4"></div>
+      <div style="width:13%;background:#FAE042"></div>
+      <div style="width:29%;background:rgba(0,0,0,.05);border-radius:0 5px 5px 0"></div>
+    </div>
+    <div class="gbar-legend">
+      <span>🇪🇸 ES €780</span><span>🇱🇺 LU €990</span><span>🇫🇷 FR €620</span><span>🇧🇪 BE €530</span><span style="color:var(--t4)">⬜ Pillar 2: €1,200</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-p" onclick="nav('bridge')">Close the Gap →</button>
+      <button class="btn btn-g" onclick="nav('payout')">Full Breakdown</button>
+    </div>
+  </div>
+
+  <div class="g4" style="margin-bottom:12px">
+    <div class="stat"><div class="lbl">Years Contributed</div><div class="v">18.5</div><div class="sub green">↑ +1.5 vs last year</div></div>
+    <div class="stat"><div class="lbl">Gaps Detected</div><div class="v yellow">2</div><div class="sub">Jul–Oct 2016 · ES, Mar 2020 · LU</div></div>
+    <div class="stat"><div class="lbl">Documents Stored</div><div class="v">9</div><div class="sub green">✓ 7 current · 2 outdated</div></div>
+    <div class="stat"><div class="lbl">Active Alerts</div><div class="v red">3</div><div class="sub">1 high · 2 medium</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><div class="card-t">Country Contributions (Pillar 1)</div><button class="btn btn-g btn-s" onclick="nav('countries')">View →</button></div>
+      <div class="row"><div class="fbadge" style="background:#c2185b">ES</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Spain</div><div style="font-size:10px;color:var(--t4)">5 years · Seguridad Social</div></div><div class="mono" style="font-size:14px;font-weight:700">€780<span style="font-size:10px;color:var(--t4)">/mo</span></div></div>
+      <div class="row"><div class="fbadge" style="background:var(--a)">LU</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Luxembourg</div><div style="font-size:10px;color:var(--t4)">7 years · CNAP</div></div><div class="mono" style="font-size:14px;font-weight:700">€990<span style="font-size:10px;color:var(--t4)">/mo</span></div></div>
+      <div class="row"><div class="fbadge" style="background:#0055A4">FR</div><div style="flex:1"><div style="font-size:12px;font-weight:600">France</div><div style="font-size:10px;color:var(--t4)">3.5 years · CNAV + AGIRC-ARRCO</div></div><div class="mono" style="font-size:14px;font-weight:700">€620<span style="font-size:10px;color:var(--t4)">/mo</span></div></div>
+      <div class="row"><div class="fbadge" style="background:#FAE042;color:#000">BE</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Belgium</div><div style="font-size:10px;color:var(--t4)">3 years · SFP/SFPD</div></div><div class="mono" style="font-size:14px;font-weight:700">€530<span style="font-size:10px;color:var(--t4)">/mo</span></div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="card-t">Priority Actions</div><button class="btn btn-g btn-s" onclick="nav('actions')">All →</button></div>
+      <div class="alert alert-r">🚨 <span><b>Spain gap Jul–Oct 2016</b> — 4-month contribution gap during career transition. Buy-back window closing soon.</span></div>
+      <div class="alert alert-y">⚠️ <span><b>French AGIRC-ARRCO statement</b> outdated — Last updated 2022. Request relevé de situation.</span></div>
+      <div class="alert alert-b">💡 <span><b>Luxembourg 10-year threshold</b> — You have 7 years. 3 more years unlocks minimum LU pension eligibility.</span></div>
+      <div class="alert alert-g">✅ <span><b>2026 LU Pillar 3 deduction</b> increased to €4,500/year. Consider opening a plan.</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,rgba(37,99,235,.04),rgba(29,78,216,.02));border-color:rgba(37,99,235,.12)">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:28px">🧑‍💼</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--t)">Your estimate confidence: <span class="yellow">58%</span></div>
+          <div style="font-size:12px;color:var(--t3);margin-top:1px">A certified specialist can verify your cross-border data and give a written assessment.</div>
+        </div>
+      </div>
+      <button class="btn btn-p" onclick="nav('premium')">Get Expert Review →</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2. COUNTRY HUB -->
+<div class="sec" id="sec-countries">
+  <div class="ptitle">🌍 Country Hub</div>
+  <div class="psub">Retirement rules, tax treatment, and pension system health for every country in your profile.</div>
+  <div class="g3" id="country-cards"></div>
+  <div style="margin-top:12px;font-size:9.5px;color:var(--t4);line-height:1.5">PensionsFill Score™ — composite of demographic ratio, fiscal reserves, replacement rate, reform momentum, political stability. Scale 0–100. Sources: OECD Pensions at a Glance 2025, EU Ageing Report 2024.</div>
+</div>
+
+<!-- 3. CAREER TIMELINE -->
+<div class="sec" id="sec-career">
+  <div class="ptitle">📅 Career Timeline</div>
+  <div class="psub">Your complete work history — contributions, employers, and earnings across 4 countries.</div>
+  <div class="g3" style="margin-bottom:14px">
+    <div class="stat"><div class="lbl">Total Career</div><div class="v">18.5 years</div><div class="sub">6 positions</div></div>
+    <div class="stat"><div class="lbl">Countries</div><div class="v">4</div><div class="sub">🇪🇸 5y · 🇱🇺 7y · 🇫🇷 3.5y · 🇧🇪 3y</div></div>
+    <div class="stat"><div class="lbl">Total Earnings</div><div class="v" style="font-size:18px">€1,035,000</div><div class="sub">avg €56k/year</div></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div class="card-t">Year-by-Year</div><button class="btn btn-p btn-s">+ Add Period</button></div>
+    <div id="career-rows"></div>
+  </div>
+</div>
+
+<!-- 4. PILLAR 2 TRACKER -->
+<div class="sec" id="sec-benefits">
+  <div class="ptitle">🏦 Pillar 2 — Benefits Tracker</div>
+  <div class="psub">Track all your occupational pensions across employers and countries. Performance, vesting, and required actions.</div>
+  <div class="g4" style="margin-bottom:14px">
+    <div class="stat"><div class="lbl">Total P2 Value</div><div class="v" style="font-size:18px">€67,450</div><div class="sub">across 3 plans</div></div>
+    <div class="stat"><div class="lbl">Projected at 67</div><div class="v green" style="font-size:18px">€1,200/mo</div><div class="sub">combined payout</div></div>
+    <div class="stat"><div class="lbl">Plans Tracked</div><div class="v">3</div><div class="sub">1 active · 1 frozen · 1 risk</div></div>
+    <div class="stat"><div class="lbl">Actions Required</div><div class="v red">2</div><div class="sub">1 urgent · 1 recommended</div></div>
+  </div>
+  <div id="benefit-cards"></div>
+</div>
+
+<!-- 5. PAYOUT ESTIMATION -->
+<div class="sec" id="sec-payout">
+  <div class="ptitle">💰 Payout Estimation</div>
+  <div class="psub">Projected monthly income from all pillars, all countries. Accuracy ±10–15%.</div>
+  <div class="card" style="border-color:rgba(220,38,38,.1)">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
+      <div>
+        <div class="lbl" style="color:var(--r)">Monthly Shortfall</div>
+        <div style="display:flex;align-items:baseline;gap:6px;margin-top:4px">
+          <span class="mono red" style="font-size:34px;font-weight:800">−€1,680</span>
+          <span style="font-size:12px;color:var(--t3)">/month at age 67</span>
+        </div>
+        <div style="font-size:12px;color:var(--t3);margin-top:3px">Projected €4,120 vs. goal €5,800/month</div>
+      </div>
+      <div class="donut" style="background:conic-gradient(#c2185b 0% 13%,var(--a) 13% 30%,#0055A4 30% 41%,#d4a017 41% 50%,var(--g) 50% 71%,rgba(0,0,0,.06) 71% 100%)">
+        <div class="donut-inner"><span class="mono" style="font-size:17px;font-weight:800">71%</span><span style="font-size:8px;color:var(--t4)">covered</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-t" style="margin-bottom:14px">Income by Pillar</div>
+    <div class="g3">
+      <div style="background:var(--bg);border-radius:8px;padding:14px;border:1px solid var(--bd)">
+        <div class="lbl">Pillar 1 — State Pensions</div>
+        <div class="mono" style="font-size:20px;font-weight:700;margin-top:6px">€2,920/mo</div>
+        <div style="font-size:10px;color:var(--t4);margin-top:4px">ES €780 · LU €990 · FR €620 · BE €530</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;border:1px solid var(--bd)">
+        <div class="lbl">Pillar 2 — Employer Plans</div>
+        <div class="mono" style="font-size:20px;font-weight:700;margin-top:6px">€1,200/mo</div>
+        <div style="font-size:10px;color:var(--t4);margin-top:4px">3 plans across 3 employers</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;border:1px solid var(--bd)">
+        <div class="lbl">Pillar 3 — Private Savings</div>
+        <div class="mono" style="font-size:20px;font-weight:700;margin-top:6px">€0/mo</div>
+        <div style="font-size:10px;color:var(--r);margin-top:4px">No Pillar 3 plan detected</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-t" style="margin-bottom:14px">Ways to Close the Gap</div>
+    <div class="row row-clk" onclick="nav('bridge')"><span style="font-size:14px">🔥</span><div style="flex:1"><div style="font-size:12px;font-weight:600">Subscribe to a pension fund</div><div style="font-size:10px;color:var(--t4)">€350–680/mo depending on risk profile → closes 55–100% of gap</div></div><span style="font-size:10px;color:var(--a)">View options →</span></div>
+    <div class="row row-clk" onclick="nav('simulator')"><span style="font-size:14px">🔮</span><div style="flex:1"><div style="font-size:12px;font-weight:600">Work 2 more years</div><div style="font-size:10px;color:var(--t4)">Retire at 69 instead of 67 → closes ~€520/mo of gap</div></div><span style="font-size:10px;color:var(--a)">Simulate →</span></div>
+    <div class="row"><span style="font-size:14px">🔧</span><div style="flex:1"><div style="font-size:12px;font-weight:600">Fix Spain gap (Jul–Oct 2016)</div><div style="font-size:10px;color:var(--t4)">Buy back 4 months → +€85/mo at retirement</div></div><span class="pill pill-y">Recommended</span></div>
+    <div class="row"><span style="font-size:14px">📈</span><div style="flex:1"><div style="font-size:12px;font-weight:600">Max LU Pillar 3 deduction</div><div style="font-size:10px;color:var(--t4)">€4,500/year (2026 limit) → est. +€310/mo at 67</div></div><span class="pill pill-g">Tax advantage</span></div>
+  </div>
+</div>
+
+<!-- 6. BRIDGE THE GAP -->
+<div class="sec" id="sec-bridge">
+  <div class="ptitle">🔥 Bridge the Gap</div>
+  <div class="psub">Pension products matched to your €1,680/mo shortfall. Filtered by risk profile.</div>
+  <div class="tabs" id="risk-tabs">
+    <button class="tab active" onclick="filterRisk('All',this)">All</button>
+    <button class="tab" onclick="filterRisk('Conservative',this)">🟢 Conservative</button>
+    <button class="tab" onclick="filterRisk('Balanced',this)">🟡 Balanced</button>
+    <button class="tab" onclick="filterRisk('Growth',this)">🔴 Growth</button>
+  </div>
+  <div style="font-size:10px;font-weight:600;color:var(--a);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px">★ Preferred Partner <span style="flex:1;height:1px;background:rgba(37,99,235,.12)"></span></div>
+  <div id="partner-products"></div>
+  <div style="font-size:10px;font-weight:600;color:var(--t4);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 8px;display:flex;align-items:center;gap:6px">Other Providers <span style="flex:1;height:1px;background:rgba(0,0,0,.06)"></span></div>
+  <div id="other-products"></div>
+  <div style="margin-top:14px;background:var(--bg);border-radius:8px;padding:12px 14px;border:1px solid var(--bd)"><div style="font-size:10px;color:var(--t4);line-height:1.5">⚠️ Projections are illustrative based on historical returns. Past performance ≠ future results. PensionsFill earns a referral fee from preferred partner placements.</div></div>
+</div>
+
+<!-- 7. WHAT-IF SIMULATOR -->
+<div class="sec" id="sec-simulator">
+  <div class="ptitle">🔮 What-If Simulator</div>
+  <div class="psub">Model different scenarios and see how they affect your retirement income in real-time.</div>
+  <div class="lock-wrap">
+    <div class="g2">
+      <div class="card">
+        <div class="card-t" style="margin-bottom:16px">Adjust Variables</div>
+        <div class="slider-wrap"><label>Retirement Age</label><input type="range" min="57" max="72" value="67" id="sim-age" oninput="updateSim()"><div class="slider-val" id="sim-age-val">67 years old</div></div>
+        <div class="slider-wrap"><label>Monthly Pillar 3 Savings</label><input type="range" min="0" max="500" step="25" value="0" id="sim-p3" oninput="updateSim()"><div class="slider-val" id="sim-p3-val">€0/month</div></div>
+        <div class="slider-wrap"><label>Next Country of Employment</label><div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"><button class="btn btn-g btn-s sim-c active" onclick="simC(this,'stay')" style="border-color:var(--a);color:var(--a)">Stay in BE</button><button class="btn btn-g btn-s sim-c" onclick="simC(this,'lu')">Move to LU</button><button class="btn btn-g btn-s sim-c" onclick="simC(this,'de')">Move to DE</button><button class="btn btn-g btn-s sim-c" onclick="simC(this,'uk')">Move to UK</button></div></div>
+        <div class="slider-wrap"><label>Fix Spain gap (4 months)?</label><div style="display:flex;gap:6px;margin-top:6px"><button class="btn btn-g btn-s sim-f active" onclick="simF(this,1)" style="border-color:var(--a);color:var(--a)">Yes</button><button class="btn btn-g btn-s sim-f" onclick="simF(this,0)">No</button></div></div>
+      </div>
+      <div class="card">
+        <div class="card-t" style="margin-bottom:16px">Projected Outcome</div>
+        <div class="lbl">Total Monthly Income</div>
+        <div class="mono" style="font-size:36px;font-weight:800;margin-top:4px" id="sim-total">€4,120</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px">/month at retirement</div>
+        <div style="margin-top:14px"><div class="lbl">Remaining Gap</div><div class="mono" style="font-size:22px;font-weight:700;margin-top:4px" id="sim-gap">−€1,680</div></div>
+        <div class="gbar" style="margin-top:14px"><div style="border-radius:5px 0 0 5px;background:var(--a);transition:width .3s" id="sim-bar-fill"></div><div style="flex:1;background:rgba(0,0,0,.05);border-radius:0 5px 5px 0"></div></div>
+        <div style="margin-top:14px" id="sim-changes"></div>
+      </div>
+    </div>
+    <div class="lock-overlay" id="sim-lock"><div style="font-size:28px;margin-bottom:8px">🔒</div><div style="font-size:13px;font-weight:700">Premium Feature</div><div style="font-size:11px;color:var(--t3);margin-bottom:12px">Upgrade to model unlimited scenarios</div><button class="btn btn-p" onclick="nav('premium')">Upgrade — €8/month</button></div>
+  </div>
+</div>
+
+<!-- 8. SMART ACTIONS -->
+<div class="sec" id="sec-actions">
+  <div class="ptitle">✅ Smart Actions</div>
+  <div class="psub">AI-prioritized to-do list based on your pension data. Sorted by financial impact.</div>
+  <div id="actions-list"></div>
+</div>
+
+<!-- 9. DOCUMENT VAULT -->
+<div class="sec" id="sec-vault">
+  <div class="ptitle">🔒 Document Vault</div>
+  <div class="psub">Securely store and track all your pension documents. AI-scanned for key data.</div>
+  <div class="g3" style="margin-bottom:14px">
+    <div class="stat"><div class="lbl">Total Documents</div><div class="v">9</div><div class="sub green">✓ 7 scanned</div></div>
+    <div class="stat"><div class="lbl">Data Confidence</div><div class="v yellow">58%</div><div class="sub">Improve with Expert Review</div></div>
+    <div class="stat"><div class="lbl">Missing Docs</div><div class="v red">2</div><div class="sub">FR AGIRC-ARRCO · BE SFP update</div></div>
+  </div>
+  <div class="card"><div class="card-h"><div class="card-t">Stored Documents</div><button class="btn btn-p btn-s">📤 Upload New</button></div><div id="vault-docs"></div></div>
+</div>
+
+<!-- 10. RISK RADAR -->
+<div class="sec" id="sec-radar">
+  <div class="ptitle">📡 Risk Radar</div>
+  <div class="psub">Legislative changes and pension risks that affect your cross-border profile.</div>
+  <div id="radar-alerts"></div>
+</div>
+
+<!-- 11. FAMILY ACCESS -->
+<div class="sec" id="sec-family">
+  <div class="ptitle">👨‍👩‍👧 Family Access</div>
+  <div class="psub">Give trusted family members read access. If something happens, they'll know exactly what to claim.</div>
+  <div class="card">
+    <div class="card-h"><div class="card-t">Trusted Members</div><button class="btn btn-p btn-s">+ Invite Member</button></div>
+    <div class="row"><div class="s-avatar" style="background:rgba(124,58,237,.1);color:var(--pp);border:1px solid rgba(124,58,237,.15)">MS</div><div style="flex:1"><div style="font-size:12px;font-weight:600">María Suescun</div><div style="font-size:10px;color:var(--t4)">Spouse · Full read access</div></div><span class="pill pill-g">Active</span></div>
+    <div class="row"><div class="s-avatar" style="background:rgba(37,99,235,.1);color:var(--bl);border:1px solid rgba(37,99,235,.15)">CS</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Carlos Suescun</div><div style="font-size:10px;color:var(--t4)">Brother · Emergency only</div></div><span class="pill pill-g">Active</span></div>
+    <div class="row"><div class="s-avatar" style="background:rgba(217,119,6,.1);color:var(--y);border:1px solid rgba(217,119,6,.15)">PS</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Pablo Suescun</div><div style="font-size:10px;color:var(--t4)">Father · Emergency only</div></div><span class="pill pill-y">Pending invite</span></div>
+  </div>
+  <div class="card">
+    <div class="card-t" style="margin-bottom:12px">Claim Instructions by Country</div>
+    <div style="font-size:12px;color:var(--t3);line-height:1.6;margin-bottom:12px">Step-by-step instructions for claiming survivor benefits in each country.</div>
+    <div class="row"><div class="fbadge" style="background:#c2185b">ES</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Spain — Seguridad Social Pensión de Viudedad</div><div style="font-size:10px;color:var(--t4)">Apply to INSS within 3 months. Requires certificado de defunción + libro de familia.</div></div></div>
+    <div class="row"><div class="fbadge" style="background:var(--a)">LU</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Luxembourg — CNAP Pension de Survie</div><div style="font-size:10px;color:var(--t4)">Apply to CNAP within 12 months. Acte de décès + livret de famille.</div></div></div>
+    <div class="row"><div class="fbadge" style="background:#0055A4">FR</div><div style="flex:1"><div style="font-size:12px;font-weight:600">France — CNAV + AGIRC-ARRCO Pension de Réversion</div><div style="font-size:10px;color:var(--t4)">Apply to CARSAT. Age 55+ for base, no age limit for complementary.</div></div></div>
+    <div class="row"><div class="fbadge" style="background:#FAE042;color:#000">BE</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Belgium — SFP/SFPD Overlevingspensioen</div><div style="font-size:10px;color:var(--t4)">Apply to SFP. Age 48+ (rising to 50 by 2030). Contact mypension.be.</div></div></div>
+  </div>
+</div>
+
+<!-- 12. PREMIUM -->
+<div class="sec" id="sec-premium">
+  <div class="ptitle">⭐ Premium & Expert Reviews</div>
+  <div class="psub">Choose the plan that fits your needs — from ongoing monitoring to certified pension audits.</div>
+  <div class="card-t" style="margin-bottom:12px">Subscription Plans</div>
+  <div class="g3" style="margin-bottom:20px">
+    <div class="card" style="border-color:var(--bd2)">
+      <div style="font-size:13px;font-weight:700">Free</div>
+      <div class="mono" style="font-size:22px;font-weight:800;margin:8px 0">€0</div>
+      <div style="font-size:10px;color:var(--t4);margin-bottom:14px">Current plan</div>
+      <div style="font-size:11px;color:var(--t3);line-height:1.8">✓ Pillar 1 simulation (rough)<br>✓ Career timeline input<br>✓ Country info hub + scores<br>✓ Gap visualization<br>✓ 3 document uploads<br>✗ <span style="color:var(--t4)">Pillar 2 tracking</span><br>✗ <span style="color:var(--t4)">What-If Simulator</span><br>✗ <span style="color:var(--t4)">Risk Radar alerts</span><br>✗ <span style="color:var(--t4)">Fund comparison</span></div>
+    </div>
+    <div class="card" style="border-color:rgba(37,99,235,.2);background:linear-gradient(135deg,rgba(37,99,235,.03),#fff)">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:700">Premium</span><span class="pill pill-a">Recommended</span></div>
+      <div class="mono" style="font-size:22px;font-weight:800;margin:8px 0">€8<span style="font-size:12px;font-weight:500;color:var(--t3)">/month</span></div>
+      <div style="font-size:10px;color:var(--t4);margin-bottom:14px">or €79/year (save 18%)</div>
+      <div style="font-size:11px;color:var(--t3);line-height:1.8">✓ Everything in Free<br>✓ <b style="color:var(--t)">Pillar 2 benefit tracking</b><br>✓ <b style="color:var(--t)">What-If Simulator</b><br>✓ <b style="color:var(--t)">Risk Radar + alerts</b><br>✓ <b style="color:var(--t)">Pension fund comparison</b><br>✓ <b style="color:var(--t)">Unlimited document vault</b><br>✓ <b style="color:var(--t)">Family access (2 members)</b><br>✓ <b style="color:var(--t)">Annual Pension Health Report</b><br>✓ <b style="color:var(--t)">Smart Action Queue</b></div>
+      <button class="btn btn-p" style="width:100%;margin-top:14px">Upgrade Now</button>
+    </div>
+    <div class="card" style="border-color:rgba(124,58,237,.15)">
+      <div style="font-size:13px;font-weight:700">Premium+</div>
+      <div class="mono" style="font-size:22px;font-weight:800;margin:8px 0">€25<span style="font-size:12px;font-weight:500;color:var(--t3)">/month</span></div>
+      <div style="font-size:10px;color:var(--t4);margin-bottom:14px">or €249/year (save 17%)</div>
+      <div style="font-size:11px;color:var(--t3);line-height:1.8">✓ Everything in Premium<br>✓ <b style="color:var(--t)">1 Expert Review included/year</b><br>✓ <b style="color:var(--t)">Cross-border tax optimization</b><br>✓ <b style="color:var(--t)">Priority specialist access</b><br>✓ <b style="color:var(--t)">Family access (5 members)</b><br>✓ <b style="color:var(--t)">Quarterly portfolio review</b></div>
+      <button class="btn btn-g" style="width:100%;margin-top:14px;border-color:var(--pp);color:var(--pp)">Choose Premium+</button>
+    </div>
+  </div>
+  <div class="card-t" style="margin-bottom:12px">Expert Reviews (one-time purchases)</div>
+  <div class="g3">
+    <div class="card">
+      <div style="font-size:22px;margin-bottom:8px">🤖</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:2px">AI Analysis</div>
+      <div class="mono" style="font-size:18px;font-weight:800;margin:6px 0">Free</div>
+      <div style="font-size:10px;color:var(--t4);margin-bottom:10px">Included in all plans</div>
+      <div style="font-size:11px;color:var(--t3);line-height:1.7">Gap detection<br>TMI range estimate<br>Document vault + AI scanning<br>General recommendations</div>
+    </div>
+    <div class="card" style="border-color:rgba(37,99,235,.15)">
+      <div style="display:flex;justify-content:space-between"><span style="font-size:22px">📋</span><span class="pill pill-a">Most popular</span></div>
+      <div style="font-size:13px;font-weight:700;margin:8px 0 2px">Document Verification</div>
+      <div class="mono" style="font-size:18px;font-weight:800;margin:6px 0">€79</div>
+      <div style="font-size:10px;color:var(--t4);margin-bottom:10px">3–5 business days</div>
+      <div style="font-size:11px;color:var(--t3);line-height:1.7">Specialist reviews all documents<br>Discrepancy report<br>Verified TMI ±5%<br>Written assessment</div>
+      <button class="btn btn-p btn-s" style="width:100%;margin-top:10px">Order — €79</button>
+    </div>
+    <div class="card">
+      <div style="font-size:22px;margin-bottom:8px">🧑‍💼</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:2px">Full Case Review</div>
+      <div class="mono" style="font-size:18px;font-weight:800;margin:6px 0">€349</div>
+      <div style="font-size:10px;color:var(--t4);margin-bottom:10px">5–7 business days</div>
+      <div style="font-size:11px;color:var(--t3);line-height:1.7">Everything in Verification<br>Entitlement analysis<br>Buy-back recommendations<br>30-min specialist call<br>Written action plan</div>
+      <button class="btn btn-g btn-s" style="width:100%;margin-top:10px">Order — €349</button>
+    </div>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+/* NAV */
+function nav(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.querySelectorAll('.s-item').forEach(i=>i.classList.remove('active'));
+  const item=document.querySelector(`.s-item[data-sec="${id}"]`);
+  if(item)item.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.s-item').forEach(i=>i.addEventListener('click',()=>nav(i.dataset.sec)));
+
+/* COUNTRIES */
+const CC=[
+  {code:'ES',flag:'🇪🇸',name:'Spain',color:'#c2185b',overall:57,verdict:'Under Pressure',vColor:'#d97706',
+    stability:62,sustainability:44,replacement:80,reform:50,
+    retireAge:'66y 6mo (→ 67 by 2027)',earlyAge:'63 (36y contrib) or 65 (38.5y)',minYears:'15 years (2y in last 15)',
+    taxContrib:'Pre-tax social charges',taxPayout:'Taxed as income (with reductions for >2 sources)',
+    note:'Generous replacement rate (~80%) but sustainability under pressure from ageing population and youth unemployment. Reform increased age to 67 (phased). Complex intergenerational pact signed 2023.'},
+  {code:'LU',flag:'🇱🇺',name:'Luxembourg',color:'#2563eb',overall:68,verdict:'Moderate',vColor:'#d97706',
+    stability:72,sustainability:52,replacement:89,reform:71,
+    retireAge:'65',earlyAge:'57 (40y contrib) or 60 (40y total)',minYears:'10 years (120 months)',
+    taxContrib:'Pre-tax; P3 deduction €4,500/yr (2026)',taxPayout:'Taxed as income; P2 lump sum 1.4% dependency only',
+    note:'Very generous replacement (~75%) but relies on cross-border workers. 2026 reform raised contributions to 25.5%. Stable until ~2042 but long-term uncertain.'},
+  {code:'FR',flag:'🇫🇷',name:'France',color:'#0055A4',overall:55,verdict:'Fragile',vColor:'#dc2626',
+    stability:58,sustainability:42,replacement:74,reform:45,
+    retireAge:'64 (since 2023)',earlyAge:'60 (long career scheme)',minYears:'Varies by regime',
+    taxContrib:'Pre-tax social charges (CSG/CRDS)',taxPayout:'Taxed as income after 10% abatement',
+    note:'Generous but politically almost impossible to reform. 2023 retirement age increase to 64 caused massive unrest. Complex special regimes add confusion.'},
+  {code:'BE',flag:'🇧🇪',name:'Belgium',color:'#d4a017',overall:49,verdict:'At Risk',vColor:'#dc2626',
+    stability:52,sustainability:38,replacement:66,reform:42,
+    retireAge:'65 (→ 67 by 2030)',earlyAge:'60 (42y career)',minYears:'1 year (min pension: 30y)',
+    taxContrib:'Pre-tax',taxPayout:'Taxed as income; lump sums at favorable rate',
+    note:'Pension spending among highest in EU. Age rising to 67 by 2030, enforcement weak. Different rules for employees, self-employed, civil servants.'},
+  {code:'GB',flag:'🇬🇧',name:'United Kingdom',color:'#012169',overall:71,verdict:'Resilient',vColor:'#2563eb',
+    stability:76,sustainability:68,replacement:49,reform:78,
+    retireAge:'66 (→ 67 by 2028)',earlyAge:'N/A for state pension',minYears:'10 years NI (35y for full)',
+    taxContrib:'NI contributions; P2 pre-tax',taxPayout:'State pension taxed; P2 25% lump sum tax-free',
+    note:'Modest but sustainable state pension. Auto-enrolment (2012) massively boosted P2 coverage. Low replacement means private savings essential.'},
+  {code:'DE',flag:'🇩🇪',name:'Germany',color:'#DD0000',overall:61,verdict:'Pressured',vColor:'#d97706',
+    stability:65,sustainability:48,replacement:52,reform:68,
+    retireAge:'67',earlyAge:'63 (35y, with penalties)',minYears:'5 years',
+    taxContrib:'Pre-tax (P1); bAV varies',taxPayout:'Taxed as income',
+    note:'Ageing population, low replacement rates. Aktienrente launched. P2 and P3 increasingly critical to maintain living standard.'},
+];
+function sCol(s){return s>=75?'#16a34a':s>=60?'#2563eb':s>=45?'#d97706':'#dc2626'}
+function renderCC(){
+  const dims=['stability','sustainability','replacement','reform'];
+  const lbs={stability:'Stability',sustainability:'Sustainability',replacement:'Replacement Rate',reform:'Reform Progress'};
+  document.getElementById('country-cards').innerHTML=CC.map(c=>`
+    <div class="card" style="cursor:pointer" onclick="this.querySelector('.exp').classList.toggle('open')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">${c.flag}</span><span style="font-size:14px;font-weight:700">${c.name}</span></div>
+        <div class="score-circle" style="background:${sCol(c.overall)}12;color:${sCol(c.overall)}">${c.overall}</div>
+      </div>
+      <span class="pill" style="background:${c.vColor}12;color:${c.vColor}">${c.verdict}</span>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:5px">
+        ${dims.map(d=>`<div style="display:flex;align-items:center;gap:6px"><span style="font-size:9px;color:var(--t4);min-width:68px">${lbs[d]}</span><div class="bar" style="flex:1"><div class="bfill" style="width:${c[d]}%;background:${sCol(c[d])}"></div></div><span class="mono" style="font-size:9px;color:var(--t4);min-width:20px;text-align:right">${c[d]}</span></div>`).join('')}
+      </div>
+      <div class="exp">
+        <div class="dgrid" style="margin-top:12px">
+          <div class="dgrid-item"><div class="lbl">Retirement Age</div><div class="val">${c.retireAge}</div></div>
+          <div class="dgrid-item"><div class="lbl">Early Retirement</div><div class="val">${c.earlyAge}</div></div>
+          <div class="dgrid-item"><div class="lbl">Min. Contribution</div><div class="val">${c.minYears}</div></div>
+          <div class="dgrid-item"><div class="lbl">Tax on Contributions</div><div class="val" style="font-size:10px">${c.taxContrib}</div></div>
+          <div class="dgrid-item"><div class="lbl">Tax on Payout</div><div class="val" style="font-size:10px">${c.taxPayout}</div></div>
+        </div>
+        <div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:8px">${c.note}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* CAREER */
+const CAR=[
+  {yr:'2007–2012',country:'ES',flag:'🇪🇸',color:'#c2185b',emp:'Banco Santander',role:'Junior Analyst',salary:'€28,000 → €36,000',p2:'Plan de Empleo'},
+  {yr:'2012–2016',country:'LU',flag:'🇱🇺',color:'var(--a)',emp:'Deloitte Luxembourg',role:'Senior Consultant',salary:'€52,000 → €68,000',p2:'SEPCAV',gap:true,gapNote:'Jul–Oct 2016: 4-month gap between Deloitte and BGL (relocation to France)'},
+  {yr:'2016–2019',country:'FR',flag:'🇫🇷',color:'#0055A4',emp:'BNP Paribas Paris',role:'Risk Manager',salary:'€65,000 → €78,000',p2:'PERCO (Article 83)'},
+  {yr:'2019–2020',country:'LU',flag:'🇱🇺',color:'var(--a)',emp:'EY Luxembourg',role:'Manager — Advisory',salary:'€82,000',p2:'Group Insurance',gap:true,gapNote:'Mar 2020: 1-month gap due to COVID contract delay'},
+  {yr:'2020–2023',country:'BE',flag:'🇧🇪',color:'#d4a017',emp:'European Commission (DG FISMA)',role:'Policy Officer',salary:'€75,000 (net)',p2:'EU Pension Scheme'},
+  {yr:'2023–present',country:'LU',flag:'🇱🇺',color:'var(--a)',emp:'Amazon EU (LU)',role:'Finance Manager',salary:'€95,000',p2:'N/A'},
+];
+function renderCareer(){
+  document.getElementById('career-rows').innerHTML=CAR.map(c=>`
+    ${c.gap?`<div class="alert alert-y" style="margin:4px 0">⚠️ ${c.gapNote}</div>`:''}
+    <div class="row"><div class="fbadge" style="background:${c.color}">${c.country}</div>
+      <div style="min-width:90px"><div style="font-size:11px;font-weight:600">${c.yr}</div></div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:600">${c.emp}</div><div style="font-size:10px;color:var(--t4)">${c.role}</div></div>
+      <div style="min-width:100px;text-align:right"><div class="mono" style="font-size:11px;font-weight:600">${c.salary}</div></div>
+      <div style="min-width:100px;text-align:right"><span class="pill pill-bl" style="font-size:8px">${c.p2}</span></div>
+    </div>`).join('');
+}
+
+/* PILLAR 2 */
+const BEN=[
+  {id:'b1',emp:'Amazon EU (LU)',country:'LU',color:'var(--a)',plan:'No employer scheme',type:'N/A',
+    status:'risk',sLabel:'No Plan',sClass:'sp-risk',
+    value:'€0',proj:'€0',payout:'€0/mo',vest:0,vestNote:'No scheme offered',
+    cemp:'N/A',cer:'N/A',interest:'N/A',conversion:'N/A',lastDoc:'N/A',perf:[],
+    actions:[{type:'r',text:'Amazon EU Luxembourg does not offer a supplementary pension scheme. Consider maximizing Pillar 3 contributions or requesting HR to evaluate implementing one.'}],
+    desc:'Your current employer does not have a Pillar 2 scheme registered with IGSS. This is a significant gap in your retirement provisioning.'},
+  {id:'b2',emp:'European Commission',country:'BE',color:'#d4a017',plan:'EU Pension Scheme (JSIS)',type:'Defined Benefit',
+    status:'active',sLabel:'Active',sClass:'sp-active',
+    value:'€38,200',proj:'€142,000',payout:'€780/mo',vest:100,vestNote:'Fully vested (3+ years)',
+    cemp:'10.1% of basic salary',cer:'Employer covers remainder',interest:'N/A — DB formula',
+    conversion:'DB: 1.8% × years of service × final basic salary',lastDoc:'Nov 2025 (PMO statement)',
+    perf:[],
+    actions:[],
+    desc:'EU institutions pension scheme. Defined benefit: 1.8% per year of service × reference salary at departure. You served 3 years, giving 5.4% of final salary as annual pension. Very favorable terms. Paid by EU budget, not market-dependent.'},
+  {id:'b3',emp:'BNP Paribas',country:'FR',color:'#0055A4',plan:'BNP PERCO + Article 83',type:'Defined Contribution',
+    status:'frozen',sLabel:'Frozen',sClass:'sp-frozen',
+    value:'€22,650',proj:'€48,000',payout:'€320/mo',vest:100,vestNote:'Fully vested',
+    cemp:'3%',cer:'4.5%',interest:'2.1% (2024)',
+    conversion:'Annuity or partial lump sum at 62+',lastDoc:'Jun 2023 (PERCO statement)',
+    perf:[{yr:'2022',r:-3.4},{yr:'2023',r:4.8},{yr:'2024',r:3.2}],
+    actions:[{type:'y',text:'PERCO statement is 2.5 years old. Request updated valuation from BNP Paribas Asset Management.'}],
+    desc:'French employer retirement savings (PERCO + Article 83). Contributions stopped when you left BNP. Capital invested in balanced fund. Can be withdrawn as annuity or partial lump sum from age 62.'},
+  {id:'b4',emp:'Deloitte LU',country:'LU',color:'var(--a)',plan:'Deloitte SEPCAV',type:'Defined Contribution',
+    status:'frozen',sLabel:'Frozen',sClass:'sp-frozen',
+    value:'€6,600',proj:'€14,200',payout:'€100/mo',vest:100,vestNote:'Fully vested (4 years)',
+    cemp:'2%',cer:'4%',interest:'1.6%',
+    conversion:'Lump sum or annuity at retirement',lastDoc:'Oct 2016 (departure statement)',
+    perf:[{yr:'2014',r:3.2},{yr:'2015',r:1.8},{yr:'2016',r:2.4}],
+    actions:[{type:'b',text:'This SEPCAV has been frozen since 2016. Capital still earns interest. Consider transferring to a more actively managed vehicle.'}],
+    desc:'Luxembourg SEPCAV from Deloitte. Fully vested after 4 years of service. Capital sitting in conservative allocation since departure.'},
+];
+function renderBen(){
+  document.getElementById('benefit-cards').innerHTML=BEN.map(b=>{
+    const vc=b.vest>=100?'var(--g)':b.vest>=50?'var(--y)':'var(--r)';
+    const perfH=b.perf.length?`<div class="lbl" style="margin-top:12px">Annual Fund Performance</div>${b.perf.map(p=>{const c=p.r>=0?'var(--g)':'var(--r)';return`<div class="pbar"><span class="pbar-l">${p.yr}</span><div class="bar" style="flex:1"><div class="bfill" style="width:${Math.min(100,Math.abs(p.r)*9)}%;background:${c}"></div></div><span class="pbar-v mono" style="color:${c}">${p.r>0?'+':''}${p.r}%</span></div>`}).join('')}`:'';
+    const actH=b.actions.map(a=>{const c=a.type==='r'?'alert-r':a.type==='y'?'alert-y':'alert-b';const i=a.type==='r'?'🚨':a.type==='y'?'⚠️':'💡';return`<div class="alert ${c}" style="margin-top:8px">${i} <span>${a.text}</span></div>`}).join('');
+    return`<div class="card" style="cursor:pointer;${b.status==='risk'?'border-color:rgba(220,38,38,.12)':''}" onclick="this.querySelector('.exp').classList.toggle('open')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px"><div class="fbadge" style="background:${b.color}">${b.country}</div><div><div style="font-size:13px;font-weight:700">${b.emp}</div><div style="font-size:10px;color:var(--t4);margin-top:1px">${b.plan}</div></div></div>
+        <div style="display:flex;align-items:center;gap:6px"><span style="font-size:9.5px;color:var(--t4);padding:2px 7px;border-radius:4px;background:rgba(0,0,0,.04)">${b.type}</span><span class="spill ${b.sClass}">${b.sLabel}</span></div>
+      </div>
+      <div class="g4">
+        <div><div class="lbl">Current Value</div><div class="mono" style="font-size:14px;font-weight:700;margin-top:3px">${b.value}</div><div class="sub">last statement</div></div>
+        <div><div class="lbl">Projected at 67</div><div class="mono green" style="font-size:14px;font-weight:700;margin-top:3px">${b.proj}</div><div class="sub">≈ ${b.payout}</div></div>
+        <div><div class="lbl">Vesting</div><div style="display:flex;align-items:center;gap:5px;margin-top:5px"><div class="bar" style="flex:1;height:5px"><div class="bfill" style="width:${b.vest}%;background:${vc}"></div></div><span class="mono" style="font-size:10px;font-weight:700;color:${vc}">${b.vest}%</span></div><div class="sub" style="color:${b.vest<100?'var(--y)':''}">${b.vestNote}</div></div>
+        <div><div class="lbl">Contributions</div><div style="margin-top:4px;font-size:10px;color:var(--t2)">You: <span class="mono" style="font-weight:600">${b.cemp}</span></div><div style="font-size:10px;color:var(--t2)">Employer: <span class="mono" style="font-weight:600">${b.cer}</span></div></div>
+      </div>
+      <div class="exp">
+        <div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:8px">${b.desc}</div>
+        ${perfH}
+        <div class="dgrid" style="margin-top:12px">
+          <div class="dgrid-item"><div class="lbl">Interest Rate</div><div class="val">${b.interest}</div></div>
+          <div class="dgrid-item"><div class="lbl">Conversion/Formula</div><div class="val" style="font-size:10px">${b.conversion}</div></div>
+          <div class="dgrid-item"><div class="lbl">Last Statement</div><div class="val" style="font-size:10px">${b.lastDoc}</div></div>
+        </div>
+        ${actH}
+        ${b.status!=='risk'||b.id!=='b1'?`<div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-g btn-s">📄 View Document</button><button class="btn btn-g btn-s">↻ Request Update</button></div>`:''}
+      </div>
+    </div>`}).join('');
+}
+
+/* BRIDGE THE GAP */
+const GAPV=1680;
+const PR=[
+  {id:1,prov:'Foyer',partner:true,name:'Foyer Stability Fund',risk:'Conservative',rCol:'#16a34a',ret:[2,3.5],mo:680,extra:960,fees:'0.45%',tax:true,desc:'Capital preservation focus. Ideal near retirement.',al:{Bonds:70,Equities:15,'Real Estate':10,Cash:5}},
+  {id:2,prov:'Foyer',partner:true,name:'Foyer Balanced Growth',risk:'Balanced',rCol:'#d97706',ret:[4,6.5],mo:460,extra:1240,fees:'0.65%',tax:true,desc:'Balanced growth and stability. Most popular for mid-career.',al:{Bonds:40,Equities:40,'Real Estate':15,Cash:5}},
+  {id:3,prov:'Foyer',partner:true,name:'Foyer Dynamic Equity',risk:'Growth',rCol:'#dc2626',ret:[6,9],mo:350,extra:1680,fees:'0.85%',tax:true,desc:'Equity-heavy for max long-term growth. 15+ year horizons.',al:{Bonds:15,Equities:65,'Real Estate':15,Cash:5}},
+  {id:4,prov:'Baloise',partner:false,name:'Baloise Safe Pension',risk:'Conservative',rCol:'#16a34a',ret:[1.8,3],mo:720,extra:900,fees:'0.55%',tax:true,desc:'Swiss-backed capital guarantee with steady returns.',al:{Bonds:75,Equities:10,'Real Estate':10,Cash:5}},
+  {id:5,prov:'Baloise',partner:false,name:'Baloise Multi-Asset',risk:'Balanced',rCol:'#d97706',ret:[3.5,6],mo:510,extra:1100,fees:'0.72%',tax:true,desc:'Diversified multi-asset approach with quarterly rebalancing.',al:{Bonds:45,Equities:35,'Real Estate':15,Cash:5}},
+  {id:6,prov:'Cardif (BNP)',partner:false,name:'Cardif Horizon 2050',risk:'Growth',rCol:'#dc2626',ret:[5.5,8.5],mo:380,extra:1540,fees:'0.78%',tax:true,desc:'Target-date fund, auto de-risks approaching retirement.',al:{Bonds:20,Equities:60,'Real Estate':12,Cash:8}},
+];
+let rf='All';
+function filterRisk(r,btn){rf=r;document.querySelectorAll('#risk-tabs .tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');renderPR();}
+function renderPR(){
+  const f=PR.filter(p=>rf==='All'||p.risk===rf);
+  const bld=p=>{
+    const pct=Math.min(100,Math.round(p.extra/GAPV*100));const cc=pct>=100?'var(--g)':pct>=60?'var(--y)':'var(--r)';
+    const alH=Object.entries(p.al).map(([k,v])=>`<span style="font-size:9px;color:var(--t4)">${k} ${v}%</span>`).join(' · ');
+    return`<div class="card row-clk" style="${p.partner?'border-color:rgba(37,99,235,.12);background:rgba(37,99,235,.02)':''}" onclick="this.querySelector('.exp').classList.toggle('open')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;${p.partner?'background:rgba(37,99,235,.08);color:var(--a)':'background:rgba(0,0,0,.04);color:var(--t4)'}">${p.prov.slice(0,2).toUpperCase()}</div>
+          <div><div style="font-size:13px;font-weight:700">${p.name}</div><div style="display:flex;align-items:center;gap:5px;margin-top:1px"><span style="font-size:10px;color:var(--t4)">${p.prov}</span>${p.partner?'<span class="pill pill-a" style="font-size:8px">★ Preferred</span>':''}</div></div>
+        </div>
+        <span class="pill" style="background:${p.rCol}12;color:${p.rCol}">${p.risk}</span>
+      </div>
+      <div class="g4">
+        <div><div class="lbl">Expected Return</div><div class="mono" style="font-size:14px;font-weight:700;margin-top:3px">${p.ret[0]}–${p.ret[1]}%</div><div class="sub">per year</div></div>
+        <div><div class="lbl">Monthly Cost</div><div class="mono" style="font-size:14px;font-weight:700;margin-top:3px">€${p.mo}</div><div class="sub">contribution</div></div>
+        <div><div class="lbl">Extra Income</div><div class="mono green" style="font-size:14px;font-weight:700;margin-top:3px">+€${p.extra.toLocaleString()}</div><div class="sub">/mo at 67</div></div>
+        <div><div class="lbl">Gap Coverage</div><div style="display:flex;align-items:center;gap:5px;margin-top:5px"><div class="bar" style="flex:1"><div class="bfill" style="width:${pct}%;background:${cc}"></div></div><span class="mono" style="font-size:10px;font-weight:700">${pct}%</span></div></div>
+      </div>
+      <div class="exp"><div style="font-size:11px;color:var(--t3);line-height:1.5;margin-top:8px">${p.desc}</div><div style="margin-top:8px">${alH}</div>
+        <div class="dgrid"><div class="dgrid-item"><div class="lbl">TER</div><div class="val">${p.fees}</div></div><div class="dgrid-item"><div class="lbl">Tax Advantage</div><div class="val">${p.tax?'Art. 111bis':'No'}</div></div><div class="dgrid-item"><div class="lbl">Horizon</div><div class="val">20 years</div></div></div>
+        <div style="display:flex;gap:8px;margin-top:8px"><button class="btn ${p.partner?'btn-p':'btn-g'} btn-s">${p.partner?'Get Started with Foyer':'Request a Quote'}</button><button class="btn btn-g btn-s">Compare</button></div>
+      </div>
+    </div>`;
+  };
+  document.getElementById('partner-products').innerHTML=f.filter(p=>p.partner).map(bld).join('');
+  document.getElementById('other-products').innerHTML=f.filter(p=>!p.partner).map(bld).join('');
+}
+
+/* SIMULATOR */
+let ss={age:67,p3:0,country:'stay',fix:1};
+function updateSim(){ss.age=+document.getElementById('sim-age').value;ss.p3=+document.getElementById('sim-p3').value;document.getElementById('sim-age-val').textContent=ss.age+' years old';document.getElementById('sim-p3-val').textContent='€'+ss.p3+'/month';calcSim();}
+function simC(el,v){ss.country=v;document.querySelectorAll('.sim-c').forEach(b=>{b.style.borderColor='';b.style.color=''});el.style.borderColor='var(--a)';el.style.color='var(--a)';calcSim();}
+function simF(el,v){ss.fix=v;document.querySelectorAll('.sim-f').forEach(b=>{b.style.borderColor='';b.style.color=''});el.style.borderColor='var(--a)';el.style.color='var(--a)';calcSim();}
+function calcSim(){
+  let b=4120,ch=[];
+  const ad=ss.age-67,aa=ad*260;b+=aa;if(ad!==0)ch.push({t:ad>0?`Retire at ${ss.age} (+${ad}y)`:`Retire early at ${ss.age} (${ad}y)`,v:(aa>=0?'+':'')+aa,c:aa>=0?'var(--g)':'var(--r)'});
+  if(ss.p3>0){const x=Math.round(ss.p3*0.65);b+=x;ch.push({t:`Pillar 3 savings €${ss.p3}/mo`,v:'+'+x,c:'var(--g)'});}
+  if(ss.fix){b+=85;ch.push({t:'Fix ES gap (4mo buy-back)',v:'+85',c:'var(--g)'});}
+  const cm={stay:0,lu:70,de:-60,uk:-30};const cn={stay:'Stay in BE',lu:'Move to LU',de:'Move to DE',uk:'Move to UK'};
+  if(cm[ss.country]!==0){b+=cm[ss.country];ch.push({t:cn[ss.country],v:(cm[ss.country]>=0?'+':'')+cm[ss.country],c:cm[ss.country]>=0?'var(--g)':'var(--r)'});}
+  const gap=5800-b,pct=Math.min(100,Math.round(b/5800*100));
+  document.getElementById('sim-total').textContent='€'+b.toLocaleString();document.getElementById('sim-total').style.color=gap<=0?'var(--g)':'var(--t)';
+  document.getElementById('sim-gap').textContent=gap>0?'−€'+gap.toLocaleString():'✓ Gap closed!';document.getElementById('sim-gap').style.color=gap>0?'var(--r)':'var(--g)';
+  document.getElementById('sim-bar-fill').style.width=pct+'%';
+  document.getElementById('sim-changes').innerHTML=ch.map(c=>`<div style="display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid var(--bd)"><span style="color:var(--t3)">${c.t}</span><span class="mono" style="font-weight:600;color:${c.c}">€${c.v}/mo</span></div>`).join('');
+}
+
+/* ACTIONS */
+const ACT=[
+  {p:'high',ic:'🚨',t:'Fix Spain contribution gap (Jul–Oct 2016)',d:'4-month gap during career transition. Buy-back window with Seguridad Social may be time-limited. Apply via Sede Electrónica.',imp:'+€85/mo at retirement',iC:'var(--g)',eff:'Medium — online application + ~€1,800 payment'},
+  {p:'high',ic:'⚠️',t:'Request updated French PERCO statement',d:'Last BNP Paribas PERCO statement from Jun 2023. Contact BNP AM for current valuation.',imp:'Verify €320/mo benefit',iC:'var(--y)',eff:'Low — email or online portal'},
+  {p:'medium',ic:'💰',t:'Open a Pillar 3 savings plan in Luxembourg',d:'Take advantage of 2026 increased tax deduction (€4,500/yr). No Pillar 3 detected.',imp:'+€310/mo at retirement (est.)',iC:'var(--g)',eff:'Low — choose provider, set up order'},
+  {p:'medium',ic:'📋',t:'Request Amazon HR to evaluate P2 scheme',d:'Your employer does not offer a Pillar 2 scheme. Submit proposal to HR — other LU tech companies offer this.',imp:'Potential employer-funded retirement savings',iC:'var(--bl)',eff:'Medium — HR discussion + proposal'},
+  {p:'low',ic:'👨‍👩‍👧',t:'Complete family access — resend invite to Pablo',d:'Your father Pablo hasn\'t accepted the invite yet. Ensure all 3 family members have current access.',imp:'Family protection',iC:'var(--bl)',eff:'Very low — resend invite'},
+];
+function renderAct(){
+  document.getElementById('actions-list').innerHTML=ACT.map(a=>{
+    const pc=a.p==='high'?'var(--r)':a.p==='medium'?'var(--y)':'var(--bl)';
+    return`<div class="card"><div style="display:flex;gap:12px;align-items:flex-start"><div style="font-size:20px;margin-top:2px">${a.ic}</div><div style="flex:1">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><div style="font-size:13px;font-weight:700">${a.t}</div><span class="pill" style="background:${pc}12;color:${pc}">${a.p}</span></div>
+      <div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.5">${a.d}</div>
+      <div style="display:flex;gap:16px;margin-top:8px;font-size:10px"><span style="color:var(--t4)">Impact: <span style="color:${a.iC};font-weight:600">${a.imp}</span></span><span style="color:var(--t4)">Effort: ${a.eff}</span></div>
+      <div style="display:flex;gap:6px;margin-top:10px"><button class="btn btn-p btn-s">Start →</button><button class="btn btn-g btn-s">Dismiss</button></div>
+    </div></div></div>`}).join('');
+}
+
+/* VAULT */
+const VLT=[
+  {n:'Vida Laboral (Seguridad Social)',c:'ES',f:'🇪🇸',tp:'Pillar 1 · SS',dt:'Nov 2025',st:'current',sC:'var(--g)',cf:94},
+  {n:'Extrait de Carrière CNAP',c:'LU',f:'🇱🇺',tp:'Pillar 1 · CNAP',dt:'Sep 2025',st:'current',sC:'var(--g)',cf:91},
+  {n:'Relevé de Situation CNAV',c:'FR',f:'🇫🇷',tp:'Pillar 1 · CNAV',dt:'Mar 2023',st:'outdated',sC:'var(--y)',cf:74},
+  {n:'AGIRC-ARRCO Statement',c:'FR',f:'🇫🇷',tp:'Pillar 1 · Complementary',dt:'Jun 2022',st:'outdated',sC:'var(--y)',cf:62},
+  {n:'mypension.be Extract',c:'BE',f:'🇧🇪',tp:'Pillar 1 · SFP',dt:'Jan 2026',st:'current',sC:'var(--g)',cf:96},
+  {n:'EU Pension Statement (PMO)',c:'BE',f:'🇧🇪',tp:'Pillar 2 · EU Scheme',dt:'Nov 2025',st:'current',sC:'var(--g)',cf:97},
+  {n:'BNP PERCO Statement',c:'FR',f:'🇫🇷',tp:'Pillar 2 · PERCO',dt:'Jun 2023',st:'outdated',sC:'var(--y)',cf:70},
+  {n:'Deloitte SEPCAV Statement',c:'LU',f:'🇱🇺',tp:'Pillar 2 · SEPCAV',dt:'Oct 2016',st:'action needed',sC:'var(--r)',cf:48},
+  {n:'Banco Santander Plan Empleo',c:'ES',f:'🇪🇸',tp:'Pillar 2 · Plan Empleo',dt:'Dec 2012',st:'action needed',sC:'var(--r)',cf:42},
+];
+function renderVlt(){
+  document.getElementById('vault-docs').innerHTML=VLT.map(d=>`<div class="row"><span style="font-size:14px">${d.f}</span><div style="flex:1"><div style="font-size:12px;font-weight:600">${d.n}</div><div style="font-size:10px;color:var(--t4)">${d.tp} · Uploaded ${d.dt}</div></div><div style="text-align:right;min-width:80px"><div class="mono" style="font-size:12px;font-weight:600;color:${d.sC}">${d.cf}%</div><div style="font-size:9px;color:var(--t4)">${d.st}</div></div></div>`).join('');
+}
+
+/* RADAR */
+const RDR=[
+  {sv:'high',ic:'🔴',t:'Spain retirement age reaching 67 by 2027',d:'Phased increase from 65 to 67. If you have less than 38.5 years of contributions, you\'ll retire at 67 not 65. Affects your projected claim date.',dt:'2026',af:'ES Pillar 1'},
+  {sv:'high',ic:'🔴',t:'Belgium pension age rising to 67 by 2030',d:'Your 3 years of Belgian contributions will have a later claim date. Verify impact on your combined cross-border timeline.',dt:'Jan 2026',af:'BE Pillar 1'},
+  {sv:'medium',ic:'🟡',t:'Luxembourg 2026 reform: early retirement tightening',d:'Early retirement at 60 requires progressively longer careers. You currently have 7 LU years — monitor threshold.',dt:'Jan 2026',af:'LU contributions'},
+  {sv:'low',ic:'🔵',t:'France AGIRC-ARRCO bonus/malus system update',d:'Temporary penalty for claiming complementary pension before 67 may be modified. Monitor for your French component.',dt:'2026',af:'FR Pillar 1 complementary'},
+  {sv:'info',ic:'🟢',t:'Luxembourg Pillar 3 deduction increased to €4,500',d:'Effective 2026. Up from €3,200. Significant tax advantage if you open a qualifying plan.',dt:'Jan 2026',af:'LU tax benefit'},
+];
+function renderRdr(){
+  document.getElementById('radar-alerts').innerHTML=RDR.map(r=>{
+    const c=r.sv==='high'?'alert-r':r.sv==='medium'?'alert-y':r.sv==='low'?'alert-b':'alert-g';
+    return`<div class="card"><div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:18px">${r.ic}</div><div style="flex:1">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><div style="font-size:13px;font-weight:700">${r.t}</div><span style="font-size:9px;color:var(--t4)">${r.dt}</span></div>
+      <div style="font-size:11px;color:var(--t3);margin-top:4px;line-height:1.5">${r.d}</div>
+      <div style="font-size:10px;color:var(--t4);margin-top:6px">Affects: <span style="color:var(--t2)">${r.af}</span></div>
+    </div></div></div>`}).join('');
+}
+
+/* INIT */
+renderCC();renderCareer();renderBen();renderPR();renderAct();renderVlt();renderRdr();calcSim();
+</script>
+</body>
+</html>

@@ -1,0 +1,3387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PensionBridge – Investor Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #0B1120;
+    --navy-2: #111827;
+    --navy-3: #1a2540;
+    --navy-4: #232f4b;
+    --navy-5: #2d3d60;
+    --gold: #C9A84C;
+    --gold-light: #e5c97a;
+    --gold-dim: rgba(201,168,76,0.15);
+    --gold-border: rgba(201,168,76,0.3);
+    --text: #e8eaf0;
+    --text-muted: #8a95b0;
+    --text-dim: #556080;
+    --green: #3ecf8e;
+    --green-dim: rgba(62,207,142,0.12);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.12);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.12);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.12);
+    --border: rgba(255,255,255,0.07);
+    --sidebar-w: 230px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--navy); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+  /* ── LAYOUT ── */
+  .app { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: var(--sidebar-w); background: var(--navy-2); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+  }
+  .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .logo { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); }
+  .logo-mark { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 32px; height: 32px; background: var(--gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--navy); }
+  .logo-text { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; color: var(--text); letter-spacing: 0.01em; }
+  .logo-sub { font-size: 10px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+  .nav { padding: 16px 10px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .nav-section { font-size: 10px; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 10px 4px; margin-top: 8px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; cursor: pointer;
+    font-size: 13.5px; color: var(--text-muted); font-weight: 400; transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .nav-item:hover { background: var(--navy-3); color: var(--text); }
+  .nav-item.active { background: var(--gold-dim); color: var(--gold-light); border-color: var(--gold-border); font-weight: 500; }
+  .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+  .nav-badge { margin-left: auto; background: var(--red); color: white; font-size: 9px; font-weight: 600; border-radius: 10px; padding: 1px 6px; }
+  .nav-badge.amber { background: var(--amber); color: var(--navy); }
+  .profile-area { padding: 16px; border-top: 1px solid var(--border); }
+  .profile-card { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; background: var(--navy-3); cursor: pointer; }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-light)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--navy); flex-shrink: 0; }
+  .profile-info { flex: 1; min-width: 0; }
+  .profile-name { font-size: 12.5px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .profile-role { font-size: 10.5px; color: var(--text-dim); }
+
+  /* ── TOPBAR ── */
+  .topbar { padding: 18px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--navy-2); }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; color: var(--text); }
+  .page-sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--navy-3); color: var(--text); }
+  .btn-primary { background: var(--gold); color: var(--navy); font-weight: 600; }
+  .btn-primary:hover { background: var(--gold-light); }
+  .btn-outline-gold { background: transparent; color: var(--gold); border: 1px solid var(--gold-border); }
+  .btn-outline-gold:hover { background: var(--gold-dim); }
+
+  /* ── CONTENT PAGES ── */
+  .page { display: none; flex-direction: column; flex: 1; }
+  .page.active { display: flex; }
+  .content { padding: 28px 32px; flex: 1; }
+
+  /* ── CARDS ── */
+  .card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+  .card-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); font-weight: 500; margin-bottom: 8px; }
+  .card-value { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; }
+  .card-sub { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+  .card-delta { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 500; margin-top: 8px; }
+  .delta-up { color: var(--green); }
+  .delta-down { color: var(--red); }
+  .delta-warn { color: var(--amber); }
+
+  /* ── GRID ── */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-65 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; }
+
+  /* ── TMI HERO ── */
+  .tmi-hero {
+    background: linear-gradient(135deg, var(--navy-3) 0%, var(--navy-4) 100%);
+    border: 1px solid var(--gold-border);
+    border-radius: 18px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .tmi-hero::before {
+    content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .tmi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold); font-weight: 500; }
+  .tmi-amount { font-family: 'Playfair Display', serif; font-size: 54px; font-weight: 700; color: var(--text); line-height: 1.1; margin: 8px 0; }
+  .tmi-amount span { font-size: 24px; color: var(--text-muted); }
+  .tmi-desc { font-size: 13px; color: var(--text-muted); max-width: 380px; }
+  .tmi-pills { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .pill { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 1px solid; }
+  .pill-green { background: var(--green-dim); color: var(--green); border-color: rgba(62,207,142,0.25); }
+  .pill-amber { background: var(--amber-dim); color: var(--amber); border-color: rgba(245,158,11,0.25); }
+  .pill-red { background: var(--red-dim); color: var(--red); border-color: rgba(239,68,68,0.25); }
+  .pill-blue { background: var(--blue-dim); color: var(--blue); border-color: rgba(96,165,250,0.25); }
+  .pill-gold { background: var(--gold-dim); color: var(--gold-light); border-color: var(--gold-border); }
+  .tmi-breakdown { position: absolute; right: 32px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px; }
+  .tmi-row { display: flex; align-items: center; gap: 10px; }
+  .tmi-row-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .tmi-row-label { font-size: 12px; color: var(--text-muted); width: 100px; }
+  .tmi-row-val { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text); font-weight: 500; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { background: var(--navy-3); border-radius: 6px; height: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 20px; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--border); }
+  .tl-item { position: relative; padding: 0 0 24px 20px; }
+  .tl-dot { position: absolute; left: -24px; top: 3px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid; }
+  .tl-dot.green { background: var(--green-dim); border-color: var(--green); }
+  .tl-dot.amber { background: var(--amber-dim); border-color: var(--amber); }
+  .tl-dot.red { background: var(--red-dim); border-color: var(--red); }
+  .tl-dot.blue { background: var(--blue-dim); border-color: var(--blue); }
+  .tl-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .tl-title { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .tl-date { font-size: 11px; color: var(--text-dim); font-family: 'DM Mono', monospace; margin-left: auto; }
+  .tl-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+  .tl-gap { background: var(--red-dim); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+  .tl-gap-title { font-size: 12px; font-weight: 600; color: var(--red); margin-bottom: 3px; }
+  .tl-gap-body { font-size: 11.5px; color: var(--text-muted); }
+
+  /* ── DOCUMENT VAULT ── */
+  .doc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .doc-card {
+    background: var(--navy-3); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; cursor: pointer; transition: all 0.2s;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .doc-card:hover { border-color: var(--gold-border); background: var(--navy-4); }
+  .doc-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .doc-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .doc-meta { font-size: 11px; color: var(--text-dim); }
+  .doc-status { display: flex; align-items: center; gap: 5px; font-size: 11px; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  .upload-zone {
+    border: 1.5px dashed var(--navy-5); border-radius: 12px; padding: 32px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .upload-zone:hover { border-color: var(--gold-border); background: var(--gold-dim); }
+  .upload-icon { font-size: 28px; }
+  .upload-title { font-size: 14px; font-weight: 500; color: var(--text); }
+  .upload-sub { font-size: 12px; color: var(--text-muted); }
+
+  /* ── ALERTS / RADAR ── */
+  .alert-item {
+    background: var(--navy-3); border-radius: 12px; padding: 16px 18px;
+    display: flex; gap: 14px; align-items: flex-start; cursor: pointer;
+    border: 1px solid var(--border); transition: all 0.2s; margin-bottom: 10px;
+  }
+  .alert-item:hover { border-color: var(--gold-border); }
+  .alert-severity { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .alert-content { flex: 1; }
+  .alert-title { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .alert-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+  .alert-footer { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .alert-country { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 4px; }
+  .alert-impact { font-size: 11.5px; font-weight: 600; }
+  .alert-time { font-size: 11px; color: var(--text-dim); margin-left: auto; font-family: 'DM Mono', monospace; }
+
+  /* ── FAMILY ── */
+  .family-member {
+    display: flex; align-items: center; gap: 14px; padding: 16px 18px;
+    background: var(--navy-3); border: 1px solid var(--border); border-radius: 12px;
+    margin-bottom: 10px; cursor: pointer; transition: all 0.2s;
+  }
+  .family-member:hover { border-color: var(--gold-border); }
+  .member-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; }
+  .member-info { flex: 1; }
+  .member-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .member-rel { font-size: 12px; color: var(--text-dim); }
+  .member-access { display: flex; align-items: center; gap: 6px; }
+  .access-tag { font-size: 11px; padding: 3px 10px; border-radius: 6px; font-weight: 500; }
+
+  /* ── SECTION HEADER ── */
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .section-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .section-sub { font-size: 12px; color: var(--text-dim); }
+
+  /* ── COUNTRY BAR ── */
+  .country-bar { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--navy-3); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; }
+  .country-flag { font-size: 22px; }
+  .country-info { flex: 1; }
+  .country-name { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .country-type { font-size: 11.5px; color: var(--text-dim); }
+  .country-value { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--gold-light); }
+  .country-progress { flex: 1; max-width: 120px; }
+
+  /* ── MODAL / OVERLAY ── */
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; }
+  .overlay.open { display: flex; }
+  .modal { background: var(--navy-2); border: 1px solid var(--border); border-radius: 18px; padding: 28px; width: 520px; max-width: 90vw; max-height: 85vh; overflow-y: auto; }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+  .modal-close { float: right; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 20px; margin-top: -4px; }
+
+  /* ── FORM ── */
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; display: block; }
+  .form-input, .form-select { width: 100%; background: var(--navy-3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 13.5px; color: var(--text); outline: none; font-family: 'DM Sans', sans-serif; transition: border-color 0.2s; }
+  .form-input:focus, .form-select:focus { border-color: var(--gold-border); }
+  .form-select option { background: var(--navy-3); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── CHART MOCK ── */
+  .chart-area { background: var(--navy-3); border-radius: 10px; padding: 16px; height: 140px; display: flex; align-items: flex-end; gap: 6px; overflow: hidden; }
+  .bar { border-radius: 4px 4px 0 0; flex: 1; min-width: 0; transition: opacity 0.2s; }
+  .bar:hover { opacity: 0.8; cursor: pointer; }
+
+  /* ── RANGE SLIDER MOCK ── */
+  .slider-track { background: var(--navy-3); border-radius: 10px; height: 6px; position: relative; margin: 12px 0; }
+  .slider-fill { background: var(--gold); height: 100%; border-radius: 10px; width: 72%; }
+  .slider-thumb { position: absolute; right: 28%; top: -5px; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; border: 2px solid var(--navy-2); cursor: pointer; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--navy-2); }
+  ::-webkit-scrollbar-thumb { background: var(--navy-5); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .page.active { animation: fadeIn 0.3s ease; }
+
+  /* ── HORIZONTAL DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 4px; background: var(--navy-3); border-radius: 10px; padding: 4px; margin-bottom: 20px; }
+  .tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-muted); transition: all 0.2s; }
+  .tab.active { background: var(--navy-2); color: var(--gold-light); }
+
+  /* ── TOOLTIP-LIKE INFO BOX ── */
+  .info-box { background: var(--gold-dim); border: 1px solid var(--gold-border); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+  .info-box-title { font-size: 12.5px; font-weight: 600; color: var(--gold-light); margin-bottom: 3px; }
+  .info-box-body { font-size: 12px; color: var(--text-muted); }
+
+  /* ── EMPTY STATE ── */
+  .empty-state { text-align: center; padding: 48px 24px; }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .empty-body { font-size: 13px; color: var(--text-muted); }
+
+  /* Monospace numbers */
+  .mono { font-family: 'DM Mono', monospace; }
+
+  /* Link-style text */
+  .link { color: var(--gold-light); cursor: pointer; font-size: 12px; text-decoration: underline; text-underline-offset: 2px; }
+
+  /* ── ESCAPE HATCH ROWS ── */
+  .escape-hatch-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 14px 16px;
+    background: var(--navy-3); border: 1px solid var(--border); border-radius: 12px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .escape-hatch-row:hover { border-color: var(--gold-border); background: var(--navy-4); }
+
+  /* ── EMAIL DRAFT BOX ── */
+  .email-draft {
+    background: var(--navy-3); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; font-size: 13px; color: var(--text-muted); line-height: 1.7;
+    white-space: pre-wrap; font-family: 'DM Mono', monospace; font-size: 12px;
+    max-height: 260px; overflow-y: auto; margin-bottom: 12px;
+  }
+  .email-draft strong { color: var(--text); font-family: 'DM Sans', sans-serif; }
+
+  /* ── STEP INDICATOR BADGE ── */
+  .step-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--gold-dim); border: 1px solid var(--gold-border);
+    font-size: 11px; font-weight: 700; color: var(--gold); flex-shrink: 0;
+  }
+
+  /* ── RESPONSIVE TWEAKS ── */
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-65 { grid-template-columns: 1fr; }
+    .tmi-breakdown { display: none; }
+  }
+
+  /* ══════════════════════════════════════
+     ONBOARDING OVERLAY
+  ══════════════════════════════════════ */
+  #onboarding {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--navy);
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+  }
+  #onboarding.hidden { display: none; }
+
+  /* Top bar */
+  .ob-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 40px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .ob-logo { display: flex; align-items: center; gap: 10px; }
+  .ob-skip { font-size: 13px; color: var(--text-dim); cursor: pointer; transition: color 0.2s; }
+  .ob-skip:hover { color: var(--text-muted); }
+
+  /* Progress bar */
+  .ob-progress-wrap {
+    padding: 0 40px;
+    background: var(--navy-2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .ob-steps {
+    display: flex; align-items: center; gap: 0; padding: 16px 0;
+    max-width: 820px; margin: 0 auto;
+  }
+  .ob-step {
+    display: flex; align-items: center; gap: 8px; flex: 1;
+    font-size: 12px; font-weight: 500; color: var(--text-dim);
+    cursor: default; position: relative;
+  }
+  .ob-step:not(:last-child)::after {
+    content: ''; position: absolute; left: calc(100% - 50%); right: -50%;
+    top: 12px; height: 1px; background: var(--border); z-index: 0;
+  }
+  .ob-step.done:not(:last-child)::after { background: var(--gold-border); }
+  .ob-step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--navy-3); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0; z-index: 1;
+  }
+  .ob-step.active .ob-step-num { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+  .ob-step.done .ob-step-num { background: var(--green); border-color: var(--green); color: var(--navy); }
+  .ob-step.active { color: var(--gold-light); }
+  .ob-step.done { color: var(--text-muted); }
+  .ob-step-label { white-space: nowrap; display: none; }
+  @media(min-width:700px){ .ob-step-label { display: block; } }
+
+  /* Content area */
+  .ob-content {
+    flex: 1; display: flex; align-items: flex-start; justify-content: center;
+    padding: 40px 20px 60px;
+  }
+  .ob-panel {
+    width: 100%; max-width: 820px;
+    animation: fadeIn 0.35s ease;
+  }
+  .ob-step-content { display: none; }
+  .ob-step-content.active { display: block; }
+
+  /* Step headings */
+  .ob-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px; font-weight: 700; color: var(--text);
+    line-height: 1.2; margin-bottom: 8px;
+  }
+  .ob-heading span { color: var(--gold-light); }
+  .ob-subheading { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; max-width: 520px; }
+
+  /* Country selector chips */
+  .country-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+  .country-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 12px; cursor: pointer;
+    background: var(--navy-3); border: 1.5px solid var(--border);
+    font-size: 13.5px; color: var(--text-muted); font-weight: 500;
+    transition: all 0.2s; user-select: none;
+  }
+  .country-chip:hover { border-color: var(--gold-border); color: var(--text); }
+  .country-chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold-light); }
+  .country-chip .chip-flag { font-size: 18px; }
+  .country-chip .chip-check { margin-left: auto; font-size: 12px; opacity: 0; }
+  .country-chip.selected .chip-check { opacity: 1; }
+
+  /* Path selector */
+  .path-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .path-card {
+    padding: 24px; border-radius: 16px; cursor: pointer;
+    background: var(--navy-3); border: 2px solid var(--border);
+    transition: all 0.2s; text-align: center;
+  }
+  .path-card:hover { border-color: var(--gold-border); }
+  .path-card.selected { border-color: var(--gold); background: var(--gold-dim); }
+  .path-card-icon { font-size: 36px; margin-bottom: 12px; }
+  .path-card-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .path-card-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+  .path-card.selected .path-card-title { color: var(--gold-light); }
+
+  /* Upload zone (onboarding) */
+  .ob-upload-zone {
+    border: 2px dashed var(--navy-5); border-radius: 16px;
+    padding: 48px 32px; text-align: center; cursor: pointer;
+    transition: all 0.25s; margin-bottom: 16px; position: relative;
+    background: var(--navy-2);
+  }
+  .ob-upload-zone:hover, .ob-upload-zone.dragover {
+    border-color: var(--gold); background: var(--gold-dim);
+  }
+  .ob-upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .ob-upload-icon { font-size: 44px; margin-bottom: 14px; }
+  .ob-upload-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .ob-upload-sub { font-size: 13px; color: var(--text-muted); }
+  .ob-upload-types {
+    display: flex; gap: 8px; justify-content: center; margin-top: 14px; flex-wrap: wrap;
+  }
+  .ob-upload-type {
+    padding: 4px 12px; border-radius: 20px;
+    background: var(--navy-3); border: 1px solid var(--border);
+    font-size: 11.5px; color: var(--text-dim);
+  }
+
+  /* Queued files list */
+  .ob-file-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .ob-file-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; background: var(--navy-3);
+    border: 1px solid var(--border); border-radius: 10px;
+  }
+  .ob-file-icon { font-size: 20px; flex-shrink: 0; }
+  .ob-file-info { flex: 1; }
+  .ob-file-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .ob-file-meta { font-size: 11.5px; color: var(--text-dim); }
+  .ob-file-status { font-size: 12px; font-weight: 500; }
+  .ob-file-remove { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 16px; padding: 2px 6px; }
+  .ob-file-remove:hover { color: var(--red); }
+
+  /* Scanning animation */
+  #ob-scanning { display: none; }
+  #ob-scanning.visible { display: block; }
+  .scan-card {
+    background: var(--navy-2); border: 1px solid var(--border); border-radius: 16px; padding: 28px;
+    margin-bottom: 16px;
+  }
+  .scan-file {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px; background: var(--navy-3); border-radius: 10px; margin-bottom: 16px;
+  }
+  .scan-file-name { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .scan-file-size { font-size: 12px; color: var(--text-dim); }
+  .scan-progress-outer { background: var(--navy-4); border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 10px; }
+  .scan-progress-inner {
+    height: 100%; border-radius: 6px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    width: 0%; transition: width 0.1s linear;
+  }
+  .scan-status { font-size: 12.5px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .scan-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: pulse 1.2s infinite; }
+
+  /* Extracted data review */
+  #ob-extracted { display: none; }
+  #ob-extracted.visible { display: block; }
+  .extracted-field {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 16px; background: var(--navy-3);
+    border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px;
+  }
+  .extracted-field-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .extracted-field-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 3px; }
+  .extracted-field-value { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .extracted-field-confidence {
+    margin-left: auto; font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 600; flex-shrink: 0;
+  }
+  .conf-high { background: var(--green-dim); color: var(--green); }
+  .conf-med { background: var(--amber-dim); color: var(--amber); }
+  .conf-low { background: var(--red-dim); color: var(--red); }
+
+  /* Manual entry form in onboarding */
+  .ob-period-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .ob-period-item {
+    display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+    background: var(--navy-3); border: 1px solid var(--border); border-radius: 12px;
+  }
+  .ob-period-flag { font-size: 22px; }
+  .ob-period-info { flex: 1; }
+  .ob-period-company { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .ob-period-dates { font-size: 12px; color: var(--text-dim); font-family: 'DM Mono', monospace; }
+  .ob-period-remove { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 18px; }
+  .ob-period-remove:hover { color: var(--red); }
+
+  /* Add period mini-form */
+  .ob-mini-form {
+    background: var(--navy-2); border: 1px solid var(--gold-border);
+    border-radius: 14px; padding: 20px; margin-bottom: 16px;
+  }
+  .ob-mini-form-title { font-size: 13px; font-weight: 600; color: var(--gold-light); margin-bottom: 14px; }
+
+  /* Summary / confirmation */
+  .ob-summary-row {
+    display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+    background: var(--navy-3); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px;
+  }
+  .ob-summary-icon { font-size: 20px; flex-shrink: 0; }
+  .ob-summary-label { font-size: 12px; color: var(--text-muted); }
+  .ob-summary-value { font-size: 14px; font-weight: 600; color: var(--text); }
+  .ob-summary-right { margin-left: auto; text-align: right; }
+
+  /* Complete screen */
+  .ob-complete {
+    text-align: center; padding: 24px 0 40px;
+  }
+  .ob-complete-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--green-dim); border: 2px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; margin: 0 auto 24px;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  /* Footer nav */
+  .ob-footer {
+    position: sticky; bottom: 0;
+    background: var(--navy-2); border-top: 1px solid var(--border);
+    padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .ob-footer-left { font-size: 13px; color: var(--text-dim); }
+  .ob-footer-right { display: flex; gap: 10px; align-items: center; }
+  .ob-back { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+  .ob-back:hover { background: var(--navy-3); color: var(--text); }
+  .ob-next { background: var(--gold); color: var(--navy); font-weight: 600; min-width: 140px; justify-content: center; }
+  .ob-next:hover { background: var(--gold-light); }
+  .ob-next:disabled { opacity: 0.4; cursor: not-allowed; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ─── SIDEBAR ─── -->
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">
+        <div class="logo-icon">P</div>
+        <div>
+          <div class="logo-text">PensionBridge</div>
+          <div class="logo-sub">Cross-Border Retirement</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active" onclick="navigate('dashboard')">
+        <span class="nav-icon">⬡</span> Dashboard
+      </div>
+      <div class="nav-section">Planning</div>
+      <div class="nav-item" onclick="navigate('career')">
+        <span class="nav-icon">🗺</span> Career Journey
+      </div>
+      <div class="nav-item" onclick="navigate('estimation')">
+        <span class="nav-icon">📊</span> Payout Estimation
+      </div>
+      <div class="nav-section">Protection</div>
+      <div class="nav-item" onclick="navigate('vault')">
+        <span class="nav-icon">🗄</span> Document Vault
+      </div>
+      <div class="nav-item" onclick="navigate('radar')">
+        <span class="nav-icon">📡</span> Risk Radar <span class="nav-badge amber">3</span>
+      </div>
+      <div class="nav-section">Family</div>
+      <div class="nav-item" onclick="navigate('family')">
+        <span class="nav-icon">👥</span> Family Access
+      </div>
+    </div>
+    <div class="profile-area">
+      <div class="profile-card">
+        <div class="avatar">MK</div>
+        <div class="profile-info">
+          <div class="profile-name">Mats Karlsson</div>
+          <div class="profile-role">🇩🇪 🇱🇺 🇨🇭 · 3 countries</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── MAIN ─── -->
+  <div class="main">
+
+    <!-- ══════════════════════════════════════════════
+         PAGE 1 · DASHBOARD
+    ══════════════════════════════════════════════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="topbar">
+        <div>
+          <div class="page-title">Dashboard</div>
+          <div class="page-sub">Last synced: today at 09:41 CET</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost">↻ Refresh</button>
+          <button class="btn btn-primary" onclick="openModal('modal-add-period')">+ Add Period</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- TMI Hero -->
+        <div class="tmi-hero">
+          <div class="tmi-label">Projected Total Monthly Income at Retirement</div>
+          <div class="tmi-amount">€3,840 <span>/ month</span></div>
+          <div class="tmi-desc">Estimated at age 67 based on current contributions and career data across 3 countries. ±12% accuracy.</div>
+          <div class="tmi-pills">
+            <span class="pill pill-green">✓ Germany: Verified</span>
+            <span class="pill pill-amber">⚠ Luxembourg: Estimated</span>
+            <span class="pill pill-gold">◎ Switzerland: Partial</span>
+            <span class="pill pill-red">! 1 Gap Detected</span>
+          </div>
+          <div class="tmi-breakdown">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dim);margin-bottom:10px;">Breakdown</div>
+            <div class="tmi-row">
+              <div class="tmi-row-dot" style="background:#3ecf8e;"></div>
+              <div class="tmi-row-label">Germany (P1)</div>
+              <div class="tmi-row-val">€1,220</div>
+            </div>
+            <div class="tmi-row">
+              <div class="tmi-row-dot" style="background:var(--amber);"></div>
+              <div class="tmi-row-label">Luxembourg (P1)</div>
+              <div class="tmi-row-val">€980</div>
+            </div>
+            <div class="tmi-row">
+              <div class="tmi-row-dot" style="background:var(--blue);"></div>
+              <div class="tmi-row-label">Switzerland (P2)</div>
+              <div class="tmi-row-val">€1,640</div>
+            </div>
+            <hr class="divider" style="margin:10px 0;">
+            <div class="tmi-row">
+              <div class="tmi-row-dot" style="background:var(--gold);"></div>
+              <div class="tmi-row-label"><strong>Total</strong></div>
+              <div class="tmi-row-val" style="color:var(--gold-light);font-weight:600;">€3,840</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expert Review Banner -->
+        <div id="expert-review-banner" style="background:linear-gradient(135deg,var(--navy-3),var(--navy-4));border:1px solid var(--gold-border);border-radius:14px;padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--gold-dim);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">👨‍💼</div>
+          <div style="flex:1;min-width:200px;">
+            <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px;">Your estimate is at <span style="color:var(--amber);">62% confidence</span> — a specialist can verify it</div>
+            <div style="font-size:12px;color:var(--text-muted);">AI covers the heavy lifting, but cross-border entitlements are complex. A certified specialist validates your data and gives you a written report you can act on.</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+            <button class="btn btn-primary" onclick="openModal('modal-expert-tiers')">Get Expert Review</button>
+            <div style="font-size:11px;color:var(--text-dim);">From €79 · results in 3–5 days</div>
+          </div>
+        </div>
+
+        <!-- Review Pending Banner (hidden until submitted) -->
+        <div id="expert-pending-banner" style="display:none;background:rgba(62,207,142,0.07);border:1px solid rgba(62,207,142,0.3);border-radius:14px;padding:16px 22px;margin-bottom:20px;display:none;align-items:center;gap:16px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(62,207,142,0.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⏳</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:2px;">Expert review in progress</div>
+            <div style="font-size:12px;color:var(--text-muted);">Case <span style="font-family:'DM Mono',monospace;">#PB-2026-4471</span> · <span id="pending-tier-name">Document Verification</span> · Expected by 4 Mar 2026</div>
+          </div>
+          <span class="pill pill-green" style="flex-shrink:0;">In Review</span>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid-4" style="margin-bottom:20px;">
+          <div class="card">
+            <div class="card-title">Years Contributed</div>
+            <div class="card-value">22.5</div>
+            <div class="card-delta delta-up">↑ +2.3 vs last year</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Gaps Detected</div>
+            <div class="card-value" style="color:var(--red);">1</div>
+            <div class="card-sub" style="color:var(--red);">Apr–Jun 2019 · LU</div>
+            <div class="card-delta delta-down"><span class="link" onclick="navigate('career')">View gap →</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Docs Stored</div>
+            <div class="card-value">7</div>
+            <div class="card-delta delta-up">✓ All current</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Active Alerts</div>
+            <div class="card-value" style="color:var(--amber);">3</div>
+            <div class="card-sub" style="color:var(--amber);">2 high · 1 medium</div>
+            <div class="card-delta delta-warn"><span class="link" onclick="navigate('radar')">Review now →</span></div>
+          </div>
+        </div>
+
+        <!-- Expert Review Banner -->
+        <div style="background:linear-gradient(135deg,var(--navy-3) 0%,var(--navy-4) 100%);border:1px solid var(--gold-border);border-radius:14px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <div style="width:52px;height:52px;border-radius:12px;background:var(--gold-dim);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">👨‍💼</div>
+          <div style="flex:1;min-width:200px;">
+            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">Your estimate is at <span style="color:var(--amber);">62% confidence</span> — a specialist can verify it</div>
+            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5;">AI covers the heavy lifting, but cross-border pension entitlements are complex. A certified pension specialist can validate your data, correct errors, and give you a written assessment you can act on with confidence.</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
+            <button class="btn btn-primary" style="white-space:nowrap;" onclick="openModal('modal-expert-tiers')">Get Expert Review</button>
+            <div style="font-size:11px;color:var(--text-dim);text-align:center;">From €79 · results in 3–5 days</div>
+          </div>
+        </div>
+
+        <div class="grid-65">
+          <!-- Left: Country Progress -->
+          <div class="card">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Country Contributions</div>
+                <div class="section-sub">Pillar 1 state pensions · active tracking</div>
+              </div>
+              <button class="btn btn-outline-gold" style="font-size:12px;padding:6px 12px;" onclick="navigate('estimation')">Full analysis →</button>
+            </div>
+            <div class="country-bar">
+              <div class="country-flag">🇩🇪</div>
+              <div class="country-info">
+                <div class="country-name">Germany · Deutsche Rentenversicherung</div>
+                <div class="country-type">Pillar 1 · 18 yrs verified</div>
+              </div>
+              <div style="flex:1;max-width:140px;">
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);margin-bottom:4px;"><span>Progress</span><span>72%</span></div>
+                <div class="progress-wrap"><div class="progress-fill" style="width:72%;background:var(--green);"></div></div>
+              </div>
+              <div class="country-value">€1,220</div>
+            </div>
+            <div class="country-bar">
+              <div class="country-flag">🇱🇺</div>
+              <div class="country-info">
+                <div class="country-name">Luxembourg · CNAP</div>
+                <div class="country-type">Pillar 1 · 3.5 yrs est.</div>
+              </div>
+              <div style="flex:1;max-width:140px;">
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);margin-bottom:4px;"><span>Progress</span><span>14%</span></div>
+                <div class="progress-wrap"><div class="progress-fill" style="width:14%;background:var(--amber);"></div></div>
+              </div>
+              <div class="country-value">€980</div>
+            </div>
+            <div class="country-bar">
+              <div class="country-flag">🇨🇭</div>
+              <div class="country-info">
+                <div class="country-name">Switzerland · BVG / LPP</div>
+                <div class="country-type">Pillar 2 · 3 yrs partial</div>
+              </div>
+              <div style="flex:1;max-width:140px;">
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);margin-bottom:4px;"><span>Progress</span><span>43%</span></div>
+                <div class="progress-wrap"><div class="progress-fill" style="width:43%;background:var(--blue);"></div></div>
+              </div>
+              <div class="country-value">€1,640</div>
+            </div>
+          </div>
+
+        </div><!-- /grid-65 -->
+      </div><!-- /content -->
+    </div><!-- /page-dashboard -->
+
+    <!-- ══════════════════════════════════════════════
+         PAGE 2 · CAREER JOURNEY
+    ══════════════════════════════════════════════ -->
+    <div class="page" id="page-career">
+      <div class="topbar">
+        <div>
+          <div class="page-title">Career Journey</div>
+          <div class="page-sub">Visual timeline · gap detection · error flagging</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost">↑ Import CSV</button>
+          <button class="btn btn-primary" onclick="openModal('modal-add-period')">+ Add Period</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="info-box">
+          <div class="info-box-title">🔍 1 Invisible Gap Detected</div>
+          <div class="info-box-body">A 3-month gap in Luxembourg (Apr–Jun 2019) risks <strong>~€120/month</strong> in permanent pension loss. This can still be corrected by voluntary contributions to CNAP before your next filing deadline. <span class="link" onclick="openModal('modal-gap-detail')">See correction steps →</span></div>
+        </div>
+
+        <div class="grid-65">
+          <div class="card">
+            <div class="section-header">
+              <div class="section-title">Employment Timeline</div>
+              <div class="section-sub">Ordered by most recent</div>
+            </div>
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-dot green"></div>
+                <div class="tl-head">
+                  <span class="pill pill-green" style="font-size:10px;padding:2px 8px;">🇨🇭 Switzerland</span>
+                  <span class="tl-title">Senior Analyst · UBS Wealth</span>
+                  <span class="tl-date">Jan 2022 – Present</span>
+                </div>
+                <div class="tl-body">Pillar 2 (BVG) enrolled. CHF 145,000 gross. Accumulating at 18% employer + employee rate. Vorsorgeausweis uploaded.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot amber"></div>
+                <div class="tl-head">
+                  <span class="pill pill-amber" style="font-size:10px;padding:2px 8px;">🇱🇺 Luxembourg</span>
+                  <span class="tl-title">Analyst · ArcelorMittal</span>
+                  <span class="tl-date">Jul 2019 – Dec 2021</span>
+                </div>
+                <div class="tl-body">CNAP enrolled. €68,000 gross. 2.5 insurance years confirmed. Extrait de carrière uploaded.</div>
+                <div class="tl-gap">
+                  <div class="tl-gap-title">⚠ 3-Month Gap: Apr–Jun 2019</div>
+                  <div class="tl-gap-body">Transition gap detected between roles. Below CNAP 3-month validation threshold. Estimated impact: <strong>−€120/month</strong> at retirement. <span class="link" onclick="openModal('modal-gap-detail')">Fix this →</span></div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot blue"></div>
+                <div class="tl-head">
+                  <span class="pill pill-blue" style="font-size:10px;padding:2px 8px;">🇱🇺 Luxembourg</span>
+                  <span class="tl-title">Graduate Analyst · Deloitte</span>
+                  <span class="tl-date">Sep 2018 – Mar 2019</span>
+                </div>
+                <div class="tl-body">CNAP enrolled. 7 months. 1 insurance quarter fully validated.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot green"></div>
+                <div class="tl-head">
+                  <span class="pill pill-green" style="font-size:10px;padding:2px 8px;">🇩🇪 Germany</span>
+                  <span class="tl-title">Analyst · Siemens AG</span>
+                  <span class="tl-date">Jun 2014 – Aug 2018</span>
+                </div>
+                <div class="tl-body">Deutsche Rentenversicherung contributions fully verified. 4.2 insurance years. bAV occupational pension accrued via Siemens Pensionskasse.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot green"></div>
+                <div class="tl-head">
+                  <span class="pill pill-green" style="font-size:10px;padding:2px 8px;">🇩🇪 Germany</span>
+                  <span class="tl-title">Junior Analyst · Bosch GmbH</span>
+                  <span class="tl-date">Sep 2009 – May 2014</span>
+                </div>
+                <div class="tl-body">All DRV contributions verified. 4.7 insurance years. Entgeltpunkte accumulating correctly.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right panel -->
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div class="card">
+              <div class="card-title">Total Insurance Years</div>
+              <div class="card-value">22.5 <span style="font-size:18px;color:var(--text-muted);">yrs</span></div>
+              <hr class="divider">
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span style="color:var(--text-muted);">🇩🇪 Germany</span><span class="mono">8.9 yrs</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span style="color:var(--text-muted);">🇱🇺 Luxembourg</span><span class="mono">3.0 yrs</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span style="color:var(--text-muted);">🇨🇭 Switzerland</span><span class="mono">1.5 yrs</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Gap Impact Simulator</div>
+              <div style="font-size:12.5px;color:var(--text-muted);margin-bottom:10px;">Fixing the Apr–Jun 2019 gap would add:</div>
+              <div class="card-value" style="font-size:24px;color:var(--green);">+€120/mo</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">= +€43,200 over 30 years of retirement</div>
+              <hr class="divider">
+              <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="openModal('modal-gap-detail')">Correct This Gap</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         PAGE 3 · PAYOUT ESTIMATION
+    ══════════════════════════════════════════════ -->
+    <div class="page" id="page-estimation">
+      <div class="topbar">
+        <div>
+          <div class="page-title">Payout Estimation</div>
+          <div class="page-sub">Modelled from salary & career data · ±10–15% accuracy</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost">↑ Upload Statement</button>
+          <button class="btn btn-primary" onclick="recalcEstimation()">↻ Recalculate</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- ── STEP 1: TARGET INCOME GOAL ── -->
+        <div class="card" style="border-color:var(--gold-border);margin-bottom:20px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:240px;">
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);font-weight:500;margin-bottom:6px;">Your Retirement Income Goal</div>
+              <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;max-width:400px;">What monthly income do you need to maintain your current lifestyle in retirement? This becomes your personal target.</div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <div style="position:relative;">
+                  <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;font-weight:600;color:var(--gold-light);">€</span>
+                  <input id="est-target" type="number" value="5500"
+                    style="background:var(--navy-3);border:1.5px solid var(--gold-border);border-radius:10px;padding:12px 14px 12px 32px;font-size:22px;font-family:'Playfair Display',serif;font-weight:700;color:var(--text);width:160px;outline:none;"
+                    oninput="recalcEstimation()" />
+                </div>
+                <span style="font-size:14px;color:var(--text-muted);">/ month</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+                <span style="font-size:11.5px;color:var(--text-dim);">Quick targets:</span>
+                <span class="link" onclick="setTarget(3500)">€3,500</span>
+                <span class="link" onclick="setTarget(4500)">€4,500</span>
+                <span class="link" onclick="setTarget(5500)" style="color:var(--gold-light);">€5,500 ←</span>
+                <span class="link" onclick="setTarget(7000)">€7,000</span>
+              </div>
+            </div>
+
+            <!-- Gap gauge -->
+            <div style="flex-shrink:0;text-align:center;min-width:180px;">
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dim);margin-bottom:10px;">Retirement Income Gap</div>
+              <div style="position:relative;width:140px;height:140px;margin:0 auto 10px;">
+                <svg width="140" height="140" viewBox="0 0 140 140">
+                  <circle cx="70" cy="70" r="56" fill="none" stroke="var(--navy-3)" stroke-width="14"/>
+                  <circle cx="70" cy="70" r="56" fill="none" stroke="var(--gold)" stroke-width="14"
+                    stroke-dasharray="351.86" id="est-gauge-fill"
+                    stroke-dashoffset="123" stroke-linecap="round"
+                    transform="rotate(-90 70 70)"/>
+                  <circle cx="70" cy="70" r="56" fill="none" stroke="var(--red)" stroke-width="14"
+                    stroke-dasharray="351.86" id="est-gauge-gap"
+                    stroke-dashoffset="228" stroke-linecap="round"
+                    transform="rotate(-90 70 70)" opacity="0.5"/>
+                </svg>
+                <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                  <div style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--gold-light);" id="est-gauge-pct">70%</div>
+                  <div style="font-size:10px;color:var(--text-dim);">covered</div>
+                </div>
+              </div>
+              <div id="est-gap-label" style="font-size:13px;font-weight:600;color:var(--red);">−€1,660 / mo shortfall</div>
+              <div id="est-gap-label2" style="font-size:11px;color:var(--text-dim);margin-top:2px;">over 30 yrs = −€597,600</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PROJECTED vs TARGET VISUAL ── -->
+        <div class="card" style="margin-bottom:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+            <div>
+              <div class="section-title">Projected vs Target</div>
+              <div class="section-sub">What you'll receive vs what you want</div>
+            </div>
+            <div class="tabs" style="margin-bottom:0;width:auto;">
+              <div class="tab active" style="flex:none;padding:7px 14px;" onclick="switchEstTab(this,'all')">All Countries</div>
+              <div class="tab" style="flex:none;padding:7px 14px;" onclick="switchEstTab(this,'de')">🇩🇪</div>
+              <div class="tab" style="flex:none;padding:7px 14px;" onclick="switchEstTab(this,'lu')">🇱🇺</div>
+              <div class="tab" style="flex:none;padding:7px 14px;" onclick="switchEstTab(this,'ch')">🇨🇭</div>
+            </div>
+          </div>
+
+          <!-- Stacked bar comparison -->
+          <div style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+              <div style="font-size:12px;color:var(--text-muted);width:80px;text-align:right;flex-shrink:0;">Your goal</div>
+              <div style="flex:1;background:var(--navy-3);border-radius:6px;height:36px;position:relative;overflow:hidden;">
+                <div style="height:100%;background:repeating-linear-gradient(90deg,var(--navy-4) 0px,var(--navy-4) 6px,var(--navy-3) 6px,var(--navy-3) 12px);border-radius:6px;"></div>
+                <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 12px;">
+                  <span style="font-size:13px;font-weight:600;color:var(--text-muted);" id="bar-target-label">€5,500 / month</span>
+                </div>
+                <div style="position:absolute;right:0;top:0;bottom:0;width:30%;background:var(--red);opacity:0.25;border-radius:0 6px 6px 0;" id="bar-gap-fill"></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="font-size:12px;color:var(--text-muted);width:80px;text-align:right;flex-shrink:0;">Projected</div>
+              <div style="flex:1;background:var(--navy-3);border-radius:6px;height:36px;overflow:hidden;position:relative;">
+                <div style="height:100%;border-radius:6px;display:flex;overflow:hidden;" id="bar-projected">
+                  <div style="background:var(--green);flex:1220;" title="Germany €1,220"></div>
+                  <div style="background:var(--amber);flex:980;" title="Luxembourg €980"></div>
+                  <div style="background:var(--blue);flex:1640;" title="Switzerland €1,640"></div>
+                  <div style="background:var(--navy-5);flex:1660;" title="Gap €1,660"></div>
+                </div>
+                <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 12px;">
+                  <span style="font-size:13px;font-weight:600;color:var(--text);" id="bar-projected-label">€3,840 projected</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;padding-left:92px;">
+              <div style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text-muted);"><div style="width:10px;height:10px;border-radius:2px;background:var(--green);"></div>Germany</div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text-muted);"><div style="width:10px;height:10px;border-radius:2px;background:var(--amber);"></div>Luxembourg</div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text-muted);"><div style="width:10px;height:10px;border-radius:2px;background:var(--blue);"></div>Switzerland</div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text-muted);"><div style="width:10px;height:10px;border-radius:2px;background:var(--navy-5);"></div>Gap</div>
+            </div>
+          </div>
+
+          <!-- KPI row -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;" id="est-kpis">
+            <div style="padding:14px;background:var(--navy-3);border-radius:10px;text-align:center;">
+              <div class="card-title">Projected (age 67)</div>
+              <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--gold-light);margin:4px 0;" id="kpi-projected">€3,840</div>
+              <div class="pill pill-gold" style="font-size:10px;">Base</div>
+            </div>
+            <div style="padding:14px;background:var(--navy-3);border-radius:10px;text-align:center;">
+              <div class="card-title">Your Target</div>
+              <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin:4px 0;" id="kpi-target">€5,500</div>
+              <div class="pill pill-blue" style="font-size:10px;">Goal</div>
+            </div>
+            <div style="padding:14px;background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);border-radius:10px;text-align:center;">
+              <div class="card-title" style="color:var(--red);">Monthly Gap</div>
+              <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--red);margin:4px 0;" id="kpi-gap">−€1,660</div>
+              <div class="pill pill-red" style="font-size:10px;">Shortfall</div>
+            </div>
+            <div style="padding:14px;background:var(--navy-3);border-radius:10px;text-align:center;">
+              <div class="card-title">Gap Fixed (age 67)</div>
+              <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--green);margin:4px 0;">€3,960</div>
+              <div class="pill pill-green" style="font-size:10px;">+€120/mo</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── GAP CLOSURE ACTIONS ── -->
+        <div id="est-gap-actions" class="card" style="margin-bottom:20px;border-color:rgba(239,68,68,0.25);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <div style="width:28px;height:28px;border-radius:8px;background:var(--red-dim);display:flex;align-items:center;justify-content:center;font-size:13px;">⚡</div>
+            <div>
+              <div class="section-title">How to close the <span id="gap-action-amount" style="color:var(--red);">€1,660/mo</span> gap</div>
+              <div class="section-sub">Actionable levers ranked by impact</div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <!-- Action 1 -->
+            <div style="background:var(--navy-3);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:16px;">
+              <div style="width:36px;height:36px;border-radius:10px;background:var(--amber-dim);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📅</div>
+              <div style="flex:1;">
+                <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px;">Work 3 more years (retire at 70)</div>
+                <div style="font-size:12.5px;color:var(--text-muted);">Deferring retirement adds bonus credits across all 3 pension systems. Switzerland BVG grows the most.</div>
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="font-size:14px;font-weight:700;color:var(--green);">+€800/mo</div>
+                <div style="font-size:11px;color:var(--text-dim);">closes 48%</div>
+              </div>
+            </div>
+
+            <!-- Action 2 -->
+            <div style="background:var(--navy-3);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:16px;">
+              <div style="width:36px;height:36px;border-radius:10px;background:var(--blue-dim);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💼</div>
+              <div style="flex:1;">
+                <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px;">Increase Pillar 3 contributions by €500/mo</div>
+                <div style="font-size:12.5px;color:var(--text-muted);">Opening a Swiss 3a account (or topping up existing) at 6% return would compound to ~€270,000 extra capital.</div>
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="font-size:14px;font-weight:700;color:var(--green);">+€750/mo</div>
+                <div style="font-size:11px;color:var(--text-dim);">closes 45%</div>
+              </div>
+            </div>
+
+            <!-- Action 3 -->
+            <div style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.25);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:16px;">
+              <div style="width:36px;height:36px;border-radius:10px;background:var(--red-dim);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⚠️</div>
+              <div style="flex:1;">
+                <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px;">Fix the Luxembourg gap (Apr–Jun 2019)</div>
+                <div style="font-size:12.5px;color:var(--text-muted);">3 missing months in CNAP. One-time cost ~€1,200. Recovers permanently lost contributions.</div>
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="font-size:14px;font-weight:700;color:var(--green);">+€120/mo</div>
+                <div style="font-size:11px;color:var(--text-dim);">closes 7%</div>
+                <button class="btn btn-primary" style="font-size:11px;padding:4px 10px;margin-top:4px;" onclick="openModal('modal-gap-detail')">Fix now</button>
+              </div>
+            </div>
+
+            <!-- Action 4 -->
+            <div style="background:var(--navy-3);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:16px;">
+              <div style="width:36px;height:36px;border-radius:10px;background:var(--green-dim);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📈</div>
+              <div style="flex:1;">
+                <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px;">Voluntary AHV/AVS buy-in (Switzerland)</div>
+                <div style="font-size:12.5px;color:var(--text-muted);">You have 2 missing years in Swiss AHV. A one-time buy-in of ~€8,400 would recover the full entitlement.</div>
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="font-size:14px;font-weight:700;color:var(--green);">+€290/mo</div>
+                <div style="font-size:11px;color:var(--text-dim);">closes 17%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Combined scenario -->
+          <div style="background:var(--green-dim);border:1px solid rgba(62,207,142,0.25);border-radius:12px;padding:16px 18px;margin-top:12px;display:flex;align-items:center;gap:14px;">
+            <div style="font-size:22px;">✨</div>
+            <div style="flex:1;">
+              <div style="font-size:13.5px;font-weight:600;color:var(--green);margin-bottom:3px;">Best case: all actions combined</div>
+              <div style="font-size:12.5px;color:var(--text-muted);">Fix gap + AHV buy-in + Pillar 3 top-up + retire at 70</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+              <div style="font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--green);" id="best-case-val">€5,800/mo</div>
+              <div style="font-size:11px;color:var(--text-muted);">exceeds your target by €300</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── RETIREMENT AGE + INFLATION (collapsed to smaller row) ── -->
+        <div class="grid-2" style="margin-bottom:0;">
+          <div class="card">
+            <div class="section-header" style="margin-bottom:12px;">
+              <div class="section-title">Retirement Age Impact</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-dim);margin-bottom:5px;"><span>Age 60</span><span style="color:var(--gold-light);">Age 67</span><span>Age 72</span></div>
+            <div class="slider-track" style="margin-bottom:14px;"><div class="slider-fill"></div><div class="slider-thumb"></div></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+              <div style="text-align:center;padding:10px;background:var(--navy-3);border-radius:10px;">
+                <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">Age 65</div>
+                <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--text);">€3,110</div>
+                <div class="pill pill-red" style="font-size:10px;margin-top:3px;">−19%</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:var(--navy-4);border-radius:10px;border:1px solid var(--gold-border);">
+                <div style="font-size:10px;color:var(--gold-light);margin-bottom:3px;">Age 67 ✓</div>
+                <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--gold-light);">€3,840</div>
+                <div class="pill pill-gold" style="font-size:10px;margin-top:3px;">Now</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:var(--navy-3);border-radius:10px;">
+                <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">Age 70</div>
+                <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--green);">€4,640</div>
+                <div class="pill pill-green" style="font-size:10px;margin-top:3px;">+21%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-header" style="margin-bottom:12px;">
+              <div class="section-title">Inflation Erosion</div>
+              <div class="section-sub">Real purchasing power at retirement (2047)</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:4px;"><span>Nominal (today)</span><span class="mono" id="inf-nominal">€3,840</span></div>
+                <div class="progress-wrap"><div class="progress-fill" style="width:100%;background:var(--gold);"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:4px;"><span>Real @ 2% inflation</span><span class="mono">€2,340</span></div>
+                <div class="progress-wrap"><div class="progress-fill" style="width:61%;background:var(--amber);"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:4px;"><span>Real @ 3.5% inflation</span><span class="mono">€1,760</span></div>
+                <div class="progress-wrap"><div class="progress-fill" style="width:46%;background:var(--red);"></div></div>
+              </div>
+            </div>
+            <div class="info-box" style="margin-top:12px;margin-bottom:0;">
+              <div class="info-box-title">💡 Inflation note</div>
+              <div class="info-box-body">At 2% inflation your €3,840 feels like €2,340 in today's money. Factor this into your target income goal above.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         PAGE 4 · DOCUMENT VAULT
+    ══════════════════════════════════════════════ -->
+    <div class="page" id="page-vault">
+      <div class="topbar">
+        <div>
+          <div class="page-title">Document Vault</div>
+          <div class="page-sub">Encrypted · permanent · cross-border proof</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost">📁 Manage</button>
+          <button class="btn btn-primary" onclick="openModal('modal-upload')">↑ Upload Document</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="info-box">
+          <div class="info-box-title">🔒 Bank-grade encryption · AES-256</div>
+          <div class="info-box-body">All documents are encrypted at rest and in transit. Only you and your designated family members can access them. Documents are never shared with pension providers or third parties without your explicit consent.</div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">Stored Documents (7)</div>
+          <div class="section-sub">Across 3 countries · 2 pillars</div>
+        </div>
+
+        <div class="doc-grid">
+          <div class="doc-card" onclick="openModal('modal-doc-detail')">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="doc-icon" style="background:var(--green-dim);">📋</div>
+              <div>
+                <div class="doc-name">Extrait de Carrière</div>
+                <div class="doc-meta">🇱🇺 CNAP Luxembourg</div>
+              </div>
+            </div>
+            <div class="doc-status">
+              <div class="status-dot" style="background:var(--green);"></div>
+              <span style="color:var(--green);font-size:12px;">Verified</span>
+              <span style="color:var(--text-dim);font-size:11px;margin-left:auto;">Mar 2024</span>
+            </div>
+          </div>
+          <div class="doc-card">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="doc-icon" style="background:var(--blue-dim);">📊</div>
+              <div>
+                <div class="doc-name">Vorsorgeausweis</div>
+                <div class="doc-meta">🇨🇭 UBS Pension Fund</div>
+              </div>
+            </div>
+            <div class="doc-status">
+              <div class="status-dot" style="background:var(--green);"></div>
+              <span style="color:var(--green);font-size:12px;">Verified</span>
+              <span style="color:var(--text-dim);font-size:11px;margin-left:auto;">Jan 2024</span>
+            </div>
+          </div>
+          <div class="doc-card">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="doc-icon" style="background:var(--green-dim);">📄</div>
+              <div>
+                <div class="doc-name">Pension Statement</div>
+                <div class="doc-meta">🇩🇪 Deutsche Rentenversicherung</div>
+              </div>
+            </div>
+            <div class="doc-status">
+              <div class="status-dot" style="background:var(--green);"></div>
+              <span style="color:var(--green);font-size:12px;">Verified</span>
+              <span style="color:var(--text-dim);font-size:11px;margin-left:auto;">Feb 2024</span>
+            </div>
+          </div>
+          <div class="doc-card">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="doc-icon" style="background:var(--amber-dim);">📑</div>
+              <div>
+                <div class="doc-name">bAV Certificate</div>
+                <div class="doc-meta">🇩🇪 Siemens Pensionskasse</div>
+              </div>
+            </div>
+            <div class="doc-status">
+              <div class="status-dot" style="background:var(--amber);"></div>
+              <span style="color:var(--amber);font-size:12px;">Expiring Soon</span>
+              <span style="color:var(--text-dim);font-size:11px;margin-left:auto;">Jun 2024</span>
+            </div>
+          </div>
+          <div class="doc-card">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="doc-icon" style="background:var(--green-dim);">🪪</div>
+              <div>
+                <div class="doc-name">Social Security No.</div>
+                <div class="doc-meta">🇱🇺 Luxembourg CCSS</div>
+              </div>
+            </div>
+            <div class="doc-status">
+              <div class="status-dot" style="background:var(--green);"></div>
+              <span style="color:var(--green);font-size:12px;">On file</span>
+              <span style="color:var(--text-dim);font-size:11px;margin-left:auto;">Permanent</span>
+            </div>
+          </div>
+          <div class="doc-card" onclick="openModal('modal-upload')" style="border-style:dashed;background:transparent;align-items:center;justify-content:center;min-height:110px;">
+            <div style="text-align:center;">
+              <div style="font-size:24px;margin-bottom:6px;">＋</div>
+              <div style="font-size:13px;color:var(--text-muted);">Upload Document</div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <div class="section-header">
+          <div class="section-title">Missing Documents</div>
+          <div class="section-sub">Recommended to complete your profile</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);border-radius:10px;">
+            <span style="font-size:20px;">📋</span>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:500;color:var(--text);">Deloitte Luxembourg – Leave Confirmation</div>
+              <div style="font-size:12px;color:var(--text-dim);">Needed to resolve the Apr–Jun 2019 gap · CNAP will request this</div>
+            </div>
+            <button class="btn btn-primary" style="font-size:12px;padding:6px 12px;" onclick="openModal('modal-upload')">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         PAGE 5 · RISK RADAR
+    ══════════════════════════════════════════════ -->
+    <div class="page" id="page-radar">
+      <div class="topbar">
+        <div>
+          <div class="page-title">Legislative Risk Radar</div>
+          <div class="page-sub">Pension policy monitoring across your countries · real-time</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost">⚙ Alert Settings</button>
+          <button class="btn btn-primary">Mark All Read</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="grid-4" style="margin-bottom:20px;">
+          <div class="card">
+            <div class="card-title">Active Alerts</div>
+            <div class="card-value" style="color:var(--red);">2</div>
+            <div class="card-sub">High impact</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Monitoring</div>
+            <div class="card-value">3</div>
+            <div class="card-sub">Medium impact</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Countries Covered</div>
+            <div class="card-value">3</div>
+            <div class="card-sub">🇩🇪 🇱🇺 🇨🇭 + EU wide</div>
+          </div>
+          <div class="card">
+            <div class="card-title">TMI Risk</div>
+            <div class="card-value" style="color:var(--amber);">−€310</div>
+            <div class="card-sub">If all risks materialize</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">🔴 High Priority Alerts</div>
+        </div>
+        <div class="alert-item" onclick="openModal('modal-alert-detail')">
+          <div class="alert-severity" style="background:var(--red-dim);">⚠</div>
+          <div class="alert-content">
+            <div class="alert-title">Belgium: Pension Age Rising to 67 by 2030</div>
+            <div class="alert-desc">The Belgian government's pension reform bill passed first reading. Workers who worked in Belgium as part of EU totalization may see cross-border coordination rules change, affecting how their years are aggregated. If you have any Belgian employment history not currently tracked, this may require a review.</div>
+            <div class="alert-footer">
+              <span class="alert-country">🇧🇪 Belgium</span>
+              <span class="pill pill-red" style="font-size:10px;">High Impact</span>
+              <span class="alert-impact" style="color:var(--red);">Est. −€140/mo</span>
+              <span class="alert-time">2 days ago</span>
+            </div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-severity" style="background:var(--red-dim);">📉</div>
+          <div class="alert-content">
+            <div class="alert-title">Luxembourg: New "Pension Malus" Penalty – Early Exit</div>
+            <div class="alert-desc">CNAP has proposed a 4% per-year penalty for workers who exit before 67, up from the current 2%. If enacted, retiring at 65 would reduce your Luxembourg Pillar 1 by an additional €78/month on top of current projections.</div>
+            <div class="alert-footer">
+              <span class="alert-country">🇱🇺 Luxembourg</span>
+              <span class="pill pill-red" style="font-size:10px;">High Impact</span>
+              <span class="alert-impact" style="color:var(--red);">Est. −€78/mo</span>
+              <span class="alert-time">5 days ago</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <div class="section-header">
+          <div class="section-title">🟡 Medium Priority</div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-severity" style="background:var(--amber-dim);">🏛</div>
+          <div class="alert-content">
+            <div class="alert-title">Switzerland: BVG Reform – Minimum Interest Rate Adjustment</div>
+            <div class="alert-desc">The Federal Council adjusted the minimum BVG interest rate from 1.0% to 1.25% effective Jan 2025. Your UBS Pension Fund statement should reflect this. Current Vorsorgeausweis predates this — recommend requesting an updated document.</div>
+            <div class="alert-footer">
+              <span class="alert-country">🇨🇭 Switzerland</span>
+              <span class="pill pill-amber" style="font-size:10px;">Medium</span>
+              <span class="alert-impact" style="color:var(--green);">+€92/mo possible</span>
+              <span class="alert-time">3 weeks ago</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         PAGE 6 · FAMILY ACCESS
+    ══════════════════════════════════════════════ -->
+    <div class="page" id="page-family">
+      <div class="topbar">
+        <div>
+          <div class="page-title">Family Access</div>
+          <div class="page-sub">Beneficiary management · inheritance instructions · emergency access</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost">⚙ Permissions</button>
+          <button class="btn btn-primary" onclick="openModal('modal-add-family')">+ Add Member</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="info-box">
+          <div class="info-box-title">👨‍👩‍👧 Why this matters</div>
+          <div class="info-box-body">Billions in pension contributions are lost annually when families cannot locate providers or credentials after a death. Your family members can be granted read-only access to documents and step-by-step claim instructions — so your money never becomes "free money" for states or institutions.</div>
+        </div>
+
+        <div class="grid-65">
+          <div>
+            <div class="section-header">
+              <div class="section-title">Trusted Members (2)</div>
+            </div>
+            <div class="family-member">
+              <div class="member-avatar" style="background:linear-gradient(135deg,#60a5fa,#3b82f6);color:white;">AK</div>
+              <div class="member-info">
+                <div class="member-name">Anna Karlsson</div>
+                <div class="member-rel">Spouse · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9efff0f0ffb0f5ffecf2ededf1f0defbf3fff7f2b0fdf1f3">[email&#160;protected]</a></div>
+              </div>
+              <div class="member-access">
+                <span class="access-tag" style="background:var(--green-dim);color:var(--green);">Full Access</span>
+              </div>
+            </div>
+            <div class="family-member">
+              <div class="member-avatar" style="background:linear-gradient(135deg,#a78bfa,#7c3aed);color:white;">EK</div>
+              <div class="member-info">
+                <div class="member-name">Erik Karlsson</div>
+                <div class="member-rel">Brother · emergency contact</div>
+              </div>
+              <div class="member-access">
+                <span class="access-tag" style="background:var(--amber-dim);color:var(--amber);">Emergency Only</span>
+              </div>
+            </div>
+
+            <hr class="divider">
+            <div class="section-header">
+              <div class="section-title">Claim Instructions</div>
+              <div class="section-sub">Step-by-step guides shared with family</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--navy-3);border-radius:10px;border:1px solid var(--border);">
+                <span style="font-size:18px;">🇩🇪</span>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:500;color:var(--text);">Germany · Hinterbliebenenrente Claim</div>
+                  <div style="font-size:12px;color:var(--text-dim);">Deutsche Rentenversicherung · Form R0100 · 3 steps</div>
+                </div>
+                <span class="pill pill-green" style="font-size:10px;">Shared</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--navy-3);border-radius:10px;border:1px solid var(--border);">
+                <span style="font-size:18px;">🇱🇺</span>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:500;color:var(--text);">Luxembourg · CNAP Death Benefit Claim</div>
+                  <div style="font-size:12px;color:var(--text-dim);">CNAP · Formulaire S-71 · 6 steps</div>
+                </div>
+                <span class="pill pill-green" style="font-size:10px;">Shared</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--navy-3);border-radius:10px;border:1px solid var(--border);">
+                <span style="font-size:18px;">🇨🇭</span>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:500;color:var(--text);">Switzerland · BVG Death Benefits</div>
+                  <div style="font-size:12px;color:var(--text-dim);">UBS Pension Fund · Contact procedure · 3 steps</div>
+                </div>
+                <span class="pill pill-amber" style="font-size:10px;">Draft</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Access control panel -->
+          <div class="card">
+            <div class="section-title" style="margin-bottom:16px;">Anna's Access Level</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:var(--text);">View TMI Dashboard</div>
+                  <div style="font-size:11px;color:var(--text-dim);">Pension amounts & projections</div>
+                </div>
+                <div style="width:36px;height:20px;background:var(--green);border-radius:10px;cursor:pointer;position:relative;">
+                  <div style="position:absolute;right:2px;top:2px;width:16px;height:16px;background:white;border-radius:50%;"></div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:var(--text);">Download Documents</div>
+                  <div style="font-size:11px;color:var(--text-dim);">Vault files & statements</div>
+                </div>
+                <div style="width:36px;height:20px;background:var(--green);border-radius:10px;cursor:pointer;position:relative;">
+                  <div style="position:absolute;right:2px;top:2px;width:16px;height:16px;background:white;border-radius:50%;"></div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:var(--text);">Claim Instructions</div>
+                  <div style="font-size:11px;color:var(--text-dim);">Step-by-step per country</div>
+                </div>
+                <div style="width:36px;height:20px;background:var(--green);border-radius:10px;cursor:pointer;position:relative;">
+                  <div style="position:absolute;right:2px;top:2px;width:16px;height:16px;background:white;border-radius:50%;"></div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:var(--text);">Edit Career Data</div>
+                  <div style="font-size:11px;color:var(--text-dim);">Modify employment records</div>
+                </div>
+                <div style="width:36px;height:20px;background:var(--navy-5);border-radius:10px;cursor:pointer;position:relative;">
+                  <div style="position:absolute;left:2px;top:2px;width:16px;height:16px;background:white;border-radius:50%;"></div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;">
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:var(--text);">Emergency Alert</div>
+                  <div style="font-size:11px;color:var(--text-dim);">Notified if account is inactive 90+ days</div>
+                </div>
+                <div style="width:36px;height:20px;background:var(--green);border-radius:10px;cursor:pointer;position:relative;">
+                  <div style="position:absolute;right:2px;top:2px;width:16px;height:16px;background:white;border-radius:50%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ════════════════════
+<!-- ════════════════════
+     EXPERT REVIEW MODALS
+════════════════════ -->
+
+<!-- Tier Selection -->
+<div class="overlay" id="modal-expert-tiers" onclick="closeModal(event,'modal-expert-tiers')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:620px;">
+    <button class="modal-close" onclick="closeModal(null,'modal-expert-tiers')">✕</button>
+    <div class="modal-title">Expert Review</div>
+    <div class="modal-sub">Choose the level of verification you need</div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+
+      <!-- Tier 1 — Free -->
+      <div style="background:var(--navy-3);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:flex-start;gap:16px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--navy-4);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🤖</div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <div style="font-size:14px;font-weight:600;color:var(--text);">AI Analysis</div>
+            <span class="pill pill-green" style="font-size:10px;">Current plan</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--text-muted);line-height:1.6;">Automated extraction, gap detection, and TMI projection. ~62% confidence. Best for getting a first picture of your situation.</div>
+          <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;">
+            <span style="font-size:11.5px;color:var(--text-dim);">✓ Gap detection</span>
+            <span style="font-size:11.5px;color:var(--text-dim);">✓ TMI range estimate</span>
+            <span style="font-size:11.5px;color:var(--text-dim);">✓ Document vault</span>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--text);">Free</div>
+        </div>
+      </div>
+
+      <!-- Tier 2 — Document Verification -->
+      <div style="background:var(--navy-3);border:2px solid var(--gold-border);border-radius:14px;padding:18px 20px;display:flex;align-items:flex-start;gap:16px;position:relative;cursor:pointer;transition:background 0.2s;" onmouseenter="this.style.background='var(--navy-4)'" onmouseleave="this.style.background='var(--navy-3)'" onclick="selectTier(2)" id="tier-card-2">
+        <div style="position:absolute;top:-1px;right:16px;background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:3px 10px;border-radius:0 0 8px 8px;letter-spacing:0.05em;">MOST POPULAR</div>
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--gold-dim);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔍</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">Document Verification</div>
+          <div style="font-size:12.5px;color:var(--text-muted);line-height:1.6;">A certified pension specialist manually reviews your uploaded documents, confirms the AI extraction is correct, and flags discrepancies. You receive a written verification report.</div>
+          <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;">
+            <span style="font-size:11.5px;color:var(--gold-light);">✓ Manual document check</span>
+            <span style="font-size:11.5px;color:var(--gold-light);">✓ Discrepancy report</span>
+            <span style="font-size:11.5px;color:var(--gold-light);">✓ Verified TMI ±5%</span>
+            <span style="font-size:11.5px;color:var(--gold-light);">✓ 3–5 business days</span>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--gold-light);">€79</div>
+          <div style="font-size:11px;color:var(--text-dim);">one-time</div>
+        </div>
+      </div>
+
+      <!-- Tier 3 — Full Case Review -->
+      <div style="background:var(--navy-3);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:flex-start;gap:16px;cursor:pointer;transition:background 0.2s;" onmouseenter="this.style.background='var(--navy-4)'" onmouseleave="this.style.background='var(--navy-3)'" onclick="selectTier(3)" id="tier-card-3">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(99,179,237,0.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚖️</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">Full Case Review</div>
+          <div style="font-size:12.5px;color:var(--text-muted);line-height:1.6;">A cross-border pension specialist reviews your entire situation — entitlements, gaps, buy-back options, and optimisation strategy. Includes a 30-minute video call and written action plan.</div>
+          <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;">
+            <span style="font-size:11.5px;color:var(--blue);">✓ Everything in Verification</span>
+            <span style="font-size:11.5px;color:var(--blue);">✓ Entitlement analysis</span>
+            <span style="font-size:11.5px;color:var(--blue);">✓ Buy-back recommendation</span>
+            <span style="font-size:11.5px;color:var(--blue);">✓ 30-min specialist call</span>
+            <span style="font-size:11.5px;color:var(--blue);">✓ Written action plan</span>
+            <span style="font-size:11.5px;color:var(--blue);">✓ 5–7 business days</span>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--text);">€349</div>
+          <div style="font-size:11px;color:var(--text-dim);">one-time</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background:var(--navy-3);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--text-dim);margin-bottom:16px;">
+      ⚖️ <strong style="color:var(--text);">Note:</strong> PensionBridge specialists provide pension data <em>verification</em>, not regulated financial advice. For personalised investment recommendations, consult a licensed financial adviser.
+    </div>
+
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:15px;" id="tier-cta-btn" disabled onclick="proceedToRequest()">Select a plan above to continue →</button>
+  </div>
+</div>
+
+<!-- Request Flow -->
+<div class="overlay" id="modal-expert-request" onclick="closeModal(event,'modal-expert-request')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:540px;">
+    <button class="modal-close" onclick="closeModal(null,'modal-expert-request')">✕</button>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+      <div id="req-tier-icon" style="width:38px;height:38px;border-radius:10px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:18px;">🔍</div>
+      <div>
+        <div class="modal-title" style="margin-bottom:0;" id="req-tier-title">Document Verification</div>
+        <div class="modal-sub" id="req-tier-subtitle">€79 · 3–5 business days</div>
+      </div>
+    </div>
+
+    <div id="req-includes" style="background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:10px;padding:12px 16px;margin-bottom:18px;font-size:12.5px;color:var(--text-muted);line-height:1.7;"></div>
+
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;">What would you like reviewed?</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
+      <label style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--navy-3);border:1px solid var(--border);border-radius:10px;cursor:pointer;">
+        <input type="checkbox" checked style="accent-color:var(--gold);width:15px;height:15px;flex-shrink:0;" />
+        <div>
+          <div style="font-size:13px;color:var(--text);font-weight:500;">Full career & document data</div>
+          <div style="font-size:11.5px;color:var(--text-muted);">All 3 countries · 3 uploaded documents · career timeline</div>
+        </div>
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--navy-3);border:1px solid var(--border);border-radius:10px;cursor:pointer;">
+        <input type="checkbox" checked style="accent-color:var(--gold);width:15px;height:15px;flex-shrink:0;" />
+        <div>
+          <div style="font-size:13px;color:var(--text);font-weight:500;">Gap verification · Luxembourg Apr–Jun 2019</div>
+          <div style="font-size:11.5px;color:var(--text-muted);">Confirm if the gap is real and whether buy-back is possible</div>
+        </div>
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--navy-3);border:1px solid var(--border);border-radius:10px;cursor:pointer;">
+        <input type="checkbox" style="accent-color:var(--gold);width:15px;height:15px;flex-shrink:0;" />
+        <div>
+          <div style="font-size:13px;color:var(--text);font-weight:500;">TMI estimate accuracy</div>
+          <div style="font-size:11.5px;color:var(--text-muted);">Validate the €3,840/mo projection against official records</div>
+        </div>
+      </label>
+    </div>
+
+    <div class="form-group" style="margin-bottom:18px;">
+      <label class="form-label">Anything specific to focus on? (optional)</label>
+      <textarea class="form-input" rows="3" placeholder="e.g. I'm not sure my Swiss BVG contributions are correct — I may have had a second pension fund before UBS…" style="resize:vertical;min-height:80px;font-family:'DM Sans',sans-serif;"></textarea>
+    </div>
+
+    <label style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--navy-3);border:1px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:18px;">
+      <input type="checkbox" checked style="accent-color:var(--gold);width:15px;height:15px;flex-shrink:0;margin-top:2px;" />
+      <div style="font-size:12px;color:var(--text-muted);line-height:1.6;">I consent to sharing my career data, document extracts, and uploaded files with a PensionBridge-certified specialist for the purpose of this review only.</div>
+    </label>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;padding:13px;" onclick="submitExpertRequest()">
+        Submit & Pay <span id="req-price-inline">€79</span>
+      </button>
+      <button class="btn btn-ghost" onclick="closeModal(null,'modal-expert-request')">Cancel</button>
+    </div>
+    <div style="margin-top:10px;font-size:11.5px;color:var(--text-dim);text-align:center;">🔒 Secure payment via Stripe · Full refund if review hasn't started</div>
+  </div>
+</div>
+
+<!-- Confirmation -->
+<div class="overlay" id="modal-expert-confirm" onclick="closeModal(event,'modal-expert-confirm')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:460px;text-align:center;">
+    <div style="width:64px;height:64px;border-radius:50%;background:rgba(62,207,142,0.12);border:2px solid rgba(62,207,142,0.4);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 18px;">✓</div>
+    <div class="modal-title">Request submitted</div>
+    <div style="font-size:13.5px;color:var(--text-muted);margin:0 0 20px;line-height:1.6;">A certified pension specialist has been assigned to your case. You'll receive an email confirmation shortly and results within <strong style="color:var(--text);" id="confirm-eta">3–5 business days</strong>.</div>
+
+    <div style="background:var(--navy-3);border-radius:12px;padding:16px;margin-bottom:20px;text-align:left;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:10px;">Your case</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px;"><span style="color:var(--text-muted);">Case ID</span><span style="font-family:'DM Mono',monospace;color:var(--text);">#PB-2026-4471</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px;"><span style="color:var(--text-muted);">Service</span><span style="color:var(--text);" id="confirm-tier-name">Document Verification</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px;"><span style="color:var(--text-muted);">Specialist</span><span style="color:var(--text);">Assigned within 4 hours</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text-muted);">Expected by</span><span style="color:var(--green);">4 Mar 2026</span></div>
+    </div>
+
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="closeModal(null,'modal-expert-confirm');showReviewPending()">Back to Dashboard</button>
+  </div>
+</div>
+
+     DOCUMENT REQUEST MODALS
+════════════════════ -->
+
+<!-- Luxembourg CNAP -->
+<div class="overlay" id="modal-request-lu" onclick="closeModal(event,'modal-request-lu')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:560px;">
+    <button class="modal-close" onclick="closeModal(null,'modal-request-lu')">✕</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span style="font-size:24px;">🇱🇺</span>
+      <div class="modal-title" style="margin-bottom:0;">Request your Extrait de Carrière</div>
+    </div>
+    <div class="modal-sub">Luxembourg · CNAP (Centre National des Pensions)</div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span class="step-badge">1</span>
+        <div style="font-size:13px;color:var(--text-muted);">Go to <strong style="color:var(--blue);">cnap.public.lu</strong> → "Mon espace" → login with LuxTrust or eIDAS</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span class="step-badge">2</span>
+        <div style="font-size:13px;color:var(--text-muted);">Select <strong style="color:var(--text);">"Relevé de carrière"</strong> and download as PDF — or use the draft email below to request it by post</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span class="step-badge">3</span>
+        <div style="font-size:13px;color:var(--text-muted);">Upload the PDF here — we'll extract everything automatically</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">✉ Draft email — copy and send to <span style="color:var(--blue);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5831363e37183b363928763d2c392c76342d">[email&#160;protected]</a></span></div>
+    <div class="email-draft" id="email-lu">Object: Demande d'extrait de carrière
+
+Madame, Monsieur,
+
+Je me permets de vous contacter afin de solliciter la délivrance de mon extrait de carrière (relevé de carrière complet) auprès du Centre National des Pensions.
+
+<strong>Mes coordonnées :</strong>
+Nom : Karlsson, Mats
+Date de naissance : 15/03/1980
+Numéro de sécurité sociale : [VOTRE NUMÉRO CNAP]
+Adresse actuelle : [VOTRE ADRESSE]
+
+Je souhaite recevoir ce document au format PDF si possible, ou par courrier postal.
+
+Je reste disponible pour tout renseignement complémentaire.
+
+Dans l'attente de votre retour, je vous adresse mes cordiales salutations.
+
+Mats Karlsson</div>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="copyEmail('email-lu', this)">📋 Copy Email</button>
+      <button class="btn btn-outline-gold" style="flex:1;justify-content:center;">🌐 Go to cnap.public.lu</button>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-dim);text-align:center;">⏱ Typical response time: 5–10 business days · Free of charge</div>
+  </div>
+</div>
+
+<!-- Switzerland BVG -->
+<div class="overlay" id="modal-request-ch" onclick="closeModal(event,'modal-request-ch')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:560px;">
+    <button class="modal-close" onclick="closeModal(null,'modal-request-ch')">✕</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span style="font-size:24px;">🇨🇭</span>
+      <div class="modal-title" style="margin-bottom:0;">Request your Vorsorgeausweis</div>
+    </div>
+    <div class="modal-sub">Switzerland · Your occupational pension fund (Pensionskasse)</div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span class="step-badge">1</span>
+        <div style="font-size:13px;color:var(--text-muted);">Check your most recent payslip or employment contract — your pension fund name is listed there (e.g. UBS Collective Foundation, Publica, PKE)</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span class="step-badge">2</span>
+        <div style="font-size:13px;color:var(--text-muted);">Send the draft email below to your pension fund's HR or directly to the Pensionskasse. Most issue the statement within 1–2 business days.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span class="step-badge">3</span>
+        <div style="font-size:13px;color:var(--text-muted);">Upload the PDF — we'll extract your insured salary, retirement capital, and projected annuity automatically.</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">✉ Draft email — send to your HR or pension fund directly</div>
+    <div class="email-draft" id="email-ch">Subject: Request for Vorsorgeausweis / Pension Fund Statement
+
+Dear HR / Pension Fund Administration,
+
+I am writing to request a copy of my current Vorsorgeausweis (pension fund certificate) for the purposes of personal retirement planning.
+
+<strong>My details:</strong>
+Name: Mats Karlsson
+Date of birth: 15/03/1980
+Employee/Member number: [YOUR EMPLOYEE NUMBER]
+Current employer: UBS Wealth Management
+
+Please send the statement to my email address or as a PDF attachment at your earliest convenience.
+
+Thank you for your assistance.
+
+Kind regards,
+Mats Karlsson</div>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="copyEmail('email-ch', this)">📋 Copy Email</button>
+      <button class="btn btn-outline-gold" style="flex:1;justify-content:center;">🌐 Find my Pensionskasse</button>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-dim);text-align:center;">⏱ Typical response time: 1–2 business days · Free of charge</div>
+  </div>
+</div>
+
+<!-- Germany Deutsche Rentenversicherung -->
+<div class="overlay" id="modal-request-de" onclick="closeModal(event,'modal-request-de')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:560px;">
+    <button class="modal-close" onclick="closeModal(null,'modal-request-de')">✕</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span style="font-size:24px;">🇩🇪</span>
+      <div class="modal-title" style="margin-bottom:0;">Request your Rentenauskunft</div>
+    </div>
+    <div class="modal-sub">Germany · Deutsche Rentenversicherung (DRV)</div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span class="step-badge">1</span>
+        <div style="font-size:13px;color:var(--text-muted);">Visit <strong style="color:var(--blue);">drv.de</strong> → "eServices" → log in with your DRV PIN or BundID</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span class="step-badge">2</span>
+        <div style="font-size:13px;color:var(--text-muted);">Request a <strong style="color:var(--text);">"Rentenauskunft"</strong> (pension information) — download as PDF, or use the draft email below to request by post</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span class="step-badge">3</span>
+        <div style="font-size:13px;color:var(--text-muted);">Upload here — we'll extract your Entgeltpunkte, insurance years, and projected monthly pension</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">✉ Draft email — send to <span style="color:var(--blue);">drv.de/kontakt</span> or your regional DRV office</div>
+    <div class="email-draft" id="email-de">Betreff: Antrag auf Rentenauskunft
+
+Sehr geehrte Damen und Herren,
+
+hiermit beantrage ich eine aktuelle Rentenauskunft gemäß § 109 SGB VI.
+
+<strong>Meine Angaben:</strong>
+Name: Karlsson, Mats
+Geburtsdatum: 15.03.1980
+Rentenversicherungsnummer: [IHRE RV-NUMMER]
+Aktuelle Adresse: [IHRE ADRESSE]
+
+Ich bitte um Übersendung der Auskunft als PDF per E-Mail oder per Post.
+
+Mit freundlichen Grüßen,
+Mats Karlsson</div>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="copyEmail('email-de', this)">📋 Copy Email</button>
+      <button class="btn btn-outline-gold" style="flex:1;justify-content:center;">🌐 Go to drv.de</button>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-dim);text-align:center;">⏱ Online: instant · By post: 2–4 weeks · Free of charge</div>
+  </div>
+</div>
+
+<!-- Former Employer -->
+<div class="overlay" id="modal-request-employer" onclick="closeModal(event,'modal-request-employer')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:560px;">
+    <button class="modal-close" onclick="closeModal(null,'modal-request-employer')">✕</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span style="font-size:24px;">🏢</span>
+      <div class="modal-title" style="margin-bottom:0;">Request employment certificate</div>
+    </div>
+    <div class="modal-sub">From a former employer · confirms your exact start and end dates</div>
+
+    <div style="background:var(--amber-dim);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:12px 16px;margin-bottom:16px;">
+      <div style="font-size:12.5px;font-weight:600;color:var(--amber);margin-bottom:3px;">Why you need this</div>
+      <div style="font-size:12.5px;color:var(--text-muted);">Pension authorities like CNAP require official employer confirmation to validate contribution periods and correct gaps. Without it, disputed periods cannot be credited.</div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label class="form-label">Employer name & HR email (if known)</label>
+      <div class="form-row">
+        <input class="form-input" placeholder="e.g. Deloitte Luxembourg" id="req-employer-name" oninput="updateEmployerEmail()" />
+        <input class="form-input" placeholder="hr@deloitte.lu" id="req-employer-email" />
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">✉ Draft email — personalised for your former employer</div>
+    <div class="email-draft" id="email-employer">Subject: Request for Employment Certificate / Confirmation of Employment Dates
+
+Dear HR Team,
+
+I am writing to request an official employment certificate confirming my period of employment at <strong>[EMPLOYER NAME]</strong>.
+
+<strong>My details:</strong>
+Name: Mats Karlsson
+Date of birth: 15/03/1980
+Approximate employment period: September 2018 – March 2019
+Department / Role: Graduate Analyst
+
+I require this document for cross-border pension verification purposes with the Luxembourg pension authority (CNAP). The certificate should confirm my exact start date, end date, and employment status.
+
+I would be grateful if you could provide this at your earliest convenience. A PDF by email is perfectly acceptable.
+
+Thank you very much for your help.
+
+Kind regards,
+Mats Karlsson</div>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="copyEmail('email-employer', this)">📋 Copy Email</button>
+      <button class="btn btn-ghost" onclick="closeModal(null,'modal-request-employer')">I'll do this later</button>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-dim);text-align:center;">⏱ Legal obligation to respond within 30 days in most EU countries</div>
+  </div>
+</div>
+
+<!-- Gap Detail Modal -->
+<div class="overlay" id="modal-gap-detail" onclick="closeModal(event, 'modal-gap-detail')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal(null,'modal-gap-detail')">✕</button>
+    <div class="modal-title">⚠ Gap Correction: Apr–Jun 2019</div>
+    <div class="modal-sub">Luxembourg · CNAP · 3-month transition gap</div>
+    <div class="info-box">
+      <div class="info-box-title">Estimated Impact if Uncorrected</div>
+      <div class="info-box-body">−€120/month at retirement = −€43,200 over 30 years</div>
+    </div>
+    <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:12px;">Correction Steps</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);flex-shrink:0;">1</div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text);">Request Deloitte Leave Confirmation Letter</div>
+          <div style="font-size:12px;color:var(--text-muted);">Ask your former employer for an official end-of-employment certificate confirming your exit date.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);flex-shrink:0;">2</div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text);">Submit Voluntary Contributions to CNAP</div>
+          <div style="font-size:12px;color:var(--text-muted);">File Formulaire S-24 with CNAP to declare the 3 missed months as voluntary contributions. Cost: ~€1,200 one-time.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);flex-shrink:0;">3</div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text);">Upload Confirmation to Document Vault</div>
+          <div style="font-size:12px;color:var(--text-muted);">Keep the CNAP acknowledgment letter as permanent proof. PensionBridge will update your TMI automatically.</div>
+        </div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;">Book Expert Consultation</button>
+      <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="closeModal(null,'modal-gap-detail')">Remind Me Later</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Period Modal -->
+<div class="overlay" id="modal-add-period" onclick="closeModal(event,'modal-add-period')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal(null,'modal-add-period')">✕</button>
+    <div class="modal-title">Add Employment Period</div>
+    <div class="modal-sub">Manually enter a job or contribution period for gap detection</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Country</label>
+        <select class="form-select">
+          <option>🇱🇺 Luxembourg</option>
+          
+          <option>🇨🇭 Switzerland</option>
+          <option>🇩🇪 Germany</option>
+          <option>🇧🇪 Belgium</option>
+          <option>Other…</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pillar Type</label>
+        <select class="form-select">
+          <option>Pillar 1 (State)</option>
+          <option>Pillar 2 (Occupational)</option>
+          <option>Pillar 3 (Private)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Employer / Provider Name</label>
+      <input class="form-input" placeholder="e.g. PwC Luxembourg, Deutsche Bank…" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Start Date</label>
+        <input class="form-input" placeholder="MM/YYYY" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">End Date</label>
+        <input class="form-input" placeholder="MM/YYYY or Present" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Annual Gross Salary (€)</label>
+      <input class="form-input" placeholder="e.g. 75,000" />
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;">Add Period</button>
+      <button class="btn btn-ghost" onclick="closeModal(null,'modal-add-period')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="overlay" id="modal-upload" onclick="closeModal(event,'modal-upload')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal(null,'modal-upload')">✕</button>
+    <div class="modal-title">Upload Document</div>
+    <div class="modal-sub">Encrypted and stored permanently in your vault</div>
+    <div class="upload-zone" style="margin-bottom:20px;">
+      <div class="upload-icon">📁</div>
+      <div class="upload-title">Drop files here or click to browse</div>
+      <div class="upload-sub">PDF, JPG, PNG · Max 50MB · AES-256 encrypted</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Document Type</label>
+        <select class="form-select">
+          <option>Extrait de Carrière</option>
+          <option>Vorsorgeausweis</option>
+          <option>Pension Statement</option>
+          <option>Employment Certificate</option>
+          <option>Social Security Card</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Country</label>
+        <select class="form-select">
+          <option>🇱🇺 Luxembourg</option>
+          
+          <option>🇨🇭 Switzerland</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes (optional)</label>
+      <input class="form-input" placeholder="e.g. Requested for gap correction filing…" />
+    </div>
+    <div style="background:var(--green-dim);border:1px solid rgba(62,207,142,0.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--green);margin-bottom:16px;">
+      ✓ This document will be automatically parsed for insurance years and shared with your designated family members.
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;">Encrypt & Upload</button>
+      <button class="btn btn-ghost" onclick="closeModal(null,'modal-upload')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Family Modal -->
+<div class="overlay" id="modal-add-family" onclick="closeModal(event,'modal-add-family')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal(null,'modal-add-family')">✕</button>
+    <div class="modal-title">Add Family Member</div>
+    <div class="modal-sub">Grant trusted access to your pension data & claim instructions</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" placeholder="e.g. Sofia Karlsson" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Relationship</label>
+        <select class="form-select">
+          <option>Spouse / Partner</option>
+          <option>Child</option>
+          <option>Sibling</option>
+          <option>Parent</option>
+          <option>Trusted Friend</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" placeholder="they will receive an invitation" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Access Level</label>
+      <select class="form-select">
+        <option>Full Access (view all + download documents)</option>
+        <option>Emergency Only (activated after 90-day inactivity)</option>
+        <option>Read Only (view dashboard, no documents)</option>
+      </select>
+    </div>
+    <div style="background:var(--blue-dim);border:1px solid rgba(96,165,250,0.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:16px;">
+      ℹ They will receive an email with a secure access link. No pension providers are notified. You can revoke access at any time.
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;">Send Invitation</button>
+      <button class="btn btn-ghost" onclick="closeModal(null,'modal-add-family')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Doc Detail Modal -->
+<div class="overlay" id="modal-doc-detail" onclick="closeModal(event,'modal-doc-detail')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal(null,'modal-doc-detail')">✕</button>
+    <div class="modal-title">Extrait de Carrière</div>
+    <div class="modal-sub">🇱🇺 CNAP Luxembourg · Uploaded 15 March 2024</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div style="padding:12px;background:var(--navy-3);border-radius:10px;">
+        <div class="card-title">Insurance Years Detected</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text);">3.0 yrs</div>
+      </div>
+      <div style="padding:12px;background:var(--navy-3);border-radius:10px;">
+        <div class="card-title">Last Employer on Record</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);">ArcelorMittal</div>
+        <div style="font-size:12px;color:var(--text-dim);">Exit: Dec 2021</div>
+      </div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-title">⚠ Gap Detected in This Document</div>
+      <div class="info-box-body">Deloitte employment (Sep 2018 – Mar 2019) does not appear in this extract. This suggests a 3-month filing gap.</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn btn-primary" onclick="closeModal(null,'modal-doc-detail');openModal('modal-gap-detail')">Resolve Gap</button>
+      <button class="btn btn-ghost">↓ Download</button>
+      <button class="btn btn-ghost" style="color:var(--red);">🗑 Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Alert Detail Modal -->
+<div class="overlay" id="modal-alert-detail" onclick="closeModal(event,'modal-alert-detail')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal(null,'modal-alert-detail')">✕</button>
+    <div class="modal-title">Belgium: Pension Age Reform</div>
+    <div class="modal-sub" style="margin-bottom:16px;">Legislative Alert · 2 days ago · High Impact</div>
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div style="padding:12px;background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);border-radius:10px;">
+        <div class="card-title" style="color:var(--red);">Worst Case Impact</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--red);">−€140/mo</div>
+      </div>
+      <div style="padding:12px;background:var(--amber-dim);border:1px solid rgba(245,158,11,0.2);border-radius:10px;">
+        <div class="card-title">Probability</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--amber);">68%</div>
+        <div style="font-size:11px;color:var(--text-muted);">Bill in 2nd reading</div>
+      </div>
+    </div>
+    <div style="font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px;">
+      The Belgian pension reform raises the statutory retirement age from 65 to 67 in phases through 2030. Under EU Regulation 883/2004 (totalization), any Belgian employment periods are aggregated with Luxembourg and Swiss contributions to determine eligibility thresholds. If you have any unreported Belgian working periods, these rules may affect your combined payout.
+    </div>
+    <div class="info-box">
+      <div class="info-box-title">💡 Recommended Action</div>
+      <div class="info-box-body">Confirm you have no unreported Belgian employment. If you do, add it to your Career Journey immediately. Our AI model estimates 0% Belgian exposure in your current profile — so this alert is precautionary.</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn btn-primary">Book Specialist Review</button>
+      <button class="btn btn-ghost" onclick="closeModal(null,'modal-alert-detail')">Dismiss Alert</button>
+    </div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><!-- ════════════════════════════════════════════
+     ONBOARDING OVERLAY
+════════════════════════════════════════════ -->
+<div id="onboarding">
+
+  <!-- Top bar -->
+  <div class="ob-topbar">
+    <div class="ob-logo">
+      <div class="logo-icon" style="width:30px;height:30px;font-size:14px;">P</div>
+      <div>
+        <div class="logo-text">PensionBridge</div>
+      </div>
+    </div>
+    <span class="ob-skip" onclick="skipOnboarding()">Skip for now →</span>
+  </div>
+
+  <!-- Step progress -->
+  <div class="ob-progress-wrap">
+    <div class="ob-steps">
+      <div class="ob-step active" id="ob-step-ind-1">
+        <div class="ob-step-num">1</div>
+        <div class="ob-step-label">Welcome</div>
+      </div>
+      <div class="ob-step" id="ob-step-ind-2">
+        <div class="ob-step-num">2</div>
+        <div class="ob-step-label">Countries</div>
+      </div>
+      <div class="ob-step" id="ob-step-ind-3">
+        <div class="ob-step-num">3</div>
+        <div class="ob-step-label">Career</div>
+      </div>
+      <div class="ob-step" id="ob-step-ind-4">
+        <div class="ob-step-num">4</div>
+        <div class="ob-step-label">Documents</div>
+      </div>
+      <div class="ob-step" id="ob-step-ind-5">
+        <div class="ob-step-num">5</div>
+        <div class="ob-step-label">Scanning</div>
+      </div>
+      <div class="ob-step" id="ob-step-ind-6">
+        <div class="ob-step-num">6</div>
+        <div class="ob-step-label">Done</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step content -->
+  <div class="ob-content">
+    <div class="ob-panel">
+
+      <!-- ─── STEP 1: WELCOME ─── -->
+      <div class="ob-step-content active" id="ob-s1">
+        <div class="ob-heading">Welcome to <span>PensionBridge</span></div>
+        <div class="ob-subheading">Let's set up your cross-border retirement profile. It takes about 5 minutes — and we'll tell you immediately if you're losing money you didn't know about.</div>
+
+        <div class="grid-2" style="gap:14px;margin-bottom:28px;">
+          <div class="card" style="border-color:var(--gold-border);">
+            <div style="font-size:24px;margin-bottom:10px;">🔍</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px;">Detect Hidden Gaps</div>
+            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5;">We scan your career history for pension contribution gaps that cause permanent retirement losses.</div>
+          </div>
+          <div class="card">
+            <div style="font-size:24px;margin-bottom:10px;">📊</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px;">Your Total Monthly Income</div>
+            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5;">We combine all your pensions across every country into one clear number: what you'll receive at retirement.</div>
+          </div>
+          <div class="card">
+            <div style="font-size:24px;margin-bottom:10px;">🗄</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px;">One Secure Vault</div>
+            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5;">All your pension documents, certificates and statements in one encrypted place — forever.</div>
+          </div>
+          <div class="card">
+            <div style="font-size:24px;margin-bottom:10px;">👥</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px;">Protect Your Family</div>
+            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5;">Share your pension data and claim instructions with loved ones, so nothing gets lost if the worst happens.</div>
+          </div>
+        </div>
+
+        <div style="background:var(--navy-2);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:0;">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;">Tell us a bit about you</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input class="form-input" id="ob-fname" placeholder="e.g. Mats" value="Mats" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input class="form-input" id="ob-lname" placeholder="e.g. Karlsson" value="Karlsson" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Date of Birth</label>
+              <input class="form-input" placeholder="DD/MM/YYYY" value="15/03/1980" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Current Country of Residence</label>
+              <select class="form-select">
+                <option selected>🇨🇭 Switzerland</option>
+                <option>🇱🇺 Luxembourg</option>
+                
+                <option>🇩🇪 Germany</option>
+                <option>🇧🇪 Belgium</option>
+                <option>🇫🇷 France</option>
+                <option>Other…</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:0;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">Target Retirement Age</label>
+              <select class="form-select" style="max-width:220px;">
+                <option>62</option>
+                <option>63</option>
+                <option>64</option>
+                <option>65</option>
+                <option>66</option>
+                <option selected>67 (standard)</option>
+                <option>68</option>
+                <option>70</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">Monthly Income Goal at Retirement</label>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="position:relative;flex:1;">
+                  <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:600;color:var(--gold-light);pointer-events:none;">€</span>
+                  <input id="ob-income-goal" type="number" value="5500" min="500" max="20000" step="100"
+                    oninput="obUpdateGoal()"
+                    style="background:var(--navy-4);border:1.5px solid var(--gold-border);border-radius:8px;padding:10px 12px 10px 28px;font-size:16px;font-family:'Playfair Display',serif;font-weight:700;color:var(--text);width:100%;outline:none;" />
+                </div>
+                <span style="font-size:13px;color:var(--text-muted);white-space:nowrap;">/ month</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:7px;flex-wrap:wrap;">
+                <span style="font-size:11px;color:var(--text-dim);">Quick set:</span>
+                <span class="link" style="font-size:11.5px;" onclick="obSetGoal(3000)">€3,000</span>
+                <span class="link" style="font-size:11.5px;" onclick="obSetGoal(4500)">€4,500</span>
+                <span class="link" style="font-size:11.5px;color:var(--gold-light);" onclick="obSetGoal(5500)">€5,500</span>
+                <span class="link" style="font-size:11.5px;" onclick="obSetGoal(7000)">€7,000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Goal context note -->
+        <div style="margin-top:14px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;">
+          <span style="font-size:20px;">🎯</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--gold-light);margin-bottom:2px;">We'll calculate your gap on the next steps</div>
+            <div style="font-size:12.5px;color:var(--text-muted);">Once you add your career history and documents, we'll show exactly how close you are to this goal — and what actions will get you there.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── STEP 2: COUNTRIES ─── -->
+      <div class="ob-step-content" id="ob-s2">
+        <div class="ob-heading">Which countries have you <span>worked in?</span></div>
+        <div class="ob-subheading">Select all that apply — including countries where you worked briefly. Even 3 months can affect your pension rights under EU totalization rules.</div>
+
+        <div class="country-chips" id="ob-country-chips">
+          <div class="country-chip selected" onclick="toggleChip(this)"><span class="chip-flag">🇱🇺</span> Luxembourg <span class="chip-check">✓</span></div>
+          <div class="country-chip selected" onclick="toggleChip(this)"><span class="chip-flag">🇨🇭</span> Switzerland <span class="chip-check">✓</span></div>
+          <div class="country-chip selected" onclick="toggleChip(this)"><span class="chip-flag">🇩🇪</span> Germany <span class="chip-check">✓</span></div>
+          <div class="country-chip" onclick="toggleChip(this)"><span class="chip-flag">🇫🇷</span> France <span class="chip-check">✓</span></div>
+          <div class="country-chip" onclick="toggleChip(this)"><span class="chip-flag">🇧🇪</span> Belgium <span class="chip-check">✓</span></div>
+          <div class="country-chip" onclick="toggleChip(this)"><span class="chip-flag">🇬🇧</span> United Kingdom <span class="chip-check">✓</span></div>
+        </div>
+        <div style="margin-top:10px;padding:10px 14px;background:var(--navy-3);border-radius:10px;font-size:12px;color:var(--text-dim);">
+          🌍 More countries coming soon — we currently support Luxembourg, Switzerland, Germany, France, Belgium and the UK.
+        </div>
+
+        <div style="background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:12px;padding:16px 20px;">
+          <div style="font-size:13px;font-weight:600;color:var(--gold-light);margin-bottom:6px;">💡 Did you know?</div>
+          <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5;">Under EU Regulation 883/2004, contribution periods across all EU/EEA countries are totalized. Working just 1 year in France can unlock your right to a French pension — but only if it's properly declared. We'll help you track every period.</div>
+        </div>
+      </div>
+
+      <!-- ─── STEP 3: CAREER BUILDER ─── -->
+      <div class="ob-step-content" id="ob-s3">
+        <div class="ob-heading">Build your <span>career history</span></div>
+        <div class="ob-subheading">Tell us where you've worked and what pension contributions you had. Be as complete as you can — even short periods matter. We'll ask for supporting documents in the next step.</div>
+
+        <!-- Pillar explainer -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
+          <div style="background:var(--navy-3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+            <div style="font-size:12px;font-weight:700;color:var(--gold-light);margin-bottom:4px;">Pillar 1 — State</div>
+            <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5;">Mandatory public pension. Funded by salary contributions. Every employee has this.</div>
+            <div style="font-size:10.5px;color:var(--text-dim);margin-top:6px;">e.g. CNAP (LU) · DRV (DE) · AHV (CH)</div>
+          </div>
+          <div style="background:var(--navy-3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+            <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px;">Pillar 2 — Occupational</div>
+            <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5;">Employer pension fund. Often automatic, varies by company and country.</div>
+            <div style="font-size:10.5px;color:var(--text-dim);margin-top:6px;">e.g. BVG/LPP (CH) · bAV (DE) · Pension complémentaire (LU)</div>
+          </div>
+          <div style="background:var(--navy-3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+            <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px;">Pillar 3 — Private</div>
+            <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5;">Voluntary personal savings. Tax-advantaged in most countries. Optional.</div>
+            <div style="font-size:10.5px;color:var(--text-dim);margin-top:6px;">e.g. 3a account (CH) · Riester (DE) · Assurance-vie (LU/FR)</div>
+          </div>
+        </div>
+
+        <!-- Existing periods -->
+        <div class="ob-period-list" id="ob-manual-periods">
+          <div class="ob-period-item" data-country="CH" data-pillar="p1 p2">
+            <div class="ob-period-flag">🇨🇭</div>
+            <div class="ob-period-info">
+              <div class="ob-period-company">UBS Wealth Management · Senior Analyst</div>
+              <div class="ob-period-dates">Jan 2022 – Present</div>
+            </div>
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              <span class="pill pill-gold" style="font-size:10px;">P1 AHV</span>
+              <span class="pill pill-blue" style="font-size:10px;">P2 BVG</span>
+            </div>
+            <button class="ob-period-remove" onclick="this.closest('.ob-period-item').remove();renderDocStep()">✕</button>
+          </div>
+          <div class="ob-period-item" data-country="LU" data-pillar="p1">
+            <div class="ob-period-flag">🇱🇺</div>
+            <div class="ob-period-info">
+              <div class="ob-period-company">ArcelorMittal · Analyst</div>
+              <div class="ob-period-dates">Jul 2019 – Dec 2021</div>
+            </div>
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              <span class="pill pill-gold" style="font-size:10px;">P1 CNAP</span>
+            </div>
+            <button class="ob-period-remove" onclick="this.closest('.ob-period-item').remove();renderDocStep()">✕</button>
+          </div>
+          <div class="ob-period-item" data-country="LU" data-pillar="p1">
+            <div class="ob-period-flag">🇱🇺</div>
+            <div class="ob-period-info">
+              <div class="ob-period-company">Deloitte Luxembourg · Graduate Analyst</div>
+              <div class="ob-period-dates">Sep 2018 – Mar 2019</div>
+            </div>
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              <span class="pill pill-gold" style="font-size:10px;">P1 CNAP</span>
+            </div>
+            <button class="ob-period-remove" onclick="this.closest('.ob-period-item').remove();renderDocStep()">✕</button>
+          </div>
+          <div class="ob-period-item" data-country="DE" data-pillar="p1 p2">
+            <div class="ob-period-flag">🇩🇪</div>
+            <div class="ob-period-info">
+              <div class="ob-period-company">Siemens AG · Analyst</div>
+              <div class="ob-period-dates">Jun 2014 – Aug 2018</div>
+            </div>
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              <span class="pill pill-gold" style="font-size:10px;">P1 DRV</span>
+              <span class="pill pill-blue" style="font-size:10px;">P2 bAV</span>
+            </div>
+            <button class="ob-period-remove" onclick="this.closest('.ob-period-item').remove();renderDocStep()">✕</button>
+          </div>
+        </div>
+
+        <!-- Add period inline form -->
+        <div class="ob-mini-form" id="ob-add-period-form">
+          <div class="ob-mini-form-title">+ Add Employment Period</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Country</label>
+              <select class="form-select" id="ob-new-country">
+                <option value="LU" selected>🇱🇺 Luxembourg</option>
+                <option value="CH">🇨🇭 Switzerland</option>
+                <option value="DE">🇩🇪 Germany</option>
+                <option value="FR">🇫🇷 France</option>
+                <option value="BE">🇧🇪 Belgium</option>
+                <option value="GB">🇬🇧 United Kingdom</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Employer Name</label>
+              <input class="form-input" id="ob-new-employer" placeholder="e.g. Deloitte Luxembourg" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Start Date</label>
+              <input class="form-input" id="ob-new-start" placeholder="MM/YYYY" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">End Date</label>
+              <input class="form-input" id="ob-new-end" placeholder="MM/YYYY or Present" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gross Annual Salary (optional)</label>
+            <input class="form-input" id="ob-new-salary" placeholder="e.g. 65,000 — improves TMI accuracy" />
+          </div>
+          <!-- Pillar checkboxes -->
+          <div class="form-group" style="margin-bottom:14px;">
+            <label class="form-label">Which pension pillars applied?</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;">
+              <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:var(--text-muted);">
+                <input type="checkbox" id="ob-p1" checked style="accent-color:var(--gold);width:15px;height:15px;" />
+                <span><strong style="color:var(--gold-light);">Pillar 1</strong> — State (always)</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:var(--text-muted);">
+                <input type="checkbox" id="ob-p2" style="accent-color:var(--blue);width:15px;height:15px;" />
+                <span><strong style="color:var(--blue);">Pillar 2</strong> — Occupational</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:var(--text-muted);">
+                <input type="checkbox" id="ob-p3" style="accent-color:var(--green);width:15px;height:15px;" />
+                <span><strong style="color:var(--green);">Pillar 3</strong> — Private savings</span>
+              </label>
+            </div>
+            <div style="font-size:11.5px;color:var(--text-dim);margin-top:6px;">Not sure? Leave as Pillar 1 only — we can refine this later with your documents.</div>
+          </div>
+          <button class="btn btn-primary" onclick="addManualPeriod()">Add Period</button>
+        </div>
+
+        <div style="padding:12px 16px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:10px;font-size:12.5px;color:var(--text-muted);">
+          💡 <strong style="color:var(--gold-light);">Not sure about exact dates?</strong> Approximate months are fine — we'll verify and correct everything with your documents in the next step.
+        </div>
+      </div>
+
+      <!-- ─── STEP 4: DOCUMENTS ─── -->
+      <div class="ob-step-content" id="ob-s4">
+        <div class="ob-heading">Supporting <span>documents</span></div>
+        <div class="ob-subheading">Based on your career history, here are the documents we need to verify your data. Upload what you have — we'll help you request the rest.</div>
+
+        <!-- Contextual document list — rendered from career data -->
+        <div id="ob-doc-checklist" style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;"></div>
+
+        <!-- Upload zone -->
+        <div class="ob-upload-zone" id="ob-dropzone" onclick="triggerFileInput()" style="margin-bottom:12px;">
+          <input type="file" id="ob-file-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple onchange="handleFileSelect(event)" />
+          <div class="ob-upload-icon">📂</div>
+          <div class="ob-upload-title">Drop documents here or click to browse</div>
+          <div class="ob-upload-sub">PDF, JPG, PNG · Max 50MB · AES-256 encrypted</div>
+        </div>
+
+        <div class="ob-file-list" id="ob-file-list"></div>
+
+        <!-- Save & continue later -->
+        <div style="padding:12px 16px;background:var(--navy-2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;gap:10px;margin-top:4px;">
+          <span style="font-size:16px;">💾</span>
+          <div style="flex:1;font-size:12.5px;color:var(--text-muted);">Not ready? <strong style="color:var(--text);">Save your progress</strong> — we'll email you a personalised checklist with draft request emails for each missing document.</div>
+          <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px;flex-shrink:0;">Save & Come Back</button>
+        </div>
+      </div>
+
+      <!-- ─── STEP 5: SCANNING ─── -->
+      <div class="ob-step-content" id="ob-s5">
+        <div class="ob-heading">Scanning your <span>documents</span></div>
+        <div class="ob-subheading" id="ob-s5-sub">Our AI is extracting employment periods, insurance years, and contribution data from your files.</div>
+
+        <!-- Scanning animation -->
+        <div id="ob-scanning">
+          <div class="scan-card">
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;">Processing files…</div>
+
+            <div class="scan-file">
+              <div style="font-size:20px;">📋</div>
+              <div style="flex:1;">
+                <div class="scan-file-name">extrait_carriere_CNAP_2024.pdf</div>
+                <div class="scan-file-size">🇱🇺 Luxembourg · 2.4 MB</div>
+              </div>
+              <div id="scan-status-1" class="ob-file-status" style="color:var(--text-dim);">Queued</div>
+            </div>
+            <div class="scan-progress-outer"><div class="scan-progress-inner" id="scan-bar-1"></div></div>
+            <div class="scan-status" id="scan-label-1"><div class="scan-dot"></div> Initialising extraction…</div>
+
+            <div style="margin-top:16px;">
+            <div class="scan-file">
+              <div style="font-size:20px;">📊</div>
+              <div style="flex:1;">
+                <div class="scan-file-name">vorsorgeausweis_UBS_2024.pdf</div>
+                <div class="scan-file-size">🇨🇭 Switzerland · 1.1 MB</div>
+              </div>
+              <div id="scan-status-2" class="ob-file-status" style="color:var(--text-dim);">Queued</div>
+            </div>
+            <div class="scan-progress-outer"><div class="scan-progress-inner" id="scan-bar-2"></div></div>
+            <div class="scan-status" id="scan-label-2"><div class="scan-dot" style="opacity:0.3;"></div> Waiting…</div>
+            </div>
+
+            <div style="margin-top:16px;">
+            <div class="scan-file">
+              <div style="font-size:20px;">📄</div>
+              <div style="flex:1;">
+                <div class="scan-file-name">drv_rentenauskunft_2024.pdf</div>
+                <div class="scan-file-size">🇩🇪 Germany · 0.8 MB</div>
+              </div>
+              <div id="scan-status-3" class="ob-file-status" style="color:var(--text-dim);">Queued</div>
+            </div>
+            <div class="scan-progress-outer"><div class="scan-progress-inner" id="scan-bar-3"></div></div>
+            <div class="scan-status" id="scan-label-3"><div class="scan-dot" style="opacity:0.3;"></div> Waiting…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Extracted data review -->
+        <div id="ob-extracted">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--green-dim);border:1.5px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:15px;">✓</div>
+            <div>
+              <div style="font-size:15px;font-weight:600;color:var(--text);">3 documents scanned · 18 fields extracted</div>
+              <div style="font-size:12px;color:var(--text-muted);">Review the data below and correct anything that looks wrong</div>
+            </div>
+          </div>
+
+          <div style="font-size:12px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">🇱🇺 Luxembourg – Extrait de Carrière</div>
+          <div class="extracted-field">
+            <div class="extracted-field-icon">🏢</div>
+            <div style="flex:1;">
+              <div class="extracted-field-label">Latest Employer</div>
+              <div class="extracted-field-value">ArcelorMittal S.A. · Employee ID 4471-LU</div>
+            </div>
+            <div class="extracted-field-confidence conf-high">98% confident</div>
+          </div>
+          <div class="extracted-field">
+            <div class="extracted-field-icon">📅</div>
+            <div style="flex:1;">
+              <div class="extracted-field-label">Employment Period</div>
+              <div class="extracted-field-value">01 July 2019 – 31 December 2021</div>
+            </div>
+            <div class="extracted-field-confidence conf-high">99% confident</div>
+          </div>
+          <div class="extracted-field">
+            <div class="extracted-field-icon">📋</div>
+            <div style="flex:1;">
+              <div class="extracted-field-label">Insurance Years (CNAP)</div>
+              <div class="extracted-field-value">3.0 insurance years · 12 validated quarters</div>
+            </div>
+            <div class="extracted-field-confidence conf-high">97% confident</div>
+          </div>
+          <div class="extracted-field" style="border-color:rgba(239,68,68,0.3);background:var(--red-dim);">
+            <div class="extracted-field-icon">⚠️</div>
+            <div style="flex:1;">
+              <div class="extracted-field-label" style="color:var(--red);">Gap Detected</div>
+              <div class="extracted-field-value" style="color:var(--red);">Missing: Apr 2019 – Jun 2019 (3 months)</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Deloitte employment period not present in this extract</div>
+            </div>
+            <div class="extracted-field-confidence conf-low">Flag</div>
+          </div>
+
+          <div style="font-size:12px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin:16px 0 10px;">🇨🇭 Switzerland – Vorsorgeausweis</div>
+          <div class="extracted-field">
+            <div class="extracted-field-icon">🏦</div>
+            <div style="flex:1;">
+              <div class="extracted-field-label">Pension Fund</div>
+              <div class="extracted-field-value">UBS Collective Foundation BVG · Plan B2</div>
+            </div>
+            <div class="extracted-field-confidence conf-high">96% confident</div>
+          </div>
+          <div class="extracted-field">
+            <div class="extracted-field-icon">💰</div>
+            <div style="flex:1;">
+              <div class="extracted-field-label">Retirement Capital (CHF)</div>
+              <div class="extracted-field-value">CHF 48,220 · Projected CHF 312,400 at 67</div>
+            </div>
+            <div class="extracted-field-confidence conf-high">94% confident</div>
+          </div>
+          <div class="extracted-field">
+            <div class="extracted-field-icon">📈</div>
+            <div style="flex:1;">
+              <div class="extracted-field-label">Annual Salary (Insured)</div>
+              <div class="extracted-field-value">CHF 145,000</div>
+            </div>
+            <div class="extracted-field-confidence conf-med">87% confident</div>
+          </div>
+
+          <div style="font-size:12px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin:16px 0 10px;">🇩🇪 Germany – Deutsche Rentenversicherung</div>
+          <div class="extracted-field">
+            <div class="extracted-field-icon">📋</div>
+            <div style="flex:1;">
+              <div class="extracted-field-label">Total DRV Pension Capital</div>
+              <div class="extracted-field-value">SEK 1,842,330 accumulated</div>
+            </div>
+            <div class="extracted-field-confidence conf-high">99% confident</div>
+          </div>
+          <div class="extracted-field">
+            <div class="extracted-field-icon">📅</div>
+            <div style="flex:1;">
+              <div class="extracted-field-label">Pensionable Years</div>
+              <div class="extracted-field-value">18.0 years (2004–2022) · fully verified</div>
+            </div>
+            <div class="extracted-field-confidence conf-high">99% confident</div>
+          </div>
+
+          <div style="background:var(--amber-dim);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:14px 16px;margin-top:16px;">
+            <div style="font-size:13px;font-weight:600;color:var(--amber);margin-bottom:4px;">1 item needs your attention</div>
+            <div style="font-size:12.5px;color:var(--text-muted);">The Deloitte Luxembourg period (Sep 2018 – Mar 2019) wasn't found in any uploaded document. We've flagged a gap. You can add it manually on the next screen or upload a Deloitte employment certificate.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ─── STEP 6: DONE ─── -->
+      <div class="ob-step-content" id="ob-s6">
+        <div class="ob-complete">
+          <div class="ob-complete-icon">✓</div>
+          <div class="ob-heading" style="margin-bottom:8px;">You're all set, <span>Mats</span></div>
+          <div style="font-size:15px;color:var(--text-muted);max-width:460px;margin:0 auto 32px;">Your pension data has been imported and your career journey is ready. Here's what we found:</div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;border-color:var(--gold-border);">
+          <!-- Confidence range -->
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px;">
+            <div>
+              <div class="tmi-label" style="margin-bottom:6px;">Projected Total Monthly Income</div>
+              <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+                <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--gold-light);" id="ob-s6-tmi-low">€3,200</div>
+                <div style="font-size:20px;color:var(--text-dim);font-weight:300;">–</div>
+                <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--gold-light);" id="ob-s6-tmi-high">€4,480</div>
+                <div style="font-size:15px;color:var(--text-muted);">/ month</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+                <div style="height:8px;border-radius:4px;overflow:hidden;width:120px;background:var(--navy-3);">
+                  <div id="ob-s6-conf-bar" style="height:100%;border-radius:4px;background:linear-gradient(90deg,var(--amber),var(--gold));width:62%;"></div>
+                </div>
+                <span style="font-size:12px;font-weight:600;" id="ob-s6-conf-label" style="color:var(--amber);">62% confidence</span>
+                <span style="font-size:12px;color:var(--text-dim);">· add more data to narrow this range</span>
+              </div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px;">Your goal</div>
+              <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--text);" id="ob-s6-goal">€5,500 / mo</div>
+            </div>
+          </div>
+
+          <!-- What would improve confidence -->
+          <div style="background:var(--navy-3);border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+            <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;">📈 How to improve your estimate accuracy</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;">
+                <span style="color:var(--green);">✓</span>
+                <span style="color:var(--text-muted);">Luxembourg Extrait de Carrière uploaded</span>
+                <span style="margin-left:auto;color:var(--green);font-weight:600;font-size:11.5px;">+18% accuracy</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;">
+                <span style="color:var(--green);">✓</span>
+                <span style="color:var(--text-muted);">Swiss Vorsorgeausweis uploaded</span>
+                <span style="margin-left:auto;color:var(--green);font-weight:600;font-size:11.5px;">+22% accuracy</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;">
+                <span style="color:var(--amber);">○</span>
+                <span style="color:var(--text-muted);">German DRV Rentenauskunft uploaded</span>
+                <span style="margin-left:auto;color:var(--amber);font-weight:600;font-size:11.5px;">+12% accuracy</span>
+                <button class="btn btn-ghost" style="font-size:10px;padding:3px 8px;" onclick="openModal('modal-request-de')">Get it →</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;">
+                <span style="color:var(--red);">○</span>
+                <span style="color:var(--text-muted);">Deloitte employment certificate (gap fix)</span>
+                <span style="margin-left:auto;color:var(--red);font-weight:600;font-size:11.5px;">+8% accuracy</span>
+                <button class="btn btn-ghost" style="font-size:10px;padding:3px 8px;" onclick="openModal('modal-request-employer')">Get it →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gap bar vs goal -->
+          <div style="background:var(--navy-3);border-radius:8px;height:10px;overflow:hidden;margin-bottom:8px;">
+            <div id="ob-s6-bar" style="height:100%;border-radius:8px;background:linear-gradient(90deg,var(--green),var(--gold));width:70%;transition:width 0.5s ease;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:12px;color:var(--text-muted);" id="ob-s6-pct-label">Midpoint estimate covers 70% of your goal</div>
+            <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;" id="ob-s6-gap-val">−€1,660 / mo shortfall</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:28px;">
+          <div class="ob-summary-row">
+            <div class="ob-summary-icon">📄</div>
+            <div>
+              <div class="ob-summary-label">Documents Scanned</div>
+              <div class="ob-summary-value">3 files · 18 fields extracted</div>
+            </div>
+            <div class="ob-summary-right">
+              <span class="pill pill-green">Complete</span>
+            </div>
+          </div>
+          <div class="ob-summary-row">
+            <div class="ob-summary-icon">🗺</div>
+            <div>
+              <div class="ob-summary-label">Countries Tracked</div>
+              <div class="ob-summary-value">Germany · Luxembourg · Switzerland</div>
+            </div>
+            <div class="ob-summary-right">
+              <span class="pill pill-green">3 countries</span>
+            </div>
+          </div>
+          <div class="ob-summary-row" style="border-color:rgba(239,68,68,0.3);background:var(--red-dim);">
+            <div class="ob-summary-icon">⚠️</div>
+            <div>
+              <div class="ob-summary-label" style="color:var(--red);">Gap Detected</div>
+              <div class="ob-summary-value" style="color:var(--red);" id="ob-s6-gap-detail">Apr–Jun 2019 · Luxembourg · −€120/mo</div>
+            </div>
+            <div class="ob-summary-right">
+              <span class="pill pill-red">Fix Available</span>
+            </div>
+          </div>
+          <div class="ob-summary-row">
+            <div class="ob-summary-icon">📡</div>
+            <div>
+              <div class="ob-summary-label">Risk Radar</div>
+              <div class="ob-summary-value">3 legislative alerts active for your countries</div>
+            </div>
+            <div class="ob-summary-right">
+              <span class="pill pill-amber">Review</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:0;gap:12px;">
+          <button class="btn btn-primary" style="justify-content:center;padding:14px;font-size:15px;" onclick="finishOnboarding()">
+            Go to My Dashboard →
+          </button>
+          <button class="btn btn-outline-gold" style="justify-content:center;padding:14px;" id="ob-s6-fix-btn" onclick="openModal('modal-gap-detail');finishOnboarding()">
+            Fix the €120/mo Gap First
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /ob-panel -->
+  </div><!-- /ob-content -->
+
+  <!-- Footer nav -->
+  <div class="ob-footer">
+    <div class="ob-footer-left" id="ob-footer-hint">Step 1 of 6</div>
+    <div class="ob-footer-right">
+      <button class="btn ob-back" id="ob-btn-back" onclick="obBack()" style="display:none;">← Back</button>
+      <button class="btn ob-next" id="ob-btn-next" onclick="obNext()">Continue →</button>
+    </div>
+  </div>
+
+</div><!-- /onboarding -->
+
+<script>
+/* ── RENDER CONTEXTUAL DOCUMENT STEP ── */
+const docTemplates = {
+  DE: { p1: { icon:'📄', name:'Rentenauskunft (DRV)', issuer:'Deutsche Rentenversicherung', time:'Online instantly or 2–4 weeks by post', pill:'pill-blue', pillText:'Draft email ready', modal:'modal-request-de' },
+             p2: { icon:'📑', name:'bAV Certificate', issuer:'Your German Pensionskasse', time:'1–3 business days', pill:'pill-gold', pillText:'Draft email ready', modal:'modal-request-employer' } },
+  LU: { p1: { icon:'📋', name:'Extrait de Carrière (CNAP)', issuer:'CNAP Luxembourg', time:'5–10 business days', pill:'pill-blue', pillText:'Draft email ready', modal:'modal-request-lu' },
+             p2: { icon:'📑', name:'Pension Complémentaire Certificate', issuer:'Your LU employer / fund', time:'1–3 business days', pill:'pill-gold', pillText:'Draft email ready', modal:'modal-request-employer' } },
+  CH: { p1: { icon:'🪪', name:'AHV/AVS Extract', issuer:'SVA / Ausgleichskasse', time:'5–7 business days', pill:'pill-blue', pillText:'Draft email ready', modal:'modal-request-ch' },
+             p2: { icon:'📊', name:'Vorsorgeausweis (BVG)', issuer:'Your Pensionskasse (e.g. UBS)', time:'1–2 business days', pill:'pill-blue', pillText:'Draft email ready', modal:'modal-request-ch' } },
+  FR: { p1: { icon:'📄', name:'Relevé de Situation Individuelle', issuer:'Assurance Retraite (CNAV)', time:'Online instantly via info-retraite.fr', pill:'pill-green', pillText:'Direct link', modal:'modal-request-employer' },
+             p2: { icon:'📑', name:'Relevé ARRCO/AGIRC', issuer:'Your ARRCO/AGIRC fund', time:'1–3 business days', pill:'pill-gold', pillText:'Draft email ready', modal:'modal-request-employer' } },
+  BE: { p1: { icon:'📄', name:'Pension Statement (SFP/FBZ)', issuer:'Service Fédéral des Pensions', time:'Online via mypension.be', pill:'pill-green', pillText:'Direct link', modal:'modal-request-employer' },
+             p2: { icon:'📑', name:'Occupational Pension Statement', issuer:'Your Belgian pension fund', time:'1–5 business days', pill:'pill-gold', pillText:'Draft email ready', modal:'modal-request-employer' } },
+  GB: { p1: { icon:'📄', name:'State Pension Forecast', issuer:'HMRC / DWP', time:'Online via gov.uk/check-state-pension', pill:'pill-green', pillText:'Direct link', modal:'modal-request-employer' },
+             p2: { icon:'📑', name:'P60 / Workplace Pension Statement', issuer:'Your UK employer / pension provider', time:'Available from employer or pension portal', pill:'pill-gold', pillText:'Draft email ready', modal:'modal-request-employer' } },
+  DEFAULT: { p1: { icon:'📄', name:'Pension / Social Security Extract', issuer:'Local pension authority', time:'Varies', pill:'pill-gold', pillText:'Guide available', modal:'' } }
+};
+
+function renderDocStep() {
+  const checklist = document.getElementById('ob-doc-checklist');
+  if (!checklist) return;
+  checklist.innerHTML = '';
+
+  const periods = document.querySelectorAll('#ob-manual-periods .ob-period-item');
+  const seen = new Set();
+  const rows = [];
+
+  // Derive needed docs from career entries
+  periods.forEach(p => {
+    const country = p.dataset.country || 'DEFAULT';
+    const pillars = (p.dataset.pillar || 'p1').split(' ');
+    const company = p.querySelector('.ob-period-company')?.textContent || '';
+    const dates = p.querySelector('.ob-period-dates')?.textContent || '';
+
+    pillars.forEach(pillar => {
+      const key = country + '-' + pillar;
+      if (seen.has(key)) return;
+      seen.add(key);
+      const tpl = (docTemplates[country] || docTemplates.DEFAULT)[pillar] || docTemplates.DEFAULT.p1;
+      rows.push({ ...tpl, country, pillar, company, dates, key });
+    });
+  });
+
+  // Employer certificates for all past employers (not current)
+  const pastEmployers = [];
+  periods.forEach(p => {
+    const dates = p.querySelector('.ob-period-dates')?.textContent || '';
+    const company = p.querySelector('.ob-period-company')?.textContent || '';
+    if (!dates.includes('Present') && !seen.has('emp-' + company)) {
+      seen.add('emp-' + company);
+      pastEmployers.push(company);
+    }
+  });
+
+  if (rows.length === 0) {
+    checklist.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">Add employment periods in Step 3 to see your document checklist here.</div>';
+    return;
+  }
+
+  // Render header
+  checklist.innerHTML = `<div style="font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">
+    ${rows.length + pastEmployers.length} document${rows.length + pastEmployers.length > 1 ? 's' : ''} needed based on your career history</div>`;
+
+  // Render pension authority docs
+  rows.forEach(row => {
+    const div = document.createElement('div');
+    div.className = 'escape-hatch-row';
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:20px;">${row.icon}</span>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text);">${row.name}</div>
+          <div style="font-size:12px;color:var(--text-muted);">Issued by ${row.issuer} · ${row.time} · free</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        <span class="pill ${row.pill}" style="font-size:10px;">${row.pillText}</span>
+        <span style="color:var(--gold-light);font-size:13px;">→</span>
+      </div>`;
+    if (row.modal) div.onclick = () => openModal(row.modal);
+    checklist.appendChild(div);
+  });
+
+  // Render past employer certificate rows
+  pastEmployers.forEach(employer => {
+    const div = document.createElement('div');
+    div.className = 'escape-hatch-row';
+    div.style.borderStyle = 'dashed';
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:20px;">🏢</span>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text);">Employment Certificate — ${employer.split('·')[0].trim()}</div>
+          <div style="font-size:12px;color:var(--text-muted);">Confirms exact dates · required for gap verification</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        <span class="pill pill-gold" style="font-size:10px;">Draft email ready</span>
+        <span style="color:var(--gold-light);font-size:13px;">→</span>
+      </div>`;
+    div.onclick = () => openModal('modal-request-employer');
+    checklist.appendChild(div);
+  });
+}
+
+/* ── ADD MANUAL PERIOD ── */
+function addManualPeriod() {
+  const country = document.getElementById('ob-new-country')?.value || 'LU';
+  const employer = document.getElementById('ob-new-employer')?.value || 'New Employer';
+  const start = document.getElementById('ob-new-start')?.value || '??/????';
+  const end = document.getElementById('ob-new-end')?.value || 'Present';
+  const p1 = document.getElementById('ob-p1')?.checked;
+  const p2 = document.getElementById('ob-p2')?.checked;
+  const p3 = document.getElementById('ob-p3')?.checked;
+
+  const flags = { LU:'🇱🇺', CH:'🇨🇭', DE:'🇩🇪', FR:'🇫🇷', BE:'🇧🇪', GB:'🇬🇧', OTHER:'🌍' };
+  const pillarLabels = {
+    LU:{ p1:'P1 CNAP', p2:'P2 Compl.', p3:'P3 Vie' },
+    CH:{ p1:'P1 AHV', p2:'P2 BVG', p3:'P3a' },
+    DE:{ p1:'P1 DRV', p2:'P2 bAV', p3:'P3 Riester' },
+    FR:{ p1:'P1 CNAV', p2:'P2 AGIRC', p3:'P3 PER' },
+    BE:{ p1:'P1 SFP', p2:'P2 Occup.', p3:'P3 PLCI' },
+    GB:{ p1:'P1 State', p2:'P2 Workplace', p3:'P3 ISA/SIPP' }
+  };
+  const labels = pillarLabels[country] || { p1:'P1 State', p2:'P2 Occup.', p3:'P3 Private' };
+  const pillarsData = [p1 && 'p1', p2 && 'p2', p3 && 'p3'].filter(Boolean).join(' ');
+  const pillarsHTML = [p1 && `<span class="pill pill-gold" style="font-size:10px;">${labels.p1}</span>`,
+    p2 && `<span class="pill pill-blue" style="font-size:10px;">${labels.p2}</span>`,
+    p3 && `<span class="pill pill-green" style="font-size:10px;">${labels.p3}</span>`].filter(Boolean).join('');
+
+  const list = document.getElementById('ob-manual-periods');
+  const item = document.createElement('div');
+  item.className = 'ob-period-item';
+  item.dataset.country = country;
+  item.dataset.pillar = pillarsData || 'p1';
+  item.innerHTML = `
+    <div class="ob-period-flag">${flags[country] || '🌍'}</div>
+    <div class="ob-period-info">
+      <div class="ob-period-company">${employer}</div>
+      <div class="ob-period-dates">${start} – ${end}</div>
+    </div>
+    <div style="display:flex;gap:5px;flex-shrink:0;">${pillarsHTML || `<span class="pill pill-gold" style="font-size:10px;">${labels.p1}</span>`}</div>
+    <button class="ob-period-remove" onclick="this.closest('.ob-period-item').remove();renderDocStep()">✕</button>`;
+  list.appendChild(item);
+
+  // Clear form
+  if (document.getElementById('ob-new-employer')) document.getElementById('ob-new-employer').value = '';
+  if (document.getElementById('ob-new-start')) document.getElementById('ob-new-start').value = '';
+  if (document.getElementById('ob-new-end')) document.getElementById('ob-new-end').value = '';
+}
+
+/* ── EMAIL COPY ── */
+function copyEmail(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.background = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = '📋 Copy Email'; }, 2000);
+  });
+}
+
+function updateEmployerEmail() {
+  const name = document.getElementById('req-employer-name').value || '[EMPLOYER NAME]';
+  const draft = document.getElementById('email-employer');
+  draft.innerHTML = draft.innerHTML.replace(/\[EMPLOYER NAME\]/g, name);
+}
+
+/* ── ESTIMATION CALCULATOR ── */
+const PROJECTED = 3840;
+
+function setTarget(val) {
+  document.getElementById('est-target').value = val;
+  recalcEstimation();
+}
+
+function recalcEstimation() {
+  const target = parseInt(document.getElementById('est-target').value) || 5500;
+  const gap = target - PROJECTED;
+  const pct = Math.min(100, Math.round((PROJECTED / target) * 100));
+
+  // Gauge (circumference = 2*pi*56 = 351.86)
+  const circ = 351.86;
+  const projectedDash = circ * (pct / 100);
+  const gapDash = circ * ((100 - pct) / 100);
+  document.getElementById('est-gauge-fill').setAttribute('stroke-dashoffset', circ - projectedDash);
+  document.getElementById('est-gauge-gap').setAttribute('stroke-dashoffset', circ - gapDash + projectedDash );
+  document.getElementById('est-gauge-pct').textContent = pct + '%';
+
+  const gapColor = gap <= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('est-gap-label').style.color = gapColor;
+  document.getElementById('est-gap-label').textContent = gap <= 0
+    ? `+€${Math.abs(gap).toLocaleString()} / mo surplus 🎉`
+    : `−€${gap.toLocaleString()} / mo shortfall`;
+  document.getElementById('est-gap-label2').textContent = gap <= 0
+    ? `over 30 yrs = +€${(Math.abs(gap)*360).toLocaleString()} extra`
+    : `over 30 yrs = −€${(gap*360).toLocaleString()}`;
+
+  // KPIs
+  document.getElementById('kpi-target').textContent = '€' + target.toLocaleString();
+  document.getElementById('kpi-gap').textContent = gap <= 0
+    ? '+€' + Math.abs(gap).toLocaleString()
+    : '−€' + gap.toLocaleString();
+  document.getElementById('kpi-gap').style.color = gapColor;
+  document.getElementById('kpi-gap').closest('div').style.background = gap <= 0 ? 'var(--green-dim)' : 'var(--red-dim)';
+  document.getElementById('kpi-gap').closest('div').style.borderColor = gap <= 0 ? 'rgba(62,207,142,0.25)' : 'rgba(239,68,68,0.2)';
+
+  // Bar labels
+  document.getElementById('bar-target-label').textContent = '€' + target.toLocaleString() + ' / month';
+
+  // Gap actions header
+  document.getElementById('gap-action-amount').textContent = gap <= 0
+    ? `€${Math.abs(gap).toLocaleString()}/mo surplus`
+    : `€${gap.toLocaleString()}/mo gap`;
+  document.getElementById('gap-action-amount').style.color = gapColor;
+
+  // Best case
+  const bestCase = PROJECTED + 800 + 750 + 120 + 290;
+  document.getElementById('best-case-val').textContent = '€' + bestCase.toLocaleString() + '/mo';
+  const surplus = bestCase - target;
+  document.getElementById('best-case-val').nextElementSibling.textContent = surplus >= 0
+    ? `exceeds your target by €${surplus.toLocaleString()}`
+    : `still €${Math.abs(surplus).toLocaleString()} short`;
+}
+
+function switchEstTab(el, country) {
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ── GAP STATE (populated by scan) ── */
+let detectedGaps = [];
+
+function computeGapsFromCareer() {
+  detectedGaps = [];
+  const periods = Array.from(document.querySelectorAll('#ob-manual-periods .ob-period-item'));
+
+  // Build list of {country, end} for all non-current periods, sorted by end date
+  const entries = [];
+  periods.forEach(p => {
+    const dates = p.querySelector('.ob-period-dates')?.textContent || '';
+    const country = p.dataset.country || '?';
+    const employer = p.querySelector('.ob-period-company')?.textContent.split('·')[0].trim() || '';
+    // Parse dates — handles "Mon YYYY – Mon YYYY" and "MM/YYYY – MM/YYYY"
+    const match = dates.match(/(.+?)\s*[–\-]\s*([\w\/]+(?:\s+\d{4})?)/);
+    if (!match) return;
+    const startStr = match[1].trim();
+    const endStr = match[2].trim();
+    if (endStr === 'Present') {
+      entries.push({ employer, country, start: parseDate(startStr), end: null });
+    } else {
+      entries.push({ employer, country, start: parseDate(startStr), end: parseDate(endStr) });
+    }
+  });
+
+  // Sort by start date ascending
+  entries.sort((a, b) => a.start - b.start);
+
+  // Detect gaps > 2 months between consecutive periods
+  for (let i = 0; i < entries.length - 1; i++) {
+    const curr = entries[i];
+    const next = entries[i + 1];
+    if (!curr.end) continue;
+    const gapMonths = monthsBetween(curr.end, next.start);
+    if (gapMonths >= 2 && gapMonths <= 18) {
+      const gapStart = formatMonthYear(curr.end, 1);
+      const gapEnd = formatMonthYear(next.start, -1);
+      const impact = Math.round(gapMonths * 40); // ~€40/mo per missing month
+      detectedGaps.push({
+        period: `${gapStart}–${gapEnd}`,
+        country: curr.country,
+        employer: curr.employer,
+        months: gapMonths,
+        impact
+      });
+    }
+  }
+
+  // Fallback for demo if no manual gaps found (e.g. dates not parseable)
+  if (detectedGaps.length === 0) {
+    detectedGaps = [{ period: 'Apr–Jun 2019', country: 'Luxembourg', employer: 'Deloitte', months: 3, impact: 120 }];
+  }
+}
+
+function parseDate(str) {
+  if (!str) return new Date(2000, 0);
+  str = str.trim();
+  // MM/YYYY format
+  if (/^\d{2}\/\d{4}$/.test(str)) {
+    const [mm, yyyy] = str.split('/');
+    return new Date(parseInt(yyyy), parseInt(mm) - 1);
+  }
+  // Mon YYYY format (e.g. "Jul 2019")
+  const monthNames = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+  const m = str.match(/^([A-Za-z]{3})\s+(\d{4})$/);
+  if (m) return new Date(parseInt(m[2]), monthNames[m[1]] ?? 0);
+  return new Date(2000, 0);
+}
+
+function monthsBetween(d1, d2) {
+  return (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth());
+}
+
+function formatMonthYear(date, offsetMonths) {
+  const d = new Date(date.getFullYear(), date.getMonth() + offsetMonths);
+  return d.toLocaleString('en-GB', { month: 'short', year: 'numeric' });
+}
+
+function updateStep6GapUI() {
+  const totalImpact = detectedGaps.reduce((sum, g) => sum + g.impact, 0);
+  const first = detectedGaps[0];
+
+  // Summary row detail
+  const detailEl = document.getElementById('ob-s6-gap-detail');
+  if (detectedGaps.length === 1) {
+    detailEl.textContent = `${first.period} · ${first.country} · −€${first.impact}/mo`;
+  } else {
+    detailEl.textContent = `${detectedGaps.length} gaps detected · total −€${totalImpact}/mo`;
+  }
+
+  // Fix button label
+  document.getElementById('ob-s6-fix-btn').textContent =
+    `Fix the −€${totalImpact}/mo Gap${detectedGaps.length > 1 ? 's' : ''} First`;
+}
+
+/* ── ONBOARDING GOAL ── */
+function obSetGoal(val) {
+  document.getElementById('ob-income-goal').value = val;
+  obUpdateGoal();
+}
+
+function obUpdateGoal() {
+  const goal = parseInt(document.getElementById('ob-income-goal').value) || 5500;
+  const projected = 3840;
+  const gap = goal - projected;
+  const pct = Math.min(100, Math.round((projected / goal) * 100));
+
+  // Step 5 summary
+  document.getElementById('ob-s6-goal').textContent = '€' + goal.toLocaleString() + ' / mo';
+  document.getElementById('ob-s6-bar').style.width = pct + '%';
+  document.getElementById('ob-s6-bar').style.background = gap <= 0
+    ? 'linear-gradient(90deg, var(--green), var(--gold-light))'
+    : 'linear-gradient(90deg, var(--gold), var(--amber))';
+  document.getElementById('ob-s6-pct-label').textContent = pct + '% of your goal covered';
+  const s5gap = document.getElementById('ob-s6-gap-val');
+  s5gap.textContent = gap <= 0
+    ? '+€' + Math.abs(gap).toLocaleString() + ' / mo surplus 🎉'
+    : '−€' + gap.toLocaleString() + ' / mo shortfall';
+  s5gap.style.color = gap <= 0 ? 'var(--green)' : 'var(--red)';
+
+  // Also sync the main estimation page
+  const estInput = document.getElementById('est-target');
+  if (estInput) { estInput.value = goal; recalcEstimation(); }
+}
+
+/* ── ONBOARDING STATE ── */
+let obCurrentStep = 1;
+const OB_TOTAL = 6;
+let selectedPath = 'upload'; // 'upload' or 'manual'
+let scanComplete = false;
+
+const stepHints = [
+  'Step 1 of 6 · Basic information',
+  'Step 2 of 6 · Select countries',
+  'Step 3 of 6 · Build your career history',
+  'Step 4 of 6 · Upload supporting documents',
+  'Step 5 of 6 · Scanning & extracting data',
+  'Step 6 of 6 · Summary'
+];
+
+function updateObUI() {
+  // steps
+  for (let i = 1; i <= OB_TOTAL; i++) {
+    const ind = document.getElementById('ob-step-ind-' + i);
+    const content = document.getElementById('ob-s' + i);
+    ind.classList.remove('active','done');
+    content.classList.remove('active');
+    if (i < obCurrentStep) ind.classList.add('done');
+    else if (i === obCurrentStep) ind.classList.add('active');
+    if (i === obCurrentStep) content.classList.add('active');
+  }
+  document.getElementById('ob-footer-hint').textContent = stepHints[obCurrentStep - 1];
+  document.getElementById('ob-btn-back').style.display = obCurrentStep > 1 ? 'flex' : 'none';
+
+  const nextBtn = document.getElementById('ob-btn-next');
+  if (obCurrentStep === OB_TOTAL) {
+    nextBtn.style.display = 'none';
+  } else if (obCurrentStep === 5) {
+    nextBtn.textContent = scanComplete ? 'Looks Good →' : 'Scanning…';
+    nextBtn.disabled = !scanComplete;
+    nextBtn.style.display = 'flex';
+  } else {
+    nextBtn.textContent = obCurrentStep === OB_TOTAL - 1 ? 'Finish →' : 'Continue →';
+    nextBtn.disabled = false;
+    nextBtn.style.display = 'flex';
+  }
+  // scroll to top of onboarding content
+  document.querySelector('.ob-content').scrollTop = 0;
+  document.getElementById('onboarding').scrollTop = 0;
+}
+
+function obNext() {
+  if (obCurrentStep === OB_TOTAL) return;
+  obCurrentStep++;
+  updateObUI();
+  if (obCurrentStep === 4) renderDocStep();
+  if (obCurrentStep === 5) startScanning();
+  if (obCurrentStep === 6) updateStep6GapUI();
+}
+
+function obBack() {
+  if (obCurrentStep <= 1) return;
+  obCurrentStep--;
+  scanComplete = false;
+  updateObUI();
+}
+
+function skipOnboarding() { finishOnboarding(); }
+
+function finishOnboarding() {
+  document.getElementById('onboarding').classList.add('hidden');
+}
+
+/* Country chip toggle */
+function toggleChip(el) {
+  if (el.querySelector('input')) return; // skip "add" chip
+  el.classList.toggle('selected');
+}
+
+/* File input trigger */
+function triggerFileInput() {
+  document.getElementById('ob-file-input').click();
+}
+
+function handleFileSelect(e) {
+  const list = document.getElementById('ob-file-list');
+  Array.from(e.target.files).forEach(file => {
+    const item = document.createElement('div');
+    item.className = 'ob-file-item';
+    item.innerHTML = `
+      <div class="ob-file-icon">📄</div>
+      <div class="ob-file-info">
+        <div class="ob-file-name">${file.name}</div>
+        <div class="ob-file-meta">${(file.size/1024/1024).toFixed(1)} MB</div>
+      </div>
+      <div class="ob-file-status" style="color:var(--green);">✓ Ready</div>
+      <button class="ob-file-remove" onclick="this.closest('.ob-file-item').remove()">✕</button>`;
+    list.appendChild(item);
+  });
+}
+
+/* Drag and drop */
+const dz = document.getElementById('ob-dropzone');
+if (dz) {
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('dragover');
+    const fakeEv = { target: { files: e.dataTransfer.files } };
+    handleFileSelect(fakeEv);
+  });
+}
+
+/* ── SCANNING ANIMATION ── */
+function startScanning() {
+  computeGapsFromCareer();
+  scanComplete = false;
+  document.getElementById('ob-scanning').classList.add('visible');
+  document.getElementById('ob-extracted').classList.remove('visible');
+
+  const gapLabel = detectedGaps.length > 0 ? `Flagging gap: ${detectedGaps[0].period}…` : 'No gaps detected in this period';
+  const steps1 = [
+    [20, 'Parsing document structure…'],
+    [45, 'Detecting language: French (Luxembourg)…'],
+    [65, 'Extracting employment periods…'],
+    [80, 'Cross-referencing CNAP schema…'],
+    [92, gapLabel],
+    [100, '✓ Complete — 7 fields extracted'],
+  ];
+  const steps2 = [
+    [15, 'Parsing Swiss German PDF…'],
+    [40, 'Identifying Vorsorgeausweis structure…'],
+    [68, 'Extracting BVG capital & salary…'],
+    [90, 'Mapping to Pillar 2 schema…'],
+    [100, '✓ Complete — 5 fields extracted'],
+  ];
+  const steps3 = [
+    [20, 'Parsing German PDF…'],
+    [55, 'Extracting Entgeltpunkte & insurance years…'],
+    [80, 'Verifying DRV contribution history…'],
+    [100, '✓ Complete — 6 fields extracted'],
+  ];
+
+  animateScan(1, steps1, 0, () => {
+    document.getElementById('scan-status-1').textContent = '✓ Done';
+    document.getElementById('scan-status-1').style.color = 'var(--green)';
+    animateScan(2, steps2, 0, () => {
+      document.getElementById('scan-status-2').textContent = '✓ Done';
+      document.getElementById('scan-status-2').style.color = 'var(--green)';
+      animateScan(3, steps3, 0, () => {
+        document.getElementById('scan-status-3').textContent = '✓ Done';
+        document.getElementById('scan-status-3').style.color = 'var(--green)';
+        // show extracted
+        setTimeout(() => {
+          document.getElementById('ob-scanning').classList.remove('visible');
+          document.getElementById('ob-extracted').classList.add('visible');
+          document.getElementById('ob-s5-sub').textContent = 'Review the data we extracted. Correct anything that looks off before continuing.';
+          scanComplete = true;
+          document.getElementById('ob-btn-next').textContent = 'Looks Good →';
+          document.getElementById('ob-btn-next').disabled = false;
+          updateStep6GapUI();
+        }, 600);
+      });
+    });
+  });
+}
+
+function animateScan(idx, steps, stepIdx, onComplete) {
+  if (stepIdx >= steps.length) { onComplete(); return; }
+  const [targetPct, label] = steps[stepIdx];
+  const bar = document.getElementById('scan-bar-' + idx);
+  const labelEl = document.getElementById('scan-label-' + idx);
+  const statusEl = document.getElementById('scan-status-' + idx);
+
+  statusEl.textContent = 'Processing…';
+  statusEl.style.color = 'var(--amber)';
+  labelEl.innerHTML = `<div class="scan-dot"></div> ${label}`;
+  bar.style.width = targetPct + '%';
+
+  const delay = 300 + Math.random() * 400;
+  setTimeout(() => animateScan(idx, steps, stepIdx + 1, onComplete), delay);
+}
+
+/* ── EXPERT REVIEW ── */
+let selectedTier = null;
+
+const tierConfig = {
+  2: {
+    icon: '🔍',
+    title: 'Document Verification',
+    subtitle: '€79 · 3–5 business days',
+    price: '€79',
+    eta: '3–5 business days',
+    includes: '✓ Manual review of all uploaded documents &nbsp;·&nbsp; ✓ Discrepancy report &nbsp;·&nbsp; ✓ Verified TMI ±5% &nbsp;·&nbsp; ✓ Written verification summary'
+  },
+  3: {
+    icon: '⚖️',
+    title: 'Full Case Review',
+    subtitle: '€349 · 5–7 business days',
+    price: '€349',
+    eta: '5–7 business days',
+    includes: '✓ Everything in Verification &nbsp;·&nbsp; ✓ Cross-border entitlement analysis &nbsp;·&nbsp; ✓ Buy-back recommendation &nbsp;·&nbsp; ✓ 30-min video call with specialist &nbsp;·&nbsp; ✓ Written action plan'
+  }
+};
+
+function selectTier(n) {
+  selectedTier = n;
+  // Visual feedback on cards
+  [2, 3].forEach(i => {
+    const card = document.getElementById('tier-card-' + i);
+    if (card) card.style.borderColor = i === n
+      ? (i === 2 ? 'var(--gold)' : 'var(--blue)')
+      : (i === 2 ? 'var(--gold-border)' : 'var(--border)');
+  });
+  const btn = document.getElementById('tier-cta-btn');
+  const cfg = tierConfig[n];
+  btn.disabled = false;
+  btn.textContent = `Continue with ${cfg.title} (${cfg.price}) →`;
+}
+
+function proceedToRequest() {
+  if (!selectedTier) return;
+  const cfg = tierConfig[selectedTier];
+  document.getElementById('req-tier-icon').textContent = cfg.icon;
+  document.getElementById('req-tier-title').textContent = cfg.title;
+  document.getElementById('req-tier-subtitle').textContent = cfg.subtitle;
+  document.getElementById('req-price-inline').textContent = cfg.price;
+  document.getElementById('req-includes').innerHTML = cfg.includes;
+  closeModal(null, 'modal-expert-tiers');
+  openModal('modal-expert-request');
+}
+
+function submitExpertRequest() {
+  const cfg = tierConfig[selectedTier];
+  document.getElementById('confirm-tier-name').textContent = cfg.title;
+  document.getElementById('confirm-eta').textContent = cfg.eta;
+  closeModal(null, 'modal-expert-request');
+  openModal('modal-expert-confirm');
+}
+
+function showReviewPending() {
+  const cfg = tierConfig[selectedTier] || tierConfig[2];
+  // Swap banners
+  document.getElementById('expert-review-banner').style.display = 'none';
+  const pb = document.getElementById('expert-pending-banner');
+  pb.style.display = 'flex';
+  document.getElementById('pending-tier-name').textContent = cfg.title;
+}
+
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  const items = document.querySelectorAll('.nav-item');
+  items.forEach(item => {
+    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + page + "'")) {
+      item.classList.add('active');
+    }
+  });
+  window.scrollTo(0, 0);
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(event, id) {
+  if (!event || event.target === document.getElementById(id)) {
+    document.getElementById(id).classList.remove('open');
+  }
+}
+</script>
+</body>
+</html>
