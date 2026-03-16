@@ -644,7 +644,7 @@
         <span class="nav-icon">🗄</span> Document Vault
       </div>
       <div class="nav-item" onclick="navigate('radar')">
-        <span class="nav-icon">📡</span> Risk Radar <span class="nav-badge amber">3</span>
+        <span class="nav-icon">📡</span> Risk Radar <span class="nav-badge">4</span>
       </div>
       <div class="nav-section">Family</div>
       <div class="nav-item" onclick="navigate('family')">
@@ -665,7 +665,7 @@
         <div class="avatar">MK</div>
         <div class="profile-info">
           <div class="profile-name">Mats Karlsson</div>
-          <div class="profile-role">🇫🇷 🇨🇭 🇱🇺 · 3 countries</div>
+          <div class="profile-role">🇫🇷 French · frontalier · 3 countries</div>
         </div>
       </div>
     </div>
@@ -694,30 +694,30 @@
         <div class="tmi-hero">
           <div class="tmi-label">Projected Total Monthly Income at Retirement</div>
           <div class="tmi-amount">€3,840 <span>/ month</span></div>
-          <div class="tmi-desc">Estimated at age 67 based on current contributions and career data across 3 countries. ±12% accuracy.</div>
+          <div class="tmi-desc">Estimated at age 64 based on current contributions and career data across 3 countries. ±12% accuracy.</div>
           <div style="font-size:13px;color:var(--blue);margin-top:6px;margin-bottom:2px;cursor:pointer;" onclick="navigate('estimation');setTimeout(()=>document.getElementById('capital-section').scrollIntoView({behavior:'smooth'}),100)">+ €210K available as Swiss P2 lump sum →</div>
           <div class="tmi-pills">
             <span class="pill pill-green">✓ France: Verified</span>
-            <span class="pill pill-amber">⚠ Switzerland: Partial</span>
-            <span class="pill pill-gold">◎ Luxembourg: Estimated</span>
-            <span class="pill pill-red">! 1 Gap Detected</span>
-            <span class="pill pill-blue" style="cursor:pointer;" onclick="navigate('estimation');setTimeout(()=>document.getElementById('capital-section').scrollIntoView({behavior:'smooth'}),100)">🏦 €210K Capital Option</span>
+            <span class="pill pill-red">⚠ Switzerland P2: Unlocated</span>
+            <span class="pill pill-amber">◎ Luxembourg: Partial (P2 unconfirmed)</span>
+            <span class="pill pill-red">! 2 Gaps + 1 Unverified</span>
+            <span class="pill pill-blue" style="cursor:pointer;" onclick="navigate('estimation');setTimeout(()=>document.getElementById('capital-section').scrollIntoView({behavior:'smooth'}),100)">🏦 €210K Capital Option (est.)</span>
           </div>
           <div class="tmi-breakdown">
             <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dim);margin-bottom:10px;">Breakdown</div>
             <div class="tmi-row">
               <div class="tmi-row-dot" style="background:#3ecf8e;"></div>
-              <div class="tmi-row-label">France (P1)</div>
-              <div class="tmi-row-val">€1,220</div>
+              <div class="tmi-row-label">France</div>
+              <div class="tmi-row-val">€1,500</div>
             </div>
             <div class="tmi-row">
               <div class="tmi-row-dot" style="background:var(--blue);"></div>
-              <div class="tmi-row-label">Switzerland (P2)</div>
-              <div class="tmi-row-val">€1,640</div>
+              <div class="tmi-row-label">Switzerland</div>
+              <div class="tmi-row-val" style="color:var(--amber);">€1,360 ⚠</div>
             </div>
             <div class="tmi-row">
               <div class="tmi-row-dot" style="background:var(--amber);"></div>
-              <div class="tmi-row-label">Luxembourg (P1)</div>
+              <div class="tmi-row-label">Luxembourg</div>
               <div class="tmi-row-val">€980</div>
             </div>
             <hr class="divider" style="margin:10px 0;">
@@ -738,8 +738,8 @@
           </div>
           <div class="card">
             <div class="card-title">Gaps Detected</div>
-            <div class="card-value" style="color:var(--red);">1</div>
-            <div class="card-sub" style="color:var(--red);">Jan–Mar 2020 · LU</div>
+            <div class="card-value" style="color:var(--red);">2</div>
+            <div class="card-sub" style="color:var(--red);">+ 1 unverified freelance period</div>
             <div class="card-delta delta-down"><span class="link" onclick="navigate('career')">View gap →</span></div>
           </div>
           <div class="card" style="border-color:rgba(96,165,250,0.25);cursor:pointer;" onclick="navigate('estimation');setTimeout(()=>document.getElementById('capital-section').scrollIntoView({behavior:'smooth'}),100)">
@@ -750,8 +750,8 @@
           </div>
           <div class="card">
             <div class="card-title">Active Alerts</div>
-            <div class="card-value" style="color:var(--amber);">3</div>
-            <div class="card-sub" style="color:var(--amber);">2 high · 1 medium</div>
+            <div class="card-value" style="color:var(--red);">4</div>
+            <div class="card-sub" style="color:var(--red);">3 high · 1 medium</div>
             <div class="card-delta delta-warn"><span class="link" onclick="navigate('radar')">Review now →</span></div>
           </div>
         </div>
@@ -766,7 +766,7 @@
               <div class="section-title" style="margin-bottom:3px;">Retirement Income Gap</div>
               <div class="section-sub">Your projected income vs your goal — and how to close the difference</div>
             </div>
-            <span style="font-size:11px;color:var(--text-dim);padding-top:4px;">🇱🇺 Luxembourg resident · age 45 · retiring at 65</span>
+            <span style="font-size:11px;color:var(--text-dim);padding-top:4px;">🇫🇷 France resident (frontalier) · age 45 · retiring at 64</span>
           </div>
 
           <!-- Visual gap bar -->
@@ -1098,11 +1098,11 @@
           <!-- Divider + CTA -->
           <div style="border-top:1px solid var(--border);padding-top:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
             <div style="flex:1;min-width:200px;">
-              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;">Rather have us handle it?</div>
-              <div style="font-size:12px;color:var(--text-muted);line-height:1.5;">We can request all your documents on your behalf, chase the authorities, and upload everything for you. Typically resolved within 2–3 weeks.</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;">Need personal assistance?</div>
+              <div style="font-size:12px;color:var(--text-muted);line-height:1.5;">Our pension specialists can handle anything on your behalf — from collecting documents and liaising with authorities to resolving complex cross-border questions and custom analysis. Pricing is tailored to your needs.</div>
             </div>
             <button class="btn btn-primary" style="white-space:nowrap;flex-shrink:0;" onclick="openModal('modal-concierge')">
-              Contact Us to Help →
+              Get in Touch →
             </button>
           </div>
         </div>
@@ -1128,8 +1128,8 @@
       <div class="content">
 
         <div class="info-box">
-          <div class="info-box-title">🔍 1 Invisible Gap Detected</div>
-          <div class="info-box-body">A 3-month gap in Luxembourg (Jan–Mar 2020) risks <strong>~€120/month</strong> in permanent pension loss. This can still be corrected by voluntary contributions to CNAP before your next filing deadline. <span class="link" onclick="openModal('modal-gap-detail')">See correction steps →</span></div>
+          <div class="info-box-title">🔍 2 Gaps Detected + 1 Unverified Period</div>
+          <div class="info-box-body">A 3-month gap in Luxembourg (Jan–Mar 2020) and a 2-month gap before your freelance period (Aug–Sep 2013) risk a combined <strong>~€165/month</strong> in permanent pension loss. Your 1-year freelance/consulting period (Oct 2013–Aug 2014) has <strong>unverified pension attribution</strong> — we can't confirm which country received contributions. <span class="link" onclick="openModal('modal-gap-detail')">See correction steps →</span></div>
         </div>
 
         <div class="grid-65">
@@ -1143,10 +1143,10 @@
                 <div class="tl-dot amber"></div>
                 <div class="tl-head">
                   <span class="pill pill-amber" style="font-size:10px;padding:2px 8px;">🇱🇺 Luxembourg</span>
-                  <span class="tl-title">Manager · Deloitte Luxembourg</span>
+                  <span class="tl-title">Senior Manager · Deloitte Luxembourg</span>
                   <span class="tl-date">Apr 2020 – Present</span>
                 </div>
-                <div class="tl-body">CNAP enrolled. €92,000 gross. 6 insurance years accumulating. Extrait de carrière uploaded.</div>
+                <div class="tl-body">CNAP enrolled + employer Pillar 2 (Deloitte Pension Fund). €92,000 gross. 6 insurance years accumulating. Extrait de carrière uploaded.</div>
                 <div class="tl-gap">
                   <div class="tl-gap-title">⚠ 3-Month Gap: Jan–Mar 2020</div>
                   <div class="tl-gap-body">Transition gap detected between Switzerland and Luxembourg. Below CNAP 3-month validation threshold. Estimated impact: <strong>−€120/month</strong> at retirement. <span class="link" onclick="openModal('modal-gap-detail')">Fix this →</span></div>
@@ -1166,9 +1166,22 @@
                 <div class="tl-head">
                   <span class="pill pill-green" style="font-size:10px;padding:2px 8px;">🇫🇷 France</span>
                   <span class="tl-title">Analyst · Société Générale</span>
-                  <span class="tl-date">Jun 2008 – Aug 2014</span>
+                  <span class="tl-date">Jun 2008 – Jul 2013</span>
                 </div>
-                <div class="tl-body">CNAV contributions fully verified. 6.2 insurance years. AGIRC-ARRCO complementary pension accrued.</div>
+                <div class="tl-body">CNAV contributions fully verified. 5.1 insurance years. AGIRC-ARRCO complementary pension accrued.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot amber"></div>
+                <div class="tl-head">
+                  <span class="pill pill-amber" style="font-size:10px;padding:2px 8px;">🇫🇷🇨🇭 Cross-border</span>
+                  <span class="tl-title">Freelance Consultant · Independent</span>
+                  <span class="tl-date">Oct 2013 – Aug 2014</span>
+                </div>
+                <div class="tl-body">Independent consulting (finance/compliance). Status unclear — partly invoiced from France, partly via Swiss client. CNAV/AVS attribution unverified. <strong>Hard to document.</strong></div>
+                <div class="tl-gap">
+                  <div class="tl-gap-title">⚠ 2-Month Gap: Aug–Sep 2013</div>
+                  <div class="tl-gap-body">Transition gap between Société Générale and freelance period. No contributions recorded. Estimated impact: <strong>−€45/month</strong> at retirement.</div>
+                </div>
               </div>
               <div class="tl-item">
                 <div class="tl-dot green"></div>
@@ -1189,7 +1202,8 @@
               <div class="card-value">22.5 <span style="font-size:18px;color:var(--text-muted);">yrs</span></div>
               <hr class="divider">
               <div style="display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span style="color:var(--text-muted);">🇫🇷 France</span><span class="mono">10.9 yrs</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span style="color:var(--text-muted);">🇫🇷 France</span><span class="mono">9.8 yrs</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span style="color:var(--text-muted);">🇫🇷🇨🇭 Freelance</span><span class="mono" style="color:var(--amber);">~1.0 yr</span></div>
                 <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span style="color:var(--text-muted);">🇨🇭 Switzerland</span><span class="mono">5.3 yrs</span></div>
                 <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span style="color:var(--text-muted);">🇱🇺 Luxembourg</span><span class="mono">6.0 yrs</span></div>
               </div>
@@ -1325,7 +1339,7 @@
           <!-- KPI row -->
           <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;" id="est-kpis">
             <div style="padding:14px;background:var(--navy-3);border-radius:10px;text-align:center;">
-              <div class="card-title">Projected (age 67)</div>
+              <div class="card-title">Projected (age 64)</div>
               <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--gold-light);margin:4px 0;" id="kpi-projected">€3,840</div>
               <div class="pill pill-gold" style="font-size:10px;">Base</div>
             </div>
@@ -1340,7 +1354,7 @@
               <div class="pill pill-red" style="font-size:10px;">Shortfall</div>
             </div>
             <div style="padding:14px;background:var(--navy-3);border-radius:10px;text-align:center;">
-              <div class="card-title">Gap Fixed (age 67)</div>
+              <div class="card-title">Gap Fixed (age 64)</div>
               <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--green);margin:4px 0;">€3,960</div>
               <div class="pill pill-green" style="font-size:10px;">+€120/mo</div>
             </div>
@@ -1393,7 +1407,7 @@
                 <div>
                   <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
                     <span style="font-size:12.5px;color:var(--text-muted);">🇱🇺 Luxembourg</span>
-                    <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--text);">€980 <span style="color:var(--text-dim);font-weight:400;">26%</span></span>
+                    <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--text);">€980 <span style="color:var(--amber);font-weight:400;">+~€500 unconf.</span></span>
                   </div>
                   <div style="height:10px;background:var(--navy-3);border-radius:5px;overflow:hidden;">
                     <div style="height:100%;width:26%;background:var(--amber);border-radius:5px;"></div>
@@ -1418,7 +1432,7 @@
                 <div>
                   <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
                     <span style="font-size:12.5px;color:var(--text-muted);">Pillar 2 · Occupational</span>
-                    <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--text);">€1,320 <span style="color:var(--text-dim);font-weight:400;">34%</span></span>
+                    <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--text);">€1,320 <span style="color:var(--amber);font-weight:400;">+~€280 unconf.</span></span>
                   </div>
                   <div style="height:10px;background:var(--navy-3);border-radius:5px;overflow:hidden;">
                     <div style="height:100%;width:34%;background:var(--blue);border-radius:5px;"></div>
@@ -1427,10 +1441,10 @@
                 <div>
                   <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
                     <span style="font-size:12.5px;color:var(--text-muted);">Pillar 3 · Private</span>
-                    <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--red);">€0 <span style="color:var(--text-dim);font-weight:400;">not tracked</span></span>
+                    <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--amber);">~€220 <span style="color:var(--amber);font-weight:400;">unconfirmed</span></span>
                   </div>
                   <div style="height:10px;background:var(--navy-3);border-radius:5px;overflow:hidden;">
-                    <div style="height:100%;width:0%;background:var(--green);border-radius:5px;"></div>
+                    <div style="height:100%;width:5%;background:var(--amber);border-radius:5px;"></div>
                   </div>
                 </div>
               </div>
@@ -1489,23 +1503,25 @@
                       <div style="font-size:10px;color:var(--text-dim);">CNAP · 6.0 yrs · est.</div>
                     </td>
                     <td style="padding:10px 12px;text-align:right;">
-                      <span style="font-family:'DM Mono',monospace;color:var(--text-dim);">—</span>
+                      <span style="font-family:'DM Mono',monospace;color:var(--amber);">~€280</span>
+                      <div style="font-size:10px;color:var(--amber);">Deloitte Pension Fund · not yet confirmed</div>
                     </td>
                     <td style="padding:10px 12px;text-align:right;">
-                      <span style="font-family:'DM Mono',monospace;color:var(--text-dim);">—</span>
+                      <span style="font-family:'DM Mono',monospace;color:var(--amber);">~€220</span>
+                      <div style="font-size:10px;color:var(--amber);">Assurance-vie · self-reported</div>
                     </td>
-                    <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;font-weight:700;color:var(--text);">€980</td>
+                    <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;font-weight:700;color:var(--text);">€980 <span style="font-size:10px;color:var(--amber);font-weight:400;">+~€500 unconfirmed</span></td>
                   </tr>
                   <!-- Totals row -->
                   <tr style="background:var(--navy-3);">
-                    <td style="padding:10px 12px;font-weight:700;color:var(--text);">Total</td>
+                    <td style="padding:10px 12px;font-weight:700;color:var(--text);">Total (confirmed)</td>
                     <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;font-weight:700;color:var(--gold-light);">€2,520</td>
                     <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;font-weight:700;color:var(--gold-light);">€1,320</td>
                     <td style="padding:10px 12px;text-align:right;">
-                      <span style="font-family:'DM Mono',monospace;font-weight:700;color:var(--red);">€0</span>
-                      <span class="pill pill-red" style="font-size:9px;margin-left:6px;">missing</span>
+                      <span style="font-family:'DM Mono',monospace;font-weight:700;color:var(--amber);">~€220</span>
+                      <span class="pill pill-amber" style="font-size:9px;margin-left:6px;">unconfirmed</span>
                     </td>
-                    <td style="padding:10px 12px;text-align:right;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--gold-light);">€3,840</td>
+                    <td style="padding:10px 12px;text-align:right;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--gold-light);">€3,840 <span style="font-size:11px;color:var(--amber);font-weight:400;">+~€500</span></td>
                   </tr>
                 </tbody>
               </table>
@@ -1515,8 +1531,8 @@
           <!-- Pillar 3 nudge -->
           <div style="margin-top:14px;padding:12px 16px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
             <div style="flex:1;min-width:200px;">
-              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">No Pillar 3 savings tracked</div>
-              <div style="font-size:12px;color:var(--text-muted);">Private savings (Swiss 3a, assurance-vie, PER) could add €500–700/mo and are the highest-impact lever to close your gap.</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">Pillar 3 partially tracked — documentation needed</div>
+              <div style="font-size:12px;color:var(--text-muted);">You reported a Luxembourg assurance-vie (~€220/mo est.) but we don't have the contract. Upload it to confirm the amount and include it in your projection. Additional P3 top-ups could add €500–700/mo more.</div>
             </div>
             <button class="btn btn-primary" style="flex-shrink:0;white-space:nowrap;" onclick="navigate('dashboard');setTimeout(()=>document.getElementById('bridge-the-gap').scrollIntoView({behavior:'smooth'}),100)">Explore Pillar 3 options →</button>
           </div>
@@ -1563,9 +1579,9 @@
                   <td style="padding:10px 12px;text-align:center;"><span class="pill pill-green" style="font-size:10px;">Annuity only</span></td>
                 </tr>
                 <tr style="border-bottom:1px solid var(--border);background:var(--blue-dim);">
-                  <td style="padding:10px 12px;color:var(--text);font-weight:600;">🇨🇭 Switzerland · LPP/BVG (P2)</td>
-                  <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;color:var(--blue);font-weight:600;">€840</td>
-                  <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;color:var(--blue);font-weight:600;">€210,000</td>
+                  <td style="padding:10px 12px;color:var(--text);font-weight:600;">🇨🇭 Switzerland · LPP/BVG (P2) <span class="pill pill-red" style="font-size:9px;margin-left:4px;">unlocated</span></td>
+                  <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;color:var(--amber);font-weight:600;">€1,040 est.</td>
+                  <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;color:var(--amber);font-weight:600;">~€210,000</td>
                   <td style="padding:10px 12px;text-align:center;"><span class="pill pill-blue" style="font-size:10px;">Capital choice</span></td>
                 </tr>
                 <tr style="border-bottom:1px solid var(--border);">
@@ -1576,8 +1592,8 @@
                 </tr>
                 <tr style="background:var(--navy-3);">
                   <td style="padding:10px 12px;font-weight:700;color:var(--text);">Total</td>
-                  <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;font-weight:700;color:var(--gold-light);">€3,640</td>
-                  <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;font-weight:700;color:var(--blue);">€210,000</td>
+                  <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;font-weight:700;color:var(--gold-light);">€3,840</td>
+                  <td style="padding:10px 12px;text-align:right;font-family:'DM Mono',monospace;font-weight:700;color:var(--blue);">~€210,000</td>
                   <td style="padding:10px 12px;text-align:center;"><span style="font-size:11px;color:var(--text-dim);">1 capital choice</span></td>
                 </tr>
               </tbody>
@@ -1750,7 +1766,7 @@
             <div style="font-size:22px;">✨</div>
             <div style="flex:1;">
               <div style="font-size:13.5px;font-weight:600;color:var(--green);margin-bottom:3px;">Best case: all actions combined</div>
-              <div style="font-size:12.5px;color:var(--text-muted);">Fix gap + AHV buy-in + Pillar 3 top-up + retire at 70</div>
+              <div style="font-size:12.5px;color:var(--text-muted);">Fix gap + AHV buy-in + Pillar 3 top-up + retire at 67</div>
             </div>
             <div style="text-align:right;flex-shrink:0;">
               <div style="font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--green);" id="best-case-val">€5,800/mo</div>
@@ -1765,21 +1781,21 @@
             <div class="section-header" style="margin-bottom:12px;">
               <div class="section-title">Retirement Age Impact</div>
             </div>
-            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-dim);margin-bottom:5px;"><span>Age 60</span><span style="color:var(--gold-light);">Age 67</span><span>Age 72</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-dim);margin-bottom:5px;"><span>Age 60</span><span style="color:var(--gold-light);">Age 64</span><span>Age 70</span></div>
             <div class="slider-track" style="margin-bottom:14px;"><div class="slider-fill"></div><div class="slider-thumb"></div></div>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
               <div style="text-align:center;padding:10px;background:var(--navy-3);border-radius:10px;">
-                <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">Age 65</div>
-                <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--text);">€3,110</div>
+                <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">Age 62</div>
+                <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--red);">€3,110</div>
                 <div class="pill pill-red" style="font-size:10px;margin-top:3px;">−19%</div>
               </div>
               <div style="text-align:center;padding:10px;background:var(--navy-4);border-radius:10px;border:1px solid var(--gold-border);">
-                <div style="font-size:10px;color:var(--gold-light);margin-bottom:3px;">Age 67 ✓</div>
+                <div style="font-size:10px;color:var(--gold-light);margin-bottom:3px;">Age 64 ✓</div>
                 <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--gold-light);">€3,840</div>
-                <div class="pill pill-gold" style="font-size:10px;margin-top:3px;">Now</div>
+                <div class="pill pill-gold" style="font-size:10px;margin-top:3px;">Your goal</div>
               </div>
               <div style="text-align:center;padding:10px;background:var(--navy-3);border-radius:10px;">
-                <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">Age 70</div>
+                <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">Age 67</div>
                 <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--green);">€4,640</div>
                 <div class="pill pill-green" style="font-size:10px;margin-top:3px;">+21%</div>
               </div>
@@ -1789,7 +1805,7 @@
           <div class="card">
             <div class="section-header" style="margin-bottom:12px;">
               <div class="section-title">Inflation Erosion</div>
-              <div class="section-sub">Real purchasing power at retirement (2047)</div>
+              <div class="section-sub">Real purchasing power at retirement (2045)</div>
             </div>
             <div style="display:flex;flex-direction:column;gap:10px;">
               <div>
@@ -1956,7 +1972,7 @@
         <div class="grid-4" style="margin-bottom:20px;">
           <div class="card">
             <div class="card-title">Active Alerts</div>
-            <div class="card-value" style="color:var(--red);">2</div>
+            <div class="card-value" style="color:var(--red);">3</div>
             <div class="card-sub">High impact</div>
           </div>
           <div class="card">
@@ -1978,6 +1994,19 @@
 
         <div class="section-header">
           <div class="section-title">🔴 High Priority Alerts</div>
+        </div>
+        <div class="alert-item" style="border-color:rgba(239,68,68,0.4);">
+          <div class="alert-severity" style="background:var(--red-dim);">🇫🇷</div>
+          <div class="alert-content">
+            <div class="alert-title">France: Choosing the Wrong Retirement Date = Permanent Income Loss</div>
+            <div class="alert-desc">Under the 2023 French pension reform, the legal minimum age is 64 — but claiming at 64 without enough trimestres means a <strong>permanent décote (penalty)</strong> of up to 1.25% per missing trimestre. With 9.8 years in France (~39 trimestres out of 172 required), you would receive a reduced rate unless EU totalization fills the gap. <strong>Choosing the wrong date could cost you €200–400/month permanently.</strong> We need your Relevé de Carrière to calculate the exact optimal date.</div>
+            <div class="alert-footer">
+              <span class="alert-country">🇫🇷 France</span>
+              <span class="pill pill-red" style="font-size:10px;">Critical</span>
+              <span class="alert-impact" style="color:var(--red);">Est. −€200 to −€400/mo</span>
+              <span class="alert-time">Permanent risk</span>
+            </div>
+          </div>
         </div>
         <div class="alert-item" onclick="openModal('modal-alert-detail')">
           <div class="alert-severity" style="background:var(--red-dim);">⚠</div>
@@ -2044,23 +2073,43 @@
       <div class="content">
 
         <div class="info-box">
-          <div class="info-box-title">👨‍👩‍👧 Why this matters</div>
+          <div class="info-box-title">👨‍👩‍👧‍👦 Why this matters</div>
           <div class="info-box-body">Billions in pension contributions are lost annually when families cannot locate providers or credentials after a death. Your family members can be granted read-only access to documents and step-by-step claim instructions — so your money never becomes "free money" for states or institutions.</div>
         </div>
 
         <div class="grid-65">
           <div>
             <div class="section-header">
-              <div class="section-title">Trusted Members (2)</div>
+              <div class="section-title">Trusted Members (4)</div>
             </div>
             <div class="family-member">
               <div class="member-avatar" style="background:linear-gradient(135deg,#60a5fa,#3b82f6);color:white;">AK</div>
               <div class="member-info">
                 <div class="member-name">Anna Karlsson</div>
-                <div class="member-rel">Spouse · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9efff0f0ffb0f5ffecf2ededf1f0defbf3fff7f2b0fdf1f3">[email&#160;protected]</a></div>
+                <div class="member-rel">Spouse · anna.karlsson@gmail.com</div>
               </div>
               <div class="member-access">
                 <span class="access-tag" style="background:var(--green-dim);color:var(--green);">Full Access</span>
+              </div>
+            </div>
+            <div class="family-member">
+              <div class="member-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;">LK</div>
+              <div class="member-info">
+                <div class="member-name">Léa Karlsson</div>
+                <div class="member-rel">Daughter · age 14 · beneficiary</div>
+              </div>
+              <div class="member-access">
+                <span class="access-tag" style="background:var(--blue-dim);color:var(--blue);">Beneficiary</span>
+              </div>
+            </div>
+            <div class="family-member">
+              <div class="member-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;">OK</div>
+              <div class="member-info">
+                <div class="member-name">Oscar Karlsson</div>
+                <div class="member-rel">Son · age 11 · beneficiary</div>
+              </div>
+              <div class="member-access">
+                <span class="access-tag" style="background:var(--blue-dim);color:var(--blue);">Beneficiary</span>
               </div>
             </div>
             <div class="family-member">
@@ -2195,7 +2244,7 @@
     <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
       <div style="display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--text-muted);line-height:1.5;">
         <span style="color:var(--green);flex-shrink:0;">✓</span>
-        <span>As a Luxembourg tax resident, you can deduct up to <strong style="color:var(--text);">€3,200/year</strong> from taxable income</span>
+        <span>As a frontalier working in Luxembourg, you may deduct up to <strong style="color:var(--text);">€3,200/year</strong> from your Luxembourg taxable income</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--text-muted);line-height:1.5;">
         <span style="color:var(--green);flex-shrink:0;">✓</span>
@@ -2921,9 +2970,9 @@ Mats Karlsson</div>
             <div class="form-group">
               <label class="form-label">Current Country of Residence</label>
               <select class="form-select">
-                <option selected>🇱🇺 Luxembourg</option>
+                <option>🇱🇺 Luxembourg</option>
                 <option>🇨🇭 Switzerland</option>
-                <option>🇫🇷 France</option>
+                <option selected>🇫🇷 France</option>
                 <option>🇩🇪 Germany</option>
                 <option>🇧🇪 Belgium</option>
                 <option>Other…</option>
@@ -2936,10 +2985,10 @@ Mats Karlsson</div>
               <select class="form-select" style="max-width:220px;">
                 <option>62</option>
                 <option>63</option>
-                <option>64</option>
+                <option selected>64 (French legal age)</option>
                 <option>65</option>
                 <option>66</option>
-                <option selected>67 (standard)</option>
+                <option>67</option>
                 <option>68</option>
                 <option>70</option>
               </select>
@@ -3110,14 +3159,15 @@ Mats Karlsson</div>
 
         <!-- Existing periods -->
         <div class="ob-period-list" id="ob-manual-periods">
-          <div class="ob-period-item" data-country="LU" data-pillar="p1">
+          <div class="ob-period-item" data-country="LU" data-pillar="p1 p2">
             <div class="ob-period-flag">🇱🇺</div>
             <div class="ob-period-info">
-              <div class="ob-period-company">Deloitte Luxembourg · Manager</div>
+              <div class="ob-period-company">Deloitte Luxembourg · Senior Manager</div>
               <div class="ob-period-dates">Apr 2020 – Present</div>
             </div>
             <div style="display:flex;gap:5px;flex-shrink:0;">
               <span class="pill pill-gold" style="font-size:10px;">P1 CNAP</span>
+              <span class="pill pill-blue" style="font-size:10px;">P2 Employer</span>
             </div>
             <button class="ob-period-remove" onclick="this.closest('.ob-period-item').remove()">✕</button>
           </div>
@@ -3129,7 +3179,18 @@ Mats Karlsson</div>
             </div>
             <div style="display:flex;gap:5px;flex-shrink:0;">
               <span class="pill pill-gold" style="font-size:10px;">P1 AVS</span>
-              <span class="pill pill-blue" style="font-size:10px;">P2 LPP</span>
+              <span class="pill pill-blue" style="font-size:10px;">P2 LPP ⚠</span>
+            </div>
+            <button class="ob-period-remove" onclick="this.closest('.ob-period-item').remove()">✕</button>
+          </div>
+          <div class="ob-period-item" data-country="FR" data-pillar="unknown" style="border-color:rgba(245,158,11,0.4);">
+            <div class="ob-period-flag">🇫🇷🇨🇭</div>
+            <div class="ob-period-info">
+              <div class="ob-period-company">Freelance Consultant · Independent</div>
+              <div class="ob-period-dates">Oct 2013 – Aug 2014</div>
+            </div>
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              <span class="pill pill-amber" style="font-size:10px;">Unverified</span>
             </div>
             <button class="ob-period-remove" onclick="this.closest('.ob-period-item').remove()">✕</button>
           </div>
@@ -3137,7 +3198,7 @@ Mats Karlsson</div>
             <div class="ob-period-flag">🇫🇷</div>
             <div class="ob-period-info">
               <div class="ob-period-company">Société Générale · Analyst</div>
-              <div class="ob-period-dates">Jun 2008 – Aug 2014</div>
+              <div class="ob-period-dates">Jun 2008 – Jul 2013</div>
             </div>
             <div style="display:flex;gap:5px;flex-shrink:0;">
               <span class="pill pill-gold" style="font-size:10px;">P1 CNAV</span>
@@ -3319,11 +3380,11 @@ Mats Karlsson</div>
           <div class="ob-summary-row" style="border-color:rgba(239,68,68,0.3);background:var(--red-dim);">
             <div class="ob-summary-icon">⚠️</div>
             <div>
-              <div class="ob-summary-label" style="color:var(--red);">Gap Detected</div>
-              <div class="ob-summary-value" style="color:var(--red);" id="ob-s4-gap-detail">Jan–Mar 2020 · Luxembourg · −€120/mo</div>
+              <div class="ob-summary-label" style="color:var(--red);">2 Gaps + 1 Unverified Period</div>
+              <div class="ob-summary-value" style="color:var(--red);" id="ob-s4-gap-detail">Jan–Mar 2020 (LU) · Aug–Sep 2013 (FR) · Freelance year unverified</div>
             </div>
             <div class="ob-summary-right">
-              <span class="pill pill-red">Fix Available</span>
+              <span class="pill pill-red">Action Needed</span>
             </div>
           </div>
           <div class="ob-summary-row">
@@ -3703,7 +3764,10 @@ function computeGapsFromCareer() {
 
   // Fallback for demo if no manual gaps found (e.g. dates not parseable)
   if (detectedGaps.length === 0) {
-    detectedGaps = [{ period: 'Jan–Mar 2020', country: 'Luxembourg', employer: 'UBS Wealth Management', months: 3, impact: 120 }];
+    detectedGaps = [
+      { period: 'Jan–Mar 2020', country: 'Luxembourg', employer: 'UBS Wealth Management', months: 3, impact: 120 },
+      { period: 'Aug–Sep 2013', country: 'France', employer: 'Société Générale', months: 2, impact: 45 }
+    ];
   }
 }
 
@@ -3929,12 +3993,12 @@ function updateThemeButton(isLight) {
 
 const chatResponses = {
   'gap': {
-    text: `Great question, Mats. You have a **3-month gap** between your UBS role in Switzerland (ended Dec 2019) and Deloitte Luxembourg (started Apr 2020).\n\nThis Jan–Mar 2020 gap means those months don't count toward your Luxembourg insurance years under CNAP. The estimated impact is **−€120/month** at retirement, or roughly **−€43,200** over 30 years.\n\n**Good news:** Luxembourg allows voluntary buy-back contributions for gaps under 12 months. You'd need to:\n1. Request your *Extrait de Carrière* from CNAP\n2. Submit a *demande de rachat* within 24 months of the gap (deadline may have passed — I'd recommend contacting CNAP to check)\n3. The cost is typically 1–3 months of contributions (~€800–2,400)\n\nWould you like me to draft the request letter, or would you prefer our concierge team to handle it?`,
-    suggestions: ['Draft the CNAP letter', 'What if the deadline passed?', 'Show me the concierge option']
+    text: `Great question, Mats. I've found **2 gaps** and **1 unverified period** in your career:\n\n**1. Jan–Mar 2020 (3 months, Luxembourg)**\nBetween UBS Switzerland and Deloitte Luxembourg. Impact: **−€120/month** at retirement.\n\n**2. Aug–Sep 2013 (2 months, France)**\nBetween Société Générale and your freelance period. Impact: **−€45/month** at retirement.\n\n**3. Oct 2013–Aug 2014 (freelance/consulting)**\nThis period is **hard to document** — you invoiced clients from France and Switzerland, and we can't confirm which pension system received contributions. This could mean **lost trimestres** in France.\n\nThe Luxembourg gap can be fixed via CNAP voluntary buy-back (~€1,200). The freelance period needs investigation — do you have invoices or tax returns from that year?`,
+    suggestions: ['Fix the Luxembourg gap', 'Help with freelance documentation', 'Show me the concierge option']
   },
   'switzerland': {
-    text: `Your Swiss pension has two components:\n\n**Pillar 1 (AVS/AHV)** — State pension\n• 5.3 insurance years recorded\n• You need a minimum of 1 year to qualify for a Swiss pension\n• Current projected benefit: ~CHF 480/month (partial, since you have fewer than 44 full contribution years)\n\n**Pillar 2 (BVG/LPP)** — Occupational pension via UBS Pensionskasse\n• This is where the bulk of your Swiss benefit sits: **€1,640/month equivalent**\n• Your *Vorsorgeausweis* shows accumulated capital of ~CHF 185,000\n• You can choose between a lump sum or annuity at retirement\n\n⚠️ **Important:** Since you left Switzerland, your Pillar 2 capital was likely transferred to a *Freizügigkeitskonto* (vested benefits account). Have you tracked where this money went? If not, I can help you locate it via the *Zentralstelle 2. Säule*.`,
-    suggestions: ['Help me find my Pillar 2 money', 'What is Freizügigkeitskonto?', 'Compare lump sum vs annuity']
+    text: `Your Swiss pension has two components — but there's a problem:\n\n**Pillar 1 (AVS/AHV)** — State pension\n• 5.3 insurance years recorded — confirmed\n• Projected benefit: ~CHF 480/month (partial)\n\n**Pillar 2 (BVG/LPP)** — Occupational pension ⚠️ **UNLOCATED**\n• When you left UBS in Dec 2019, your Pillar 2 capital (~CHF 185,000) should have been transferred to a *Freizügigkeitskonto* (vested benefits account)\n• **We don't know where this money is.** You may not either.\n• This is estimated at **€1,040/month** or **~€210,000 as a lump sum** — it's the single largest uncertain component of your projection\n\n**Action needed:** I can help you locate it via the *Zentralstelle 2. Säule* (Central Office for 2nd Pillar). They maintain a register of unclaimed pension assets. It's free to search.\n\nThis is your **#1 priority** — until we confirm this, your projection carries ±15% uncertainty.`,
+    suggestions: ['Help me find my Pillar 2 money', 'What is Freizügigkeitskonto?', 'Contact Zentralstelle 2. Säule']
   },
   'target': {
     text: `Your current projection is **€3,840/month** across 3 countries, against your goal of **€5,500/month**. That's a **−€1,660/month gap**.\n\nHere's what's driving it:\n\n• **Contribution gaps** (missing years) → −€960\n• **No Pillar 3** private savings → −€580\n• **Transition gap** (LU Jan–Mar 2020) → −€120\n\nThe fastest way to close this:\n1. **Fix the LU gap** → +€120/mo (one-time cost ~€1,500)\n2. **Start a Prévoyance-vieillesse** (Art. 111bis) → +€450/mo (€267/mo contribution)\n3. **Sogelife assurance-vie** → +€550/mo (€400/mo contribution)\n\nThat would bring you to **€4,960/month** — still €540 short, but a Swissquote ETF plan at €250/mo could close the rest.\n\nWant me to show you a detailed comparison of these options?`,
@@ -3945,8 +4009,8 @@ const chatResponses = {
     suggestions: ['Yes, use the concierge', 'How long does it take?', 'Which is most important?']
   },
   'retirement_age': {
-    text: `Each country has different rules for your situation:\n\n**🇫🇷 France:** Legal age is **64** (post-2023 reform). Full-rate requires 172 trimestres (~43 years). With 10.9 years in France, you won't hit full rate from France alone — but EU regulation 883/2004 lets you aggregate years across countries.\n\n**🇨🇭 Switzerland:** Standard age is **65** for men. Your AVS pension can be claimed independently.\n\n**🇱🇺 Luxembourg:** Standard age is **65**. Early retirement at 57 with 40 insurance years (you won't qualify for early).\n\nSince you're 45 and Luxembourg-based, the practical retirement age for full benefits across all three systems is **65–67**. Your current estimate assumes **age 67**.\n\nWant me to simulate your income at 62 or 65?`,
-    suggestions: ['Simulate retirement at 62', 'Simulate retirement at 65', 'EU aggregation rules explained']
+    text: `This is your **most critical question**, Mats. Here's why:\n\n**🇫🇷 France:** Legal age is **64** (post-2023 reform). Full-rate requires 172 trimestres (~43 years). With ~9.8 years in France + EU totalization of your CH and LU years, you need to calculate exactly how many trimestres you'll have at 64.\n\n⚠️ **The risk:** If you claim at 64 without enough trimestres, France applies a **permanent décote** — a penalty of 0.625% per missing trimestre. This is **irreversible**. Choosing the wrong date could cost you **€200–400/month forever**.\n\n**🇨🇭 Switzerland:** Standard age is **65** for men. Your AVS pension can be claimed independently.\n\n**🇱🇺 Luxembourg:** Standard age is **65**. Early retirement at 57 with 40 insurance years (you won't qualify).\n\nYour goal is to retire at **64**. Your current estimate assumes this. But **we need your Relevé de Carrière from CNAV** to calculate the exact trimestre count and optimal claiming date.\n\nDo NOT file your French pension claim without this analysis.`,
+    suggestions: ['Get my Relevé de Carrière', 'What is a décote?', 'Simulate retirement at 65 instead']
   },
   'default': {
     text: `That's a great question. Based on your profile across France, Switzerland, and Luxembourg, I can help with:\n\n• **Pension gap analysis** — understanding and fixing contribution gaps\n• **Country-specific rules** — retirement ages, pillar systems, tax treatment\n• **Document guidance** — what you need and how to get it\n• **Income optimization** — strategies to close your €1,660/mo gap\n\nCould you tell me more about what you'd like to explore?`,
@@ -3956,11 +4020,11 @@ const chatResponses = {
 
 function detectIntent(msg) {
   const lower = msg.toLowerCase();
-  if (/gap|missing.*month|jan.?mar|2020|buy.?back|rachat|contribution gap/.test(lower)) return 'gap';
-  if (/swiss|switzerland|zurich|bvg|lpp|avs|ahv|pillar 2|freiz|ubs/.test(lower)) return 'switzerland';
+  if (/gap|missing.*month|jan.?mar|2020|buy.?back|rachat|contribution gap|freelance|consulting.*period|aug.*sep.*2013/.test(lower)) return 'gap';
+  if (/swiss|switzerland|zurich|bvg|lpp|avs|ahv|pillar 2|freiz|ubs|where.*my.*pension|locate|unlocated/.test(lower)) return 'switzerland';
   if (/target|goal|5.?500|shortfall|close.*gap|bridge|how.*close|how.*reach|compare.*option/.test(lower)) return 'target';
   if (/document|upload|missing.*doc|paper|certificate|extrait|relevé|vorsorge|concierge/.test(lower)) return 'documents';
-  if (/retire.*age|when.*retire|age.*retire|early.*retire|64|65|67|retire.*at/.test(lower)) return 'retirement_age';
+  if (/retire.*age|when.*retire|age.*retire|early.*retire|64|65|67|retire.*at|décote|decote|wrong.*date|safe.*retire|frontalier/.test(lower)) return 'retirement_age';
   return 'default';
 }
 
@@ -3978,8 +4042,8 @@ function toggleChat() {
   if (badge) badge.style.display = 'none';
   if (chatOpen && chatMessages.length === 0) {
     addBotMessage(
-      `Hello Mats! I'm your RetirAI advisor. I have access to your career data across France, Switzerland, and Luxembourg.\n\nI noticed you have a **3-month contribution gap** in Luxembourg and your projected income is **€1,660/month below your goal**. I can help you understand what to do about it.\n\nWhat would you like to explore?`,
-      ['Explain my pension gap', 'How does my Swiss pension work?', 'How do I reach my target?', 'What documents am I missing?']
+      `Hello Mats! I'm your RetirAI advisor. I've analysed your career across France, Switzerland, and Luxembourg.\n\n**3 things need your attention:**\n1. Your **Swiss Pillar 2 (~€210K)** hasn't been located — this is your largest uncertain asset\n2. You have **2 contribution gaps** and a **freelance year** with unclear pension attribution\n3. Retiring at **64** carries a risk of permanent French pension penalty if your trimestres don't add up\n\nYour projected income is **€1,660/month below your goal**. Let's work on this.`,
+      ['Where is my Swiss pension?', 'Explain my gaps', 'Is retiring at 64 safe?', 'What documents am I missing?']
     );
   }
 }
