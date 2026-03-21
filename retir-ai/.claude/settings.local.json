@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Jacek/git/PensionBridge/retir-ai/app -type f \\\\\\(-name *.tsx -o -name *.ts -o -name *.jsx -o -name *.js \\\\\\))",
+      "Bash(npx next:*)",
+      "Bash(find /c/Jacek/git/PensionBridge/retir-ai -path */node_modules -prune -o -type f \\\\\\(-name *.env* -o -name .*rc* -o -name *.config.* \\\\\\) -print)",
+      "Bash(wc -l /c/Jacek/git/PensionBridge/retir-ai/lib/pension/*.ts /c/Jacek/git/PensionBridge/retir-ai/lib/tax/*.ts)",
+      "Bash(node:*)",
+      "Bash(npx tsx -e \":*)",
+      "Bash(npx tsx --no-warnings -e \":*)",
+      "Bash(npx tsx:*)",
+      "Bash(grep -E \"\\\\.md$\")",
+      "Bash(grep -r output.*export /c/Jacek/git/PensionBridge/retir-ai/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/)",
+      "Read(//c/Jacek/git/PensionBridge/**)",
+      "Read(//c/Jacek/git/PensionBridge//**)"
+    ]
+  }
+}

@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+:root {
+  --navy: #0B1120;
+  --navy-2: #111827;
+  --navy-3: #1a2540;
+  --navy-4: #232f4b;
+  --navy-5: #2d3d60;
+  --gold: #C9A84C;
+  --gold-light: #e5c97a;
+  --gold-dim: rgba(201,168,76,0.15);
+  --gold-border: rgba(201,168,76,0.3);
+  --text: #e8eaf0;
+  --text-muted: #8a95b0;
+  --text-dim: #556080;
+  --green: #3ecf8e;
+  --green-dim: rgba(62,207,142,0.12);
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.12);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.12);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.12);
+  --border: rgba(255,255,255,0.07);
+  --sidebar-w: 230px;
+}
+
+[data-theme="light"] {
+  --navy: #f5f6fa;
+  --navy-2: #ffffff;
+  --navy-3: #f0f1f5;
+  --navy-4: #e5e7ed;
+  --navy-5: #d1d5de;
+  --gold: #a08530;
+  --gold-light: #7a6520;
+  --gold-dim: rgba(160,133,48,0.1);
+  --gold-border: rgba(160,133,48,0.25);
+  --text: #1a1f2e;
+  --text-muted: #5a6478;
+  --text-dim: #8a95b0;
+  --green: #1a9b5f;
+  --green-dim: rgba(26,155,95,0.1);
+  --red: #dc2626;
+  --red-dim: rgba(220,38,38,0.08);
+  --amber: #d97706;
+  --amber-dim: rgba(217,119,6,0.08);
+  --blue: #2563eb;
+  --blue-dim: rgba(37,99,235,0.08);
+  --border: rgba(0,0,0,0.09);
+}
+
+@theme inline {
+  --color-navy: var(--navy);
+  --color-navy-2: var(--navy-2);
+  --color-navy-3: var(--navy-3);
+  --color-navy-4: var(--navy-4);
+  --color-navy-5: var(--navy-5);
+  --font-playfair: 'Playfair Display', serif;
+  --font-sans: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+body {
+  background: var(--navy);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--navy-2); }
+::-webkit-scrollbar-thumb { background: var(--navy-5); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+[data-theme="light"] ::-webkit-scrollbar-track { background: #f0f1f5; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #c8ccd5; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 0.3s ease; }
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.animate-pop-in { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+@keyframes chatBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}

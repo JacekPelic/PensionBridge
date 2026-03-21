@@ -1,0 +1,11 @@
+export const SWISS_P2_CAPITAL = 210000;
+export const SWISS_P2_ANNUITY = 840;
+export const DRAWDOWN_YEARS = 25;
+export const BASE_TMI = 3840;
+export const DEFAULT_TARGET = 5500;
+export const FRANCE_AMOUNT = 1500;
+export const SWITZERLAND_AMOUNT = 1360;
+export const LUXEMBOURG_AMOUNT = 980;
+export const PILLAR1_TOTAL = 2520;
+export const PILLAR2_TOTAL = 1320;
+export const RETIREMENT_YEARS = 30;
