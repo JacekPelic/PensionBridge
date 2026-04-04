@@ -1,11 +1,11 @@
 'use client';
 
-import { Sidebar } from '@/components/layout/Sidebar';
-import { Topbar } from '@/components/layout/Topbar';
-import { FamilyAccess } from '@/components/family/FamilyAccess';
-import { ChatWidget } from '@/components/chat/ChatWidget';
-import { ThemeProvider } from '@/providers/ThemeProvider';
-import { Button } from '@/components/ui/Button';
+import { Sidebar } from '@/shared/layout/Sidebar';
+import { Topbar } from '@/shared/layout/Topbar';
+import { FamilyAccess } from '@/modules/family/components/FamilyAccess';
+import { ChatWidget } from '@/shared/chat/ChatWidget';
+import { ThemeProvider } from '@/shared/ThemeProvider';
+import { Button } from '@/shared/ui/Button';
 
 export default function FamilyPage() {
   return (

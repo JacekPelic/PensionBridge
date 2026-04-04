@@ -1,20 +1,27 @@
 'use client';
 
-import { useState } from 'react';
-import { Sidebar } from '@/components/layout/Sidebar';
-import { Topbar } from '@/components/layout/Topbar';
-import { IncomeGoalInput } from '@/components/estimation/IncomeGoalInput';
-import { IncomeBreakdown } from '@/components/estimation/IncomeBreakdown';
-import { CapitalModeller } from '@/components/estimation/CapitalModeller';
-import { ChatWidget } from '@/components/chat/ChatWidget';
-import { ThemeProvider } from '@/providers/ThemeProvider';
-import { Button } from '@/components/ui/Button';
+import { useState, useCallback } from 'react';
+import { Sidebar } from '@/shared/layout/Sidebar';
+import { Topbar } from '@/shared/layout/Topbar';
+import { IncomeGoalInput } from '@/modules/pension/components/estimation/IncomeGoalInput';
+import { IncomeBreakdown } from '@/modules/pension/components/estimation/IncomeBreakdown';
+import { CapitalModeller } from '@/modules/pension/components/estimation/CapitalModeller';
+import { ChatWidget } from '@/shared/chat/ChatWidget';
+import { ThemeProvider } from '@/shared/ThemeProvider';
+import { UserDataProvider } from '@/modules/identity/UserDataProvider';
+import { Button } from '@/shared/ui/Button';
 
 export default function EstimationPage() {
   const [target, setTarget] = useState(5500);
+  const [netMonthly, setNetMonthly] = useState<number | null>(null);
+
+  const handleNetComputed = useCallback((net: number) => {
+    setNetMonthly(net);
+  }, []);
 
   return (
     <ThemeProvider>
+      <UserDataProvider>
       <div className="flex min-h-screen">
         <Sidebar />
         <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
@@ -29,13 +36,14 @@ export default function EstimationPage() {
             }
           />
           <div className="flex-1 p-7 animate-fade-in">
-            <IncomeGoalInput target={target} onTargetChange={setTarget} />
-            <IncomeBreakdown />
+            <IncomeGoalInput target={target} onTargetChange={setTarget} netProjected={netMonthly} />
+            <IncomeBreakdown onNetComputed={handleNetComputed} />
             <CapitalModeller />
           </div>
         </div>
         <ChatWidget />
       </div>
+      </UserDataProvider>
     </ThemeProvider>
   );
 }

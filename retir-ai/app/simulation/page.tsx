@@ -1,17 +1,16 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import Link from 'next/link';
-import { Sidebar } from '@/components/layout/Sidebar';
-import { Topbar } from '@/components/layout/Topbar';
-import { SimulationControls } from '@/components/simulation/SimulationControls';
-import { TaxBreakdownTable } from '@/components/simulation/TaxBreakdownTable';
-import { CountryComparison } from '@/components/simulation/CountryComparison';
-import { ChatWidget } from '@/components/chat/ChatWidget';
-import { ThemeProvider } from '@/providers/ThemeProvider';
-import { Button } from '@/components/ui/Button';
-import { simulateResidence, buildPensionSources } from '@/lib/tax';
-import type { ResidenceCountry } from '@/lib/tax';
+import { Sidebar } from '@/shared/layout/Sidebar';
+import { Topbar } from '@/shared/layout/Topbar';
+import { SimulationControls } from '@/modules/tax/components/SimulationControls';
+import { TaxBreakdownTable } from '@/modules/tax/components/TaxBreakdownTable';
+import { CountryComparison } from '@/modules/tax/components/CountryComparison';
+import { ChatWidget } from '@/shared/chat/ChatWidget';
+import { ThemeProvider } from '@/shared/ThemeProvider';
+import { Button } from '@/shared/ui/Button';
+import { simulateResidence, buildPensionSources } from '@/modules/tax';
+import type { ResidenceCountry } from '@/modules/tax';
 
 export default function SimulationPage() {
   const [retirementAge, setRetirementAge] = useState(64);
@@ -52,23 +51,6 @@ export default function SimulationPage() {
             {results.length > 0 && <TaxBreakdownTable results={results} />}
             {results.length > 0 && <CountryComparison results={results} />}
 
-            {/* Expert CTA */}
-            <div
-              className="mt-5 rounded-[14px] p-5 flex items-center justify-between"
-              style={{ background: 'var(--gold-dim)', border: '1px solid var(--gold-border)' }}
-            >
-              <div>
-                <div className="text-[13px] font-semibold" style={{ color: 'var(--gold-light)' }}>
-                  Need help choosing the best retirement country?
-                </div>
-                <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                  Our tax experts can run a detailed analysis for your specific multi-country pension mix, including double taxation treaties.
-                </div>
-              </div>
-              <Link href="/services" className="no-underline shrink-0 ml-4">
-                <Button variant="outline-gold">👤 Get Expert Analysis</Button>
-              </Link>
-            </div>
           </div>
         </div>
         <ChatWidget />

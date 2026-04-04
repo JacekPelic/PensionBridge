@@ -1,8 +1,8 @@
 'use client';
 
-import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
-import { ThemeProvider } from '@/providers/ThemeProvider';
-import { UserDataProvider } from '@/providers/UserDataProvider';
+import { OnboardingWizard } from '@/modules/identity/components/onboarding/OnboardingWizard';
+import { ThemeProvider } from '@/shared/ThemeProvider';
+import { UserDataProvider } from '@/modules/identity/UserDataProvider';
 
 export default function OnboardingPage() {
   return (

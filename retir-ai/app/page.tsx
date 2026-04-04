@@ -1,17 +1,18 @@
 'use client';
 
-import { Sidebar } from '@/components/layout/Sidebar';
-import { Topbar } from '@/components/layout/Topbar';
-import { TmiHero } from '@/components/dashboard/TmiHero';
-import { KpiCards } from '@/components/dashboard/KpiCards';
-import { RetirementGap } from '@/components/dashboard/RetirementGap';
-import { PensionPicture } from '@/components/dashboard/PensionPicture';
-import { ChatWidget } from '@/components/chat/ChatWidget';
-import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
-import { ThemeProvider } from '@/providers/ThemeProvider';
-import { DataStageProvider, useDataStage } from '@/providers/DataStageProvider';
-import { UserDataProvider } from '@/providers/UserDataProvider';
-import { Button } from '@/components/ui/Button';
+import { Sidebar } from '@/shared/layout/Sidebar';
+import { Topbar } from '@/shared/layout/Topbar';
+import { TmiHero } from '@/modules/pension/components/dashboard/TmiHero';
+import { KpiCards } from '@/modules/pension/components/dashboard/KpiCards';
+import { RetirementGap } from '@/modules/pension/components/dashboard/RetirementGap';
+import { PensionPicture } from '@/modules/pension/components/dashboard/PensionPicture';
+import { ChatWidget } from '@/shared/chat/ChatWidget';
+import { OnboardingWizard } from '@/modules/identity/components/onboarding/OnboardingWizard';
+import { CompletionNudge } from '@/modules/completeness/components/CompletionNudge';
+import { ThemeProvider } from '@/shared/ThemeProvider';
+import { DataStageProvider, useDataStage } from '@/modules/identity/DataStageProvider';
+import { UserDataProvider } from '@/modules/identity/UserDataProvider';
+import { Button } from '@/shared/ui/Button';
 
 function StageToggle() {
   const { stage, toggleStage } = useDataStage();
@@ -67,18 +68,10 @@ function DashboardContent() {
         />
         <div className="flex-1 p-7 animate-fade-in" key={stage}>
           <TmiHero />
+          <CompletionNudge />
           <KpiCards />
-          {complete ? (
-            <>
-              <RetirementGap />
-              <PensionPicture />
-            </>
-          ) : (
-            <>
-              <PensionPicture />
-              <RetirementGap />
-            </>
-          )}
+          <RetirementGap />
+          {complete && <PensionPicture />}
         </div>
       </div>
       <ChatWidget />

@@ -1,11 +1,11 @@
 'use client';
 
-import { Sidebar } from '@/components/layout/Sidebar';
-import { Topbar } from '@/components/layout/Topbar';
-import { RiskRadar } from '@/components/radar/RiskRadar';
-import { ChatWidget } from '@/components/chat/ChatWidget';
-import { ThemeProvider } from '@/providers/ThemeProvider';
-import { Button } from '@/components/ui/Button';
+import { Sidebar } from '@/shared/layout/Sidebar';
+import { Topbar } from '@/shared/layout/Topbar';
+import { RiskRadar } from '@/modules/radar/components/RiskRadar';
+import { ChatWidget } from '@/shared/chat/ChatWidget';
+import { ThemeProvider } from '@/shared/ThemeProvider';
+import { Button } from '@/shared/ui/Button';
 
 export default function RadarPage() {
   return (
