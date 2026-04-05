@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "autoApprove": true,
     "allow": [
       "Bash(find /c/Jacek/git/PensionBridge/retir-ai/app -type f \\\\\\(-name *.tsx -o -name *.ts -o -name *.jsx -o -name *.js \\\\\\))",
       "Bash(npx next:*)",
@@ -23,7 +22,12 @@
       "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")",
       "Bash(wc -l /c/Jacek/git/PensionBridge/retir-ai/app/*/page.tsx)",
       "WebFetch(domain:localhost)",
-      "Bash(curl -sL http://localhost:3099/estimation)"
-    ]
+      "Bash(curl -sL http://localhost:3099/estimation)",
+      "Bash(xargs -I {} bash -c 'echo \"=== {} ===\" && head -20 {}')",
+      "Bash(find:*)",
+      "Bash(npm run:*)",
+      "WebSearch"
+    ],
+    "autoApprove": true
   }
 }

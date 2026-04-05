@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Card } from '@/shared/ui/Card';
 import { BASE_TMI, RETIREMENT_YEARS } from '@/modules/pension/constants';
 
@@ -92,6 +93,15 @@ export function IncomeGoalInput({ target, onTargetChange, netProjected }: Props)
           <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-dim)' }}>
             over {RETIREMENT_YEARS} yrs = {gap > 0 ? '−' : '+'}€{(Math.abs(gap) * 12 * RETIREMENT_YEARS).toLocaleString()}
           </div>
+          {gap > 0 && (
+            <Link
+              href="/simulation"
+              className="inline-block mt-2 text-[11px] no-underline hover:opacity-80 transition-all"
+              style={{ color: 'var(--gold)' }}
+            >
+              Model decisions to close this gap &rarr;
+            </Link>
+          )}
         </div>
       </div>
     </Card>

@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { riskAlerts } from '@/modules/radar/data/mock-data';
 import { Card } from '@/shared/ui/Card';
+import { UpgradePrompt } from '@/shared/ui/UpgradePrompt';
+import { useTier } from '@/shared/TierProvider';
 import type { AlertCategory } from '@/shared/types';
 
 const categoryMeta: Record<AlertCategory, { label: string; icon: string; color: string }> = {
@@ -22,6 +24,7 @@ type FilterKey = 'all' | AlertCategory;
 
 export function RiskRadar() {
   const [filter, setFilter] = useState<FilterKey>('all');
+  const { isPro } = useTier();
 
   const filtered = filter === 'all' ? riskAlerts : riskAlerts.filter((a) => a.category === filter);
   const highCount = riskAlerts.filter((a) => a.severity === 'high').length;
@@ -64,149 +67,169 @@ export function RiskRadar() {
         </div>
       </div>
 
-      {/* KPI row */}
-      <div className="grid grid-cols-4 gap-4 mb-5">
-        <Card>
-          <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>
-            Active Alerts
+      {isPro ? (
+        /* Pro: full radar with KPIs, filters, alerts */
+        <>
+          {/* KPI row */}
+          <div className="grid grid-cols-4 gap-4 mb-5">
+            <Card>
+              <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>Active Alerts</div>
+              <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>{riskAlerts.length}</div>
+              <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>across {countries} jurisdictions</div>
+            </Card>
+            <Card>
+              <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>High Priority</div>
+              <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--red)', lineHeight: 1 }}>{highCount}</div>
+              <div className="text-xs mt-1.5" style={{ color: 'var(--red)' }}>require your attention</div>
+            </Card>
+            <Card>
+              <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>Countries Monitored</div>
+              <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>{countries}</div>
+              <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>FR · CH · LU · EU</div>
+            </Card>
+            <Card>
+              <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>Last Updated</div>
+              <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--green)', lineHeight: 1 }}>Today</div>
+              <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>auto-synced daily</div>
+            </Card>
           </div>
-          <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>
-            {riskAlerts.length}
-          </div>
-          <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
-            across {countries} jurisdictions
-          </div>
-        </Card>
-        <Card>
-          <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>
-            High Priority
-          </div>
-          <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--red)', lineHeight: 1 }}>
-            {highCount}
-          </div>
-          <div className="text-xs mt-1.5" style={{ color: 'var(--red)' }}>
-            require your attention
-          </div>
-        </Card>
-        <Card>
-          <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>
-            Countries Monitored
-          </div>
-          <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>
-            {countries}
-          </div>
-          <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
-            FR · CH · LU · EU
-          </div>
-        </Card>
-        <Card>
-          <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>
-            Last Updated
-          </div>
-          <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--green)', lineHeight: 1 }}>
-            Today
-          </div>
-          <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
-            auto-synced daily
-          </div>
-        </Card>
-      </div>
 
-      {/* Category filters */}
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-[11px] uppercase tracking-wider font-medium mr-1" style={{ color: 'var(--text-dim)' }}>Filter</span>
-        {([
-          { key: 'all' as FilterKey, label: 'All', icon: '📋' },
-          ...Object.entries(categoryMeta).map(([key, meta]) => ({ key: key as FilterKey, label: meta.label, icon: meta.icon })),
-        ]).map(({ key, label, icon }) => {
-          const active = filter === key;
-          const count = key === 'all' ? riskAlerts.length : riskAlerts.filter((a) => a.category === key).length;
-          return (
-            <button
-              key={key}
-              onClick={() => setFilter(key as FilterKey)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium cursor-pointer transition-all"
-              style={{
-                background: active ? 'var(--gold-dim)' : 'transparent',
-                border: active ? '1px solid var(--gold-border)' : '1px solid var(--border)',
-                color: active ? 'var(--gold-light)' : 'var(--text-muted)',
-              }}
-            >
-              <span>{icon}</span>
-              {label}
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: 'var(--navy-3)', color: 'var(--text-dim)' }}>
-                {count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+          {/* Category filters */}
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-[11px] uppercase tracking-wider font-medium mr-1" style={{ color: 'var(--text-dim)' }}>Filter</span>
+            {([
+              { key: 'all' as FilterKey, label: 'All', icon: '📋' },
+              ...Object.entries(categoryMeta).map(([key, meta]) => ({ key: key as FilterKey, label: meta.label, icon: meta.icon })),
+            ]).map(({ key, label, icon }) => {
+              const active = filter === key;
+              const count = key === 'all' ? riskAlerts.length : riskAlerts.filter((a) => a.category === key).length;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setFilter(key as FilterKey)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium cursor-pointer transition-all"
+                  style={{
+                    background: active ? 'var(--gold-dim)' : 'transparent',
+                    border: active ? '1px solid var(--gold-border)' : '1px solid var(--border)',
+                    color: active ? 'var(--gold-light)' : 'var(--text-muted)',
+                  }}
+                >
+                  <span>{icon}</span>
+                  {label}
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: 'var(--navy-3)', color: 'var(--text-dim)' }}>{count}</span>
+                </button>
+              );
+            })}
+          </div>
 
-      {/* Alert list */}
-      <div className="flex flex-col gap-3">
-        {filtered.map((alert) => {
-          const sev = severityMeta[alert.severity];
-          const cat = categoryMeta[alert.category];
-          return (
-            <div
-              key={alert.id}
-              className="rounded-xl p-5 cursor-pointer transition-all duration-200"
-              style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--gold-border)')}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
-            >
-              {/* Header row */}
-              <div className="flex items-start gap-3.5 mb-3">
-                <div className="w-10 h-10 rounded-[10px] flex items-center justify-center text-base shrink-0" style={{ background: sev.bg }}>
-                  {alert.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                    <span className="text-[14px] font-semibold" style={{ color: 'var(--text)' }}>{alert.title}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full font-medium" style={{ background: sev.bg, color: sev.color, border: `1px solid ${sev.border}` }}>
-                      {sev.label}
-                    </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: 'var(--navy-4)', color: cat.color, border: '1px solid var(--border)' }}>
-                      {cat.icon} {cat.label}
-                    </span>
+          {/* Alert list */}
+          <div className="flex flex-col gap-3">
+            {filtered.map((alert) => {
+              const sev = severityMeta[alert.severity];
+              const cat = categoryMeta[alert.category];
+              return (
+                <div
+                  key={alert.id}
+                  className="rounded-xl p-5 cursor-pointer transition-all duration-200"
+                  style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--gold-border)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
+                >
+                  <div className="flex items-start gap-3.5 mb-3">
+                    <div className="w-10 h-10 rounded-[10px] flex items-center justify-center text-base shrink-0" style={{ background: sev.bg }}>
+                      {alert.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <span className="text-[14px] font-semibold" style={{ color: 'var(--text)' }}>{alert.title}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full font-medium" style={{ background: sev.bg, color: sev.color, border: `1px solid ${sev.border}` }}>{sev.label}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: 'var(--navy-4)', color: cat.color, border: '1px solid var(--border)' }}>{cat.icon} {cat.label}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px]" style={{ color: 'var(--text-dim)' }}>
+                        <span>{alert.flag} {alert.country}</span>
+                        <span>·</span>
+                        <span>{alert.timestamp}</span>
+                      </div>
+                    </div>
+                    {alert.impact && (
+                      <div className="shrink-0 text-right">
+                        <div className="text-[10px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-dim)' }}>Impact</div>
+                        <div className="text-[12px] font-semibold" style={{ color: sev.color }}>{alert.impact}</div>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center gap-2 text-[11px]" style={{ color: 'var(--text-dim)' }}>
-                    <span>{alert.flag} {alert.country}</span>
-                    <span>·</span>
-                    <span>{alert.timestamp}</span>
+                  <div className="text-[12.5px] leading-relaxed mb-3 pl-[54px]" style={{ color: 'var(--text-muted)' }}>
+                    {alert.description}
+                  </div>
+                  <div className="flex items-center gap-3 pl-[54px] flex-wrap">
+                    {alert.source && (
+                      <span className="text-[11px] px-2.5 py-1 rounded-lg flex items-center gap-1.5" style={{ background: 'var(--navy-4)', color: 'var(--text-dim)' }}>
+                        📰 {alert.source}
+                      </span>
+                    )}
+                    {alert.effectiveDate && (
+                      <span className="text-[11px] px-2.5 py-1 rounded-lg flex items-center gap-1.5" style={{ background: 'var(--navy-4)', color: 'var(--text-dim)' }}>
+                        📅 {alert.effectiveDate}
+                      </span>
+                    )}
                   </div>
                 </div>
-                {alert.impact && (
-                  <div className="shrink-0 text-right">
-                    <div className="text-[10px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-dim)' }}>Impact</div>
-                    <div className="text-[12px] font-semibold" style={{ color: sev.color }}>{alert.impact}</div>
-                  </div>
-                )}
-              </div>
-
-              {/* Description */}
-              <div className="text-[12.5px] leading-relaxed mb-3 pl-[54px]" style={{ color: 'var(--text-muted)' }}>
-                {alert.description}
-              </div>
-
-              {/* Footer metadata */}
-              <div className="flex items-center gap-3 pl-[54px] flex-wrap">
-                {alert.source && (
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg flex items-center gap-1.5" style={{ background: 'var(--navy-4)', color: 'var(--text-dim)' }}>
-                    📰 {alert.source}
-                  </span>
-                )}
-                {alert.effectiveDate && (
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg flex items-center gap-1.5" style={{ background: 'var(--navy-4)', color: 'var(--text-dim)' }}>
-                    📅 {alert.effectiveDate}
-                  </span>
-                )}
-              </div>
-
+              );
+            })}
+          </div>
+        </>
+      ) : (
+        /* Free: feature preview + upgrade prompt */
+        <>
+          <Card className="mb-5">
+            <div className="text-[15px] font-semibold mb-1.5" style={{ color: 'var(--text)' }}>What Legislative Radar includes</div>
+            <div className="text-[12.5px] mb-4" style={{ color: 'var(--text-muted)' }}>
+              Stay ahead of changes that could silently reduce your retirement income.
             </div>
-          );
-        })}
-      </div>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              {[
+                { icon: '📡', title: 'Real-time monitoring', desc: 'Pension laws, tax reforms, and regulatory changes across FR, CH, LU, and EU' },
+                { icon: '💰', title: 'Personal impact analysis', desc: 'See exactly how each change affects your projected retirement income' },
+                { icon: '🔴', title: 'Priority alerts', desc: `${highCount} high-priority alerts currently require attention across ${countries} jurisdictions` },
+                { icon: '📋', title: 'Categorised tracking', desc: 'Filter by retirement age, tax, contributions, or benefits & indexation' },
+              ].map((f) => (
+                <div key={f.title} className="rounded-xl p-4 flex items-start gap-3"
+                  style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
+                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center text-sm shrink-0" style={{ background: 'var(--navy-4)' }}>
+                    {f.icon}
+                  </div>
+                  <div>
+                    <div className="text-[12.5px] font-medium mb-0.5" style={{ color: 'var(--text)' }}>{f.title}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-dim)' }}>{f.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Alert count teaser */}
+            <div className="flex gap-2.5">
+              {Object.entries(categoryMeta).map(([key, meta]) => {
+                const count = riskAlerts.filter((a) => a.category === key).length;
+                if (count === 0) return null;
+                return (
+                  <div key={key} className="flex-1 rounded-lg p-3 text-center"
+                    style={{ background: 'var(--navy-4)', border: '1px solid var(--border)' }}>
+                    <div className="text-lg mb-1">{meta.icon}</div>
+                    <div className="text-[18px] font-bold" style={{ fontFamily: 'var(--font-playfair)', color: meta.color }}>{count}</div>
+                    <div className="text-[10px]" style={{ color: 'var(--text-dim)' }}>{meta.label}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
+          <UpgradePrompt
+            title="Monitor Legislative Changes"
+            description={`${riskAlerts.length} active alerts across ${countries} jurisdictions — including ${highCount} high-priority changes that could affect your retirement income. Get full impact analysis, source references, and recommended actions.`}
+            badge="Pro"
+          />
+        </>
+      )}
     </>
   );
 }

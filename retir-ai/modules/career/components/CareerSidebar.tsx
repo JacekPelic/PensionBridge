@@ -1,7 +1,6 @@
 'use client';
 
 import { Card } from '@/shared/ui/Card';
-import { Button } from '@/shared/ui/Button';
 
 export function CareerSidebar() {
   return (
@@ -35,24 +34,9 @@ export function CareerSidebar() {
         </div>
         <hr className="my-[18px]" style={{ border: 'none', borderTop: '1px solid var(--border)' }} />
         <div className="flex items-start gap-2 text-[11px] leading-relaxed" style={{ color: 'var(--text-dim)' }}>
-          <span className="shrink-0 mt-px" style={{ color: 'var(--amber)' }}>⚠</span>
-          <span>14-month gap detected (Aug 2013 – Aug 2014). Add missing employment to get a more complete picture.</span>
+          <span className="shrink-0 mt-px">ℹ</span>
+          <span>2 periods with no data found in your timeline. Add the missing employment to complete your picture.</span>
         </div>
-      </Card>
-
-      <Card>
-        <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>
-          Gap Impact
-        </div>
-        <div className="text-[12.5px] mb-2.5" style={{ color: 'var(--text-muted)' }}>
-          Fixing the Jan–Mar 2020 gap could recover:
-        </div>
-        <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 24, fontWeight: 700, color: 'var(--green)' }}>
-          +€120/mo
-        </div>
-        <div className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>= +€43,200 over 30 years of retirement</div>
-        <hr className="my-[18px]" style={{ border: 'none', borderTop: '1px solid var(--border)' }} />
-        <Button variant="primary" className="w-full justify-center">Correct This Gap</Button>
       </Card>
 
       <Card>

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/shared/ThemeProvider';
+import { useTier } from '@/shared/TierProvider';
 
 const navItems = [
   {
@@ -17,25 +18,26 @@ const navItems = [
     items: [
       { label: 'Career Journey', icon: '🗺', href: '/career' },
       { label: 'Payout Estimation', icon: '📊', href: '/estimation' },
-      { label: 'Retirement Simulation', icon: '🧮', href: '/simulation' },
+      { label: 'Retirement Simulation', icon: '🧮', href: '/simulation', pro: true },
     ],
   },
   {
     section: 'Protection',
     items: [
       { label: 'Document Vault', icon: '🗄', href: '/vault' },
-      { label: 'Legislative Radar', icon: '📡', href: '/radar', badge: '6' },
+      { label: 'Legislative Radar', icon: '📡', href: '/radar', badge: '6', pro: true },
     ],
   },
   {
     section: 'Family',
-    items: [{ label: 'Family Access', icon: '👥', href: '/family' }],
+    items: [{ label: 'Family Access', icon: '👥', href: '/family', pro: true }],
   },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  const { tier, isPro, toggleTier } = useTier();
 
   return (
     <nav
@@ -93,7 +95,15 @@ export function Sidebar() {
                 >
                   <span className="text-[15px] w-5 text-center">{item.icon}</span>
                   {item.label}
-                  {'badge' in item && item.badge && (
+                  {!isPro && 'pro' in item && item.pro && (
+                    <span
+                      className="ml-auto text-[8px] font-bold rounded-[10px] px-1.5 py-[2px]"
+                      style={{ background: 'var(--gold-dim)', color: 'var(--gold)', border: '1px solid var(--gold-border)' }}
+                    >
+                      PRO
+                    </span>
+                  )}
+                  {'badge' in item && item.badge && isPro && (
                     <span
                       className="ml-auto text-[9px] font-semibold rounded-[10px] px-1.5 py-[1px]"
                       style={{ background: 'var(--red)', color: 'white' }}
@@ -106,6 +116,45 @@ export function Sidebar() {
             })}
           </div>
         ))}
+      </div>
+
+      {/* Tier toggle */}
+      <div className="px-4 py-1.5">
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={toggleTier}
+            className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg text-[12.5px] cursor-pointer transition-all duration-200"
+            style={{
+              border: isPro ? '1px solid var(--gold-border)' : '1px solid var(--border)',
+              background: isPro ? 'var(--gold-dim)' : 'var(--navy-3)',
+              color: isPro ? 'var(--gold-light)' : 'var(--text-muted)',
+              fontFamily: 'var(--font-sans)',
+            }}
+          >
+            <div
+              className="relative w-8 h-[18px] rounded-full transition-all shrink-0"
+              style={{ background: isPro ? 'var(--gold)' : 'var(--navy-4)' }}
+            >
+              <div
+                className="absolute top-[3px] w-3 h-3 rounded-full transition-all"
+                style={{
+                  left: isPro ? 17 : 3,
+                  background: isPro ? 'var(--navy)' : 'var(--text-dim)',
+                }}
+              />
+            </div>
+            {isPro ? 'Pro' : 'Free tier'}
+          </button>
+          {!isPro && (
+            <Link
+              href="/pro"
+              className="text-[10px] font-medium px-2 py-2 rounded-lg no-underline transition-all hover:opacity-80"
+              style={{ color: 'var(--gold)', background: 'var(--gold-dim)', border: '1px solid var(--gold-border)' }}
+            >
+              Details
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Theme toggle */}

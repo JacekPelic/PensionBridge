@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { detectIntent, getResponse } from './chatEngine';
+import { useTier } from '@/shared/TierProvider';
 import type { ChatMessage } from '@/shared/types';
 
 function formatMarkdown(text: string): string {
@@ -18,6 +19,7 @@ const WELCOME_MESSAGE: ChatMessage = {
 };
 
 export function ChatWidget() {
+  const { isPro } = useTier();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -49,7 +51,7 @@ export function ChatWidget() {
 
     setTimeout(() => {
       const intent = detectIntent(text);
-      const resp = getResponse(intent);
+      const resp = getResponse(intent, isPro);
       const botMsg: ChatMessage = { role: 'bot', text: resp.text, suggestions: resp.suggestions };
       setMessages((prev) => [...prev, botMsg]);
       setIsTyping(false);

@@ -9,7 +9,6 @@ import { PensionPicture } from '@/modules/pension/components/dashboard/PensionPi
 import { ChatWidget } from '@/shared/chat/ChatWidget';
 import { OnboardingWizard } from '@/modules/identity/components/onboarding/OnboardingWizard';
 import { CompletionNudge } from '@/modules/completeness/components/CompletionNudge';
-import { ThemeProvider } from '@/shared/ThemeProvider';
 import { DataStageProvider, useDataStage } from '@/modules/identity/DataStageProvider';
 import { UserDataProvider } from '@/modules/identity/UserDataProvider';
 import { Button } from '@/shared/ui/Button';
@@ -82,12 +81,10 @@ function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <ThemeProvider>
-      <UserDataProvider>
-        <DataStageProvider>
-          <DashboardContent />
-        </DataStageProvider>
-      </UserDataProvider>
-    </ThemeProvider>
+    <UserDataProvider>
+      <DataStageProvider>
+        <DashboardContent />
+      </DataStageProvider>
+    </UserDataProvider>
   );
 }

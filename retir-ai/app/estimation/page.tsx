@@ -5,9 +5,8 @@ import { Sidebar } from '@/shared/layout/Sidebar';
 import { Topbar } from '@/shared/layout/Topbar';
 import { IncomeGoalInput } from '@/modules/pension/components/estimation/IncomeGoalInput';
 import { IncomeBreakdown } from '@/modules/pension/components/estimation/IncomeBreakdown';
-import { CapitalModeller } from '@/modules/pension/components/estimation/CapitalModeller';
+import { SimulationCTA } from '@/modules/pension/components/estimation/SimulationCTA';
 import { ChatWidget } from '@/shared/chat/ChatWidget';
-import { ThemeProvider } from '@/shared/ThemeProvider';
 import { UserDataProvider } from '@/modules/identity/UserDataProvider';
 import { Button } from '@/shared/ui/Button';
 
@@ -20,8 +19,7 @@ export default function EstimationPage() {
   }, []);
 
   return (
-    <ThemeProvider>
-      <UserDataProvider>
+    <UserDataProvider>
       <div className="flex min-h-screen">
         <Sidebar />
         <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
@@ -38,12 +36,11 @@ export default function EstimationPage() {
           <div className="flex-1 p-7 animate-fade-in">
             <IncomeGoalInput target={target} onTargetChange={setTarget} netProjected={netMonthly} />
             <IncomeBreakdown onNetComputed={handleNetComputed} />
-            <CapitalModeller />
+            <SimulationCTA />
           </div>
         </div>
         <ChatWidget />
       </div>
-      </UserDataProvider>
-    </ThemeProvider>
+    </UserDataProvider>
   );
 }

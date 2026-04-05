@@ -6,13 +6,16 @@ import { Topbar } from '@/shared/layout/Topbar';
 import { SimulationControls } from '@/modules/tax/components/SimulationControls';
 import { TaxBreakdownTable } from '@/modules/tax/components/TaxBreakdownTable';
 import { CountryComparison } from '@/modules/tax/components/CountryComparison';
+import { SimulationTeaser } from '@/modules/tax/components/SimulationTeaser';
+import { CapitalModeller } from '@/modules/pension/components/estimation/CapitalModeller';
 import { ChatWidget } from '@/shared/chat/ChatWidget';
-import { ThemeProvider } from '@/shared/ThemeProvider';
+import { useTier } from '@/shared/TierProvider';
 import { Button } from '@/shared/ui/Button';
 import { simulateResidence, buildPensionSources } from '@/modules/tax';
 import type { ResidenceCountry } from '@/modules/tax';
 
 export default function SimulationPage() {
+  const { isPro } = useTier();
   const [retirementAge, setRetirementAge] = useState(64);
   const [selectedResidences, setSelectedResidences] = useState<ResidenceCountry[]>(['FR', 'PT', 'IT']);
 
@@ -30,31 +33,35 @@ export default function SimulationPage() {
   }, [retirementAge, selectedResidences]);
 
   return (
-    <ThemeProvider>
-      <div className="flex min-h-screen">
-        <Sidebar />
-        <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
-          <Topbar
-            title="Retirement Simulation"
-            subtitle="When & where — compare net income after taxes"
-            actions={
-              <Button variant="ghost">📤 Export comparison</Button>
-            }
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
+        <Topbar
+          title="Retirement Simulation"
+          subtitle="When & where — compare net income after taxes"
+          actions={
+            <Button variant="ghost">📤 Export comparison</Button>
+          }
+        />
+        <div className="flex-1 p-7 animate-fade-in">
+          <SimulationControls
+            retirementAge={retirementAge}
+            onRetirementAgeChange={setRetirementAge}
+            selectedResidences={selectedResidences}
+            onToggleResidence={toggleResidence}
           />
-          <div className="flex-1 p-7 animate-fade-in">
-            <SimulationControls
-              retirementAge={retirementAge}
-              onRetirementAgeChange={setRetirementAge}
-              selectedResidences={selectedResidences}
-              onToggleResidence={toggleResidence}
-            />
-            {results.length > 0 && <TaxBreakdownTable results={results} />}
-            {results.length > 0 && <CountryComparison results={results} />}
-
-          </div>
+          {isPro ? (
+            <>
+              {results.length > 0 && <TaxBreakdownTable results={results} />}
+              {results.length > 0 && <CountryComparison results={results} />}
+              <CapitalModeller retirementAge={retirementAge} />
+            </>
+          ) : (
+            results.length > 0 && <SimulationTeaser results={results} />
+          )}
         </div>
-        <ChatWidget />
       </div>
-    </ThemeProvider>
+      <ChatWidget />
+    </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { useUserData } from '@/modules/identity/UserDataProvider';
 import { useDataStage } from '@/modules/identity/DataStageProvider';
+import { useTier } from '@/shared/TierProvider';
 import { STEPS } from './steps';
 import type { CompletenessStep, CompletenessState } from './types';
 
@@ -81,9 +82,16 @@ function filterByCountry(
 export function useCompleteness(): CompletenessState {
   const { userData, isFromOnboarding } = useUserData();
   const { stage } = useDataStage();
+  const { isPro } = useTier();
 
   return useMemo(() => {
-    const relevantSteps = filterByCountry(STEPS, userData.countriesWorked);
+    const countryFiltered = filterByCountry(STEPS, userData.countriesWorked);
+
+    // Filter by tier: free users only see free steps
+    const relevantSteps = isPro
+      ? countryFiltered
+      : countryFiltered.filter((s) => s.tier === 'free');
+
     const completedIds = getCompletedIds(userData, isFromOnboarding, stage);
 
     const completed: CompletenessStep[] = [];
@@ -112,5 +120,5 @@ export function useCompleteness(): CompletenessState {
       totalWeight,
       completedWeight,
     };
-  }, [userData, isFromOnboarding, stage]);
+  }, [userData, isFromOnboarding, stage, isPro]);
 }

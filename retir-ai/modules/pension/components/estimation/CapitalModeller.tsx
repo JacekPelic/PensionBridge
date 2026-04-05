@@ -6,7 +6,11 @@ import { Pill } from '@/shared/ui/Pill';
 import { SWISS_P2_CAPITAL, DRAWDOWN_YEARS } from '@/modules/pension/constants';
 import { capitalComponents } from '@/modules/pension/data/mock-data';
 
-export function CapitalModeller() {
+interface Props {
+  retirementAge?: number;
+}
+
+export function CapitalModeller({ retirementAge }: Props) {
   const [capitalPct, setCapitalPct] = useState(0);
 
   const lumpSum = Math.round(SWISS_P2_CAPITAL * (capitalPct / 100));
@@ -19,7 +23,9 @@ export function CapitalModeller() {
         <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[13px]" style={{ background: 'var(--blue-dim)' }}>🏦</div>
         <div>
           <div className="text-[15px] font-semibold" style={{ color: 'var(--text)' }}>Capital at Retirement</div>
-          <div className="text-xs" style={{ color: 'var(--text-dim)' }}>Your pension components — annuity vs lump-sum options</div>
+          <div className="text-xs" style={{ color: 'var(--text-dim)' }}>
+            Your pension components — annuity vs lump-sum options{retirementAge != null && <span> · retiring at {retirementAge}</span>}
+          </div>
         </div>
       </div>
 

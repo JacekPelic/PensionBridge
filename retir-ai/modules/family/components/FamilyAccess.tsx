@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { familyMembers } from '@/modules/family/data/mock-data';
 import { Card } from '@/shared/ui/Card';
 import { Button } from '@/shared/ui/Button';
+import { UpgradePrompt } from '@/shared/ui/UpgradePrompt';
+import { useTier } from '@/shared/TierProvider';
 
 const accessStyles: Record<string, { bg: string; color: string; label: string }> = {
   full: { bg: 'var(--green-dim)', color: 'var(--green)', label: 'Full Access' },
@@ -145,6 +147,7 @@ const claimData: ClaimCountry[] = [
 
 export function FamilyAccess() {
   const [expandedCountry, setExpandedCountry] = useState<string | null>(null);
+  const { isPro } = useTier();
 
   return (
     <>
@@ -214,208 +217,248 @@ export function FamilyAccess() {
         </div>
       </div>
 
-      <Card className="mb-5">
-        <div className="text-[15px] font-semibold mb-4" style={{ color: 'var(--text)' }}>Family Members</div>
-        <div className="flex flex-col gap-2.5">
-          {familyMembers.map((member) => {
-            const access = accessStyles[member.accessLevel];
-            return (
-              <div
-                key={member.id}
-                className="flex items-center gap-3.5 p-4 px-[18px] rounded-xl cursor-pointer transition-all duration-200"
-                style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--gold-border)')}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
-              >
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-[15px] font-bold shrink-0 text-white"
-                  style={{ background: `linear-gradient(135deg, ${member.gradientFrom}, ${member.gradientTo})` }}
-                >
-                  {member.initials}
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium" style={{ color: 'var(--text)' }}>{member.name}</div>
-                  <div className="text-xs" style={{ color: 'var(--text-dim)' }}>{member.relation}</div>
-                </div>
-                <span
-                  className="text-[11px] px-2.5 py-[3px] rounded-md font-medium"
-                  style={{ background: access.bg, color: access.color }}
-                >
-                  {access.label}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-
-      {/* Claim instructions by country */}
-      <div className="text-[15px] font-semibold mb-4" style={{ color: 'var(--text)' }}>Claim Instructions by Country</div>
-      <div className="text-[13px] mb-4 max-w-[640px]" style={{ color: 'var(--text-muted)' }}>
-        Step-by-step guides for your family to claim your pension in each country. Share these with your beneficiaries so they know exactly what to do.
-      </div>
-
-      <div className="flex flex-col gap-3 mb-5">
-        {claimData.map((c) => {
-          const isOpen = expandedCountry === c.country;
-          return (
-            <div key={c.country}>
-              {/* Country header */}
-              <button
-                onClick={() => setExpandedCountry(isOpen ? null : c.country)}
-                className="w-full rounded-xl p-4 px-5 flex items-center gap-3.5 cursor-pointer transition-all duration-200 text-left"
-                style={{
-                  background: 'var(--navy-3)',
-                  border: isOpen ? '1px solid var(--gold-border)' : '1px solid var(--border)',
-                  borderRadius: isOpen ? '12px 12px 0 0' : '12px',
-                }}
-              >
-                <span className="text-2xl">{c.flag}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-semibold" style={{ color: 'var(--text)' }}>{c.country}</div>
-                  <div className="text-[11px] flex items-center gap-2" style={{ color: 'var(--text-dim)' }}>
-                    <span>{c.steps.length} steps</span>
-                    <span>·</span>
-                    <span>{c.documents.length} documents needed</span>
-                    <span>·</span>
-                    <span>{c.language}</span>
+      {isPro ? (
+        /* Pro: full family management + claim guides */
+        <>
+          <Card className="mb-5">
+            <div className="text-[15px] font-semibold mb-4" style={{ color: 'var(--text)' }}>Family Members</div>
+            <div className="flex flex-col gap-2.5">
+              {familyMembers.map((member) => {
+                const access = accessStyles[member.accessLevel];
+                return (
+                  <div
+                    key={member.id}
+                    className="flex items-center gap-3.5 p-4 px-[18px] rounded-xl cursor-pointer transition-all duration-200"
+                    style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--gold-border)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
+                  >
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-[15px] font-bold shrink-0 text-white"
+                      style={{ background: `linear-gradient(135deg, ${member.gradientFrom}, ${member.gradientTo})` }}
+                    >
+                      {member.initials}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium" style={{ color: 'var(--text)' }}>{member.name}</div>
+                      <div className="text-xs" style={{ color: 'var(--text-dim)' }}>{member.relation}</div>
+                    </div>
+                    <span
+                      className="text-[11px] px-2.5 py-[3px] rounded-md font-medium"
+                      style={{ background: access.bg, color: access.color }}
+                    >
+                      {access.label}
+                    </span>
                   </div>
-                </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  <span
-                    className="text-[10px] px-2.5 py-1 rounded-full font-medium"
+                );
+              })}
+            </div>
+          </Card>
+
+          {/* Claim instructions by country */}
+          <div className="text-[15px] font-semibold mb-4" style={{ color: 'var(--text)' }}>Claim Instructions by Country</div>
+          <div className="text-[13px] mb-4 max-w-[640px]" style={{ color: 'var(--text-muted)' }}>
+            Step-by-step guides for your family to claim your pension in each country. Share these with your beneficiaries so they know exactly what to do.
+          </div>
+
+          <div className="flex flex-col gap-3 mb-5">
+            {claimData.map((c) => {
+              const isOpen = expandedCountry === c.country;
+              return (
+                <div key={c.country}>
+                  <button
+                    onClick={() => setExpandedCountry(isOpen ? null : c.country)}
+                    className="w-full rounded-xl p-4 px-5 flex items-center gap-3.5 cursor-pointer transition-all duration-200 text-left"
                     style={{
-                      background: c.status === 'shared' ? 'var(--green-dim)' : 'var(--amber-dim)',
-                      color: c.status === 'shared' ? 'var(--green)' : 'var(--amber)',
+                      background: 'var(--navy-3)',
+                      border: isOpen ? '1px solid var(--gold-border)' : '1px solid var(--border)',
+                      borderRadius: isOpen ? '12px 12px 0 0' : '12px',
                     }}
                   >
-                    {c.status === 'shared' ? `Shared with ${c.sharedWith}` : 'Draft — not yet shared'}
-                  </span>
-                  <span className="text-sm transition-transform duration-200" style={{ color: 'var(--text-dim)', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
-                    ▾
-                  </span>
-                </div>
-              </button>
+                    <span className="text-2xl">{c.flag}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[14px] font-semibold" style={{ color: 'var(--text)' }}>{c.country}</div>
+                      <div className="text-[11px] flex items-center gap-2" style={{ color: 'var(--text-dim)' }}>
+                        <span>{c.steps.length} steps</span>
+                        <span>·</span>
+                        <span>{c.documents.length} documents needed</span>
+                        <span>·</span>
+                        <span>{c.language}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span
+                        className="text-[10px] px-2.5 py-1 rounded-full font-medium"
+                        style={{
+                          background: c.status === 'shared' ? 'var(--green-dim)' : 'var(--amber-dim)',
+                          color: c.status === 'shared' ? 'var(--green)' : 'var(--amber)',
+                        }}
+                      >
+                        {c.status === 'shared' ? `Shared with ${c.sharedWith}` : 'Draft — not yet shared'}
+                      </span>
+                      <span className="text-sm transition-transform duration-200" style={{ color: 'var(--text-dim)', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                        ▾
+                      </span>
+                    </div>
+                  </button>
 
-              {/* Expanded content */}
-              {isOpen && (
-                <div className="rounded-b-xl p-5" style={{ background: 'var(--navy-4)', border: '1px solid var(--gold-border)', borderTop: 'none' }}>
-                  {/* Deadline & processing */}
-                  <div className="grid grid-cols-2 gap-3 mb-5">
-                    <div className="rounded-lg p-3" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
-                      <div className="text-[10px] uppercase tracking-wider font-medium mb-1" style={{ color: 'var(--text-dim)' }}>Claim deadline</div>
-                      <div className="text-[12px]" style={{ color: 'var(--text-muted)' }}>{c.deadline}</div>
-                    </div>
-                    <div className="rounded-lg p-3" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
-                      <div className="text-[10px] uppercase tracking-wider font-medium mb-1" style={{ color: 'var(--text-dim)' }}>Processing time</div>
-                      <div className="text-[12px]" style={{ color: 'var(--text-muted)' }}>{c.processingTime}</div>
-                    </div>
-                  </div>
+                  {isOpen && (
+                    <div className="rounded-b-xl p-5" style={{ background: 'var(--navy-4)', border: '1px solid var(--gold-border)', borderTop: 'none' }}>
+                      <div className="grid grid-cols-2 gap-3 mb-5">
+                        <div className="rounded-lg p-3" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
+                          <div className="text-[10px] uppercase tracking-wider font-medium mb-1" style={{ color: 'var(--text-dim)' }}>Claim deadline</div>
+                          <div className="text-[12px]" style={{ color: 'var(--text-muted)' }}>{c.deadline}</div>
+                        </div>
+                        <div className="rounded-lg p-3" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
+                          <div className="text-[10px] uppercase tracking-wider font-medium mb-1" style={{ color: 'var(--text-dim)' }}>Processing time</div>
+                          <div className="text-[12px]" style={{ color: 'var(--text-muted)' }}>{c.processingTime}</div>
+                        </div>
+                      </div>
 
-                  {/* Steps checklist */}
-                  <div className="mb-5">
-                    <div className="text-[12px] font-semibold mb-3 flex items-center gap-2" style={{ color: 'var(--text)' }}>
-                      <span className="w-5 h-5 rounded-md flex items-center justify-center text-[10px]" style={{ background: 'var(--gold-dim)', color: 'var(--gold)' }}>✓</span>
-                      Steps to follow
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      {c.steps.map((step, i) => (
-                        <div key={i} className="flex gap-3 p-3 rounded-lg" style={{ background: 'var(--navy-3)' }}>
-                          <div
-                            className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5"
-                            style={{ background: 'var(--navy-5)', color: 'var(--text-muted)' }}
-                          >
-                            {i + 1}
+                      <div className="mb-5">
+                        <div className="text-[12px] font-semibold mb-3 flex items-center gap-2" style={{ color: 'var(--text)' }}>
+                          <span className="w-5 h-5 rounded-md flex items-center justify-center text-[10px]" style={{ background: 'var(--gold-dim)', color: 'var(--gold)' }}>✓</span>
+                          Steps to follow
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          {c.steps.map((step, i) => (
+                            <div key={i} className="flex gap-3 p-3 rounded-lg" style={{ background: 'var(--navy-3)' }}>
+                              <div className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5" style={{ background: 'var(--navy-5)', color: 'var(--text-muted)' }}>
+                                {i + 1}
+                              </div>
+                              <div>
+                                <div className="text-[12.5px] font-medium mb-0.5" style={{ color: 'var(--text)' }}>{step.label}</div>
+                                <div className="text-[11.5px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>{step.detail}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 mb-5">
+                        <div>
+                          <div className="text-[12px] font-semibold mb-3 flex items-center gap-2" style={{ color: 'var(--text)' }}>
+                            <span className="w-5 h-5 rounded-md flex items-center justify-center text-[10px]" style={{ background: 'var(--blue-dim)', color: 'var(--blue)' }}>📄</span>
+                            Required documents
                           </div>
-                          <div>
-                            <div className="text-[12.5px] font-medium mb-0.5" style={{ color: 'var(--text)' }}>{step.label}</div>
-                            <div className="text-[11.5px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>{step.detail}</div>
+                          <div className="flex flex-col gap-1.5">
+                            {c.documents.map((doc, i) => (
+                              <div key={i} className="flex items-start gap-2 text-[11.5px]" style={{ color: 'var(--text-muted)' }}>
+                                <span className="shrink-0 mt-0.5" style={{ color: 'var(--text-dim)' }}>•</span>
+                                <span>{doc}</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Documents & Contacts side by side */}
-                  <div className="grid grid-cols-2 gap-4 mb-5">
-                    {/* Required documents */}
-                    <div>
-                      <div className="text-[12px] font-semibold mb-3 flex items-center gap-2" style={{ color: 'var(--text)' }}>
-                        <span className="w-5 h-5 rounded-md flex items-center justify-center text-[10px]" style={{ background: 'var(--blue-dim)', color: 'var(--blue)' }}>📄</span>
-                        Required documents
-                      </div>
-                      <div className="flex flex-col gap-1.5">
-                        {c.documents.map((doc, i) => (
-                          <div key={i} className="flex items-start gap-2 text-[11.5px]" style={{ color: 'var(--text-muted)' }}>
-                            <span className="shrink-0 mt-0.5" style={{ color: 'var(--text-dim)' }}>•</span>
-                            <span>{doc}</span>
+                        <div>
+                          <div className="text-[12px] font-semibold mb-3 flex items-center gap-2" style={{ color: 'var(--text)' }}>
+                            <span className="w-5 h-5 rounded-md flex items-center justify-center text-[10px]" style={{ background: 'var(--green-dim)', color: 'var(--green)' }}>📞</span>
+                            Who to contact
                           </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Contacts */}
-                    <div>
-                      <div className="text-[12px] font-semibold mb-3 flex items-center gap-2" style={{ color: 'var(--text)' }}>
-                        <span className="w-5 h-5 rounded-md flex items-center justify-center text-[10px]" style={{ background: 'var(--green-dim)', color: 'var(--green)' }}>📞</span>
-                        Who to contact
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        {c.contacts.map((contact, i) => (
-                          <div key={i} className="rounded-lg p-3" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
-                            <div className="text-[12px] font-medium" style={{ color: 'var(--text)' }}>{contact.institution}</div>
-                            <div className="text-[10px] mb-1.5" style={{ color: 'var(--text-dim)' }}>{contact.pillar}</div>
-                            {contact.phone && (
-                              <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                                Tel: <span style={{ color: 'var(--blue)' }}>{contact.phone}</span>
+                          <div className="flex flex-col gap-2">
+                            {c.contacts.map((contact, i) => (
+                              <div key={i} className="rounded-lg p-3" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
+                                <div className="text-[12px] font-medium" style={{ color: 'var(--text)' }}>{contact.institution}</div>
+                                <div className="text-[10px] mb-1.5" style={{ color: 'var(--text-dim)' }}>{contact.pillar}</div>
+                                {contact.phone && (
+                                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                                    Tel: <span style={{ color: 'var(--blue)' }}>{contact.phone}</span>
+                                  </div>
+                                )}
+                                {contact.website && (
+                                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                                    Web: <span style={{ color: 'var(--blue)' }}>{contact.website}</span>
+                                  </div>
+                                )}
+                                {contact.address && (
+                                  <div className="text-[11px] mt-1" style={{ color: 'var(--text-dim)' }}>{contact.address}</div>
+                                )}
                               </div>
-                            )}
-                            {contact.website && (
-                              <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                                Web: <span style={{ color: 'var(--blue)' }}>{contact.website}</span>
-                              </div>
-                            )}
-                            {contact.address && (
-                              <div className="text-[11px] mt-1" style={{ color: 'var(--text-dim)' }}>{contact.address}</div>
-                            )}
+                            ))}
                           </div>
-                        ))}
+                        </div>
                       </div>
-                    </div>
-                  </div>
 
-                  {/* Warnings */}
-                  {c.warnings && c.warnings.length > 0 && (
-                    <div className="rounded-lg p-3.5" style={{ background: 'var(--red-dim)', border: '1px solid rgba(239,68,68,0.15)' }}>
-                      <div className="text-[11px] font-semibold mb-2 flex items-center gap-1.5" style={{ color: 'var(--red)' }}>
-                        ⚠ Important warnings
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        {c.warnings.map((w, i) => (
-                          <div key={i} className="flex items-start gap-2 text-[11.5px]" style={{ color: 'var(--text-muted)' }}>
-                            <span className="shrink-0 mt-0.5" style={{ color: 'var(--red)' }}>•</span>
-                            <span>{w}</span>
+                      {c.warnings && c.warnings.length > 0 && (
+                        <div className="rounded-lg p-3.5" style={{ background: 'var(--red-dim)', border: '1px solid rgba(239,68,68,0.15)' }}>
+                          <div className="text-[11px] font-semibold mb-2 flex items-center gap-1.5" style={{ color: 'var(--red)' }}>
+                            ⚠ Important warnings
                           </div>
-                        ))}
+                          <div className="flex flex-col gap-1">
+                            {c.warnings.map((w, i) => (
+                              <div key={i} className="flex items-start gap-2 text-[11.5px]" style={{ color: 'var(--text-muted)' }}>
+                                <span className="shrink-0 mt-0.5" style={{ color: 'var(--red)' }}>•</span>
+                                <span>{w}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-3 mt-4">
+                        <Button variant="primary">
+                          {c.status === 'shared' ? 'Re-share with family' : 'Share with family'}
+                        </Button>
+                        <Button variant="ghost">Export as PDF</Button>
                       </div>
                     </div>
                   )}
+                </div>
+              );
+            })}
+          </div>
 
-                  {/* Share button */}
-                  <div className="flex items-center gap-3 mt-4">
-                    <Button variant="primary">
-                      {c.status === 'shared' ? 'Re-share with family' : 'Share with family'}
-                    </Button>
-                    <Button variant="ghost">Export as PDF</Button>
+          <Button variant="primary">+ Add Family Member</Button>
+        </>
+      ) : (
+        /* Free: feature preview + upgrade prompt */
+        <>
+          {/* What's included preview */}
+          <Card className="mb-5">
+            <div className="text-[15px] font-semibold mb-1.5" style={{ color: 'var(--text)' }}>What Family Access includes</div>
+            <div className="text-[12.5px] mb-4" style={{ color: 'var(--text-muted)' }}>
+              Protect your family from missed claims and lost pensions across all your countries.
+            </div>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              {[
+                { icon: '👨‍👩‍👧', title: 'Family member management', desc: 'Add spouse, children, and beneficiaries with controlled access levels' },
+                { icon: '📋', title: 'Country claim guides', desc: 'Step-by-step instructions for France, Switzerland, and Luxembourg' },
+                { icon: '📄', title: 'Document checklists', desc: '21 required documents identified across 3 jurisdictions' },
+                { icon: '📤', title: 'Share & export', desc: 'Send guides to family members or download as PDF' },
+              ].map((f) => (
+                <div key={f.title} className="rounded-xl p-4 flex items-start gap-3"
+                  style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
+                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center text-sm shrink-0" style={{ background: 'var(--navy-4)' }}>
+                    {f.icon}
+                  </div>
+                  <div>
+                    <div className="text-[12.5px] font-medium mb-0.5" style={{ color: 'var(--text)' }}>{f.title}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-dim)' }}>{f.desc}</div>
                   </div>
                 </div>
-              )}
+              ))}
             </div>
-          );
-        })}
-      </div>
 
-      <Button variant="primary">+ Add Family Member</Button>
+            {/* Country summary */}
+            <div className="flex gap-2.5 mb-4">
+              {claimData.map((c) => (
+                <div key={c.country} className="flex-1 rounded-lg p-3 text-center"
+                  style={{ background: 'var(--navy-4)', border: '1px solid var(--border)' }}>
+                  <div className="text-xl mb-1">{c.flag}</div>
+                  <div className="text-[12px] font-medium" style={{ color: 'var(--text)' }}>{c.country}</div>
+                  <div className="text-[10px]" style={{ color: 'var(--text-dim)' }}>{c.steps.length} steps · {c.documents.length} docs</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          <UpgradePrompt
+            title="Protect Your Family"
+            description="Ensure your family knows exactly how to claim your pensions across France, Switzerland, and Luxembourg — with step-by-step guides, deadlines, contacts, and warnings."
+            badge="Pro"
+          />
+        </>
+      )}
     </>
   );
 }

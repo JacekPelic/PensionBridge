@@ -3,6 +3,39 @@ export interface ChatResponse {
   suggestions: string[];
 }
 
+const PRO_INTENTS = new Set(['gap', 'gap_buyback', 'switzerland', 'freizuegigkeit', 'target', 'retire_65', 'tax']);
+
+const proTeaserResponses: Record<string, ChatResponse> = {
+  gap: {
+    text: `I've detected **contribution gaps** in your career data that may be affecting your pension projection.\n\nUpgrade to **Pro** to see the full gap analysis — including financial impact per gap and whether they're correctable.`,
+    suggestions: ['What documents am I missing?', 'Is retiring at 64 safe?'],
+  },
+  gap_buyback: {
+    text: `There may be a **voluntary buy-back option** available to recover lost pension income from your career gaps.\n\nUpgrade to **Pro** to see the cost-benefit analysis and step-by-step instructions.`,
+    suggestions: ['What documents am I missing?', 'Is retiring at 64 safe?'],
+  },
+  switzerland: {
+    text: `I have information about your **Swiss pension situation** — including your AVS/AHV status and workplace pension tracking.\n\nUpgrade to **Pro** for personalised analysis of your Swiss pension across all pillars.`,
+    suggestions: ['What documents am I missing?', 'Is retiring at 64 safe?'],
+  },
+  freizuegigkeit: {
+    text: `I can explain how **vested benefits accounts** work and help you locate potentially dormant Swiss workplace pension assets.\n\nUpgrade to **Pro** for personalised guidance based on your career history.`,
+    suggestions: ['What documents am I missing?', 'Is retiring at 64 safe?'],
+  },
+  target: {
+    text: `I can break down your **income gap** and show specific strategies to close it — including product recommendations and contribution scenarios.\n\nUpgrade to **Pro** to access your personalised gap-closing analysis.`,
+    suggestions: ['What documents am I missing?', 'Is retiring at 64 safe?'],
+  },
+  retire_65: {
+    text: `Retiring at **65 vs 64** has significant implications across your 3 countries — including potential décote avoidance and higher Swiss benefits.\n\nUpgrade to **Pro** for a detailed year-by-year comparison based on your data.`,
+    suggestions: ['Is retiring at 64 safe?', 'What documents am I missing?'],
+  },
+  tax: {
+    text: `Your tax situation at retirement depends on where you're **tax resident** — and with pension income from 3 countries, the differences can be substantial.\n\nUpgrade to **Pro** to see a personalised tax comparison across residence countries.`,
+    suggestions: ['What documents am I missing?', 'Is retiring at 64 safe?'],
+  },
+};
+
 const chatResponses: Record<string, ChatResponse> = {
   gap: {
     text: `Good question, Mats. I've found **2 gaps** in your imported career data:\n\n**1. Jan–Mar 2020 (3 months)**\nBetween your Swiss period (ended Dec 2019) and your Luxembourg period (started Apr 2020). Impact: **−€120/month** at retirement.\n\n**2. Aug 2013 – Aug 2014 (14 months)**\nBetween your two French employment periods. We don't have any data for this time — were you working, studying, or abroad?\n\nThe Luxembourg gap can potentially be fixed via CNAP voluntary buy-back (~€1,200). Adding the missing period would improve your estimate.`,
@@ -65,6 +98,9 @@ export function detectIntent(msg: string): string {
   return 'default';
 }
 
-export function getResponse(intent: string): ChatResponse {
+export function getResponse(intent: string, isPro?: boolean): ChatResponse {
+  if (!isPro && PRO_INTENTS.has(intent)) {
+    return proTeaserResponses[intent] || proTeaserResponses.gap;
+  }
   return chatResponses[intent] || chatResponses.default;
 }

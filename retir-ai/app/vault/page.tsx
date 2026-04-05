@@ -4,10 +4,9 @@ import { Sidebar } from '@/shared/layout/Sidebar';
 import { Topbar } from '@/shared/layout/Topbar';
 import { DocumentVault } from '@/modules/vault/components/DocumentVault';
 import { ChatWidget } from '@/shared/chat/ChatWidget';
-import { ThemeProvider } from '@/shared/ThemeProvider';
 import { DataStageProvider, useDataStage } from '@/modules/identity/DataStageProvider';
 import { VaultProvider, useVault } from '@/modules/vault/VaultProvider';
-import { VaultTierProvider, useVaultTier } from '@/modules/vault/VaultTierProvider';
+import { VaultTierProvider } from '@/modules/vault/VaultTierProvider';
 import { Button } from '@/shared/ui/Button';
 
 function StageToggle() {
@@ -42,38 +41,6 @@ function StageToggle() {
   );
 }
 
-function TierToggle() {
-  const { tier, toggleTier } = useVaultTier();
-  const isPro = tier === 'pro';
-
-  return (
-    <button
-      onClick={toggleTier}
-      className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg cursor-pointer transition-all text-[12px] font-medium"
-      style={{
-        background: isPro ? 'var(--gold-dim)' : 'var(--navy-3)',
-        border: isPro ? '1px solid var(--gold-border)' : '1px solid var(--border)',
-        color: isPro ? 'var(--gold-light)' : 'var(--text-muted)',
-        fontFamily: 'var(--font-sans)',
-      }}
-    >
-      <div
-        className="relative w-8 h-[18px] rounded-full transition-all"
-        style={{ background: isPro ? 'var(--gold)' : 'var(--navy-4)' }}
-      >
-        <div
-          className="absolute top-[3px] w-3 h-3 rounded-full transition-all"
-          style={{
-            left: isPro ? 17 : 3,
-            background: isPro ? 'var(--navy)' : 'var(--text-dim)',
-          }}
-        />
-      </div>
-      {isPro ? 'Vault Pro' : 'Free tier'}
-    </button>
-  );
-}
-
 function UploadButton() {
   const { triggerUpload } = useVault();
   return <Button variant="primary" onClick={triggerUpload}>+ Upload Document</Button>;
@@ -91,7 +58,6 @@ function VaultContent() {
           subtitle="Secure storage · AI extraction · verification tracking"
           actions={
             <>
-              <TierToggle />
               <StageToggle />
               <UploadButton />
             </>
@@ -108,14 +74,12 @@ function VaultContent() {
 
 export default function VaultPage() {
   return (
-    <ThemeProvider>
-      <DataStageProvider>
-        <VaultTierProvider>
-          <VaultProvider>
-            <VaultContent />
-          </VaultProvider>
-        </VaultTierProvider>
-      </DataStageProvider>
-    </ThemeProvider>
+    <DataStageProvider>
+      <VaultTierProvider>
+        <VaultProvider>
+          <VaultContent />
+        </VaultProvider>
+      </VaultTierProvider>
+    </DataStageProvider>
   );
 }

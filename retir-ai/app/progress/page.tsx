@@ -5,7 +5,6 @@ import { Topbar } from '@/shared/layout/Topbar';
 import { ChatWidget } from '@/shared/chat/ChatWidget';
 import { CompletenessHero } from '@/modules/completeness/components/CompletenessHero';
 import { PensionPicture } from '@/modules/pension/components/dashboard/PensionPicture';
-import { ThemeProvider } from '@/shared/ThemeProvider';
 import { DataStageProvider, useDataStage } from '@/modules/identity/DataStageProvider';
 import { UserDataProvider } from '@/modules/identity/UserDataProvider';
 import { Button } from '@/shared/ui/Button';
@@ -71,12 +70,10 @@ function ProgressContent() {
 
 export default function ProgressPage() {
   return (
-    <ThemeProvider>
-      <UserDataProvider>
-        <DataStageProvider>
-          <ProgressContent />
-        </DataStageProvider>
-      </UserDataProvider>
-    </ThemeProvider>
+    <UserDataProvider>
+      <DataStageProvider>
+        <ProgressContent />
+      </DataStageProvider>
+    </UserDataProvider>
   );
 }

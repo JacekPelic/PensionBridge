@@ -1,3 +1,4 @@
+export type PlatformTier = 'free' | 'pro';
 export type Country = 'FR' | 'CH' | 'LU';
 export type PillarType = 'p1' | 'p2' | 'p3';
 export type Severity = 'high' | 'medium' | 'low';
