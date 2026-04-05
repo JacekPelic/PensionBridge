@@ -26,7 +26,16 @@
       "Bash(xargs -I {} bash -c 'echo \"=== {} ===\" && head -20 {}')",
       "Bash(find:*)",
       "Bash(npm run:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(py --version)",
+      "Bash(where python:*)",
+      "Bash(where python3:*)",
+      "Bash(where py:*)",
+      "Bash(where node:*)",
+      "Bash(pip install:*)",
+      "Bash(C:/Users/jacek/AppData/Local/Microsoft/WindowsApps/python.exe -c \"import openpyxl; print\\('OK'\\)\")",
+      "Bash(npm list:*)",
+      "Bash(npm install:*)"
     ],
     "autoApprove": true
   }
