@@ -93,11 +93,11 @@ export default function ProPage() {
 
               {/* Pricing */}
               <div className="inline-flex items-end gap-1 mb-2">
-                <span className="text-[42px] font-bold" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--gold-light)', lineHeight: 1 }}>€9.90</span>
+                <span className="text-[42px] font-bold" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--gold-light)', lineHeight: 1 }}>€19.90</span>
                 <span className="text-[15px] mb-1" style={{ color: 'var(--text-dim)' }}>/ month</span>
               </div>
               <div className="text-[12px] mb-5" style={{ color: 'var(--text-dim)' }}>
-                or €99/year (save 17%) · cancel anytime
+                or €199/year (save 17%) · cancel anytime
               </div>
 
               {isPro ? (
@@ -107,7 +107,7 @@ export default function ProPage() {
                 </div>
               ) : (
                 <Button variant="primary" onClick={toggleTier}>
-                  Start Pro — €9.90/mo
+                  Start Pro — €19.90/mo
                 </Button>
               )}
             </div>
@@ -215,7 +215,7 @@ export default function ProPage() {
           {!isPro && (
             <div className="text-center py-4">
               <Button variant="primary" onClick={toggleTier}>
-                Start Pro — €9.90/mo
+                Start Pro — €19.90/mo
               </Button>
               <div className="text-[11px] mt-2" style={{ color: 'var(--text-dim)' }}>
                 Cancel anytime · no commitment · instant access
