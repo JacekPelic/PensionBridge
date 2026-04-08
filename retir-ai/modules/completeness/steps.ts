@@ -169,12 +169,12 @@ export const STEPS: CompletenessStep[] = [
     priority: 21,
   },
 
-  // ── Family Access ────────────────────────────────────
+  // ── Trusted Access ───────────────────────────────────
   {
     id: 'family-member-added',
     label: 'Add a family member',
     why: 'If something happens to you, your family needs to know where your pensions and insurance are.',
-    how: 'Go to Family Access and add your spouse or next of kin with their email address.',
+    how: 'Go to Trusted Access and add your spouse or next of kin with their email address.',
     effort: '2 minutes',
     weight: 5,
     category: 'family',
@@ -189,7 +189,7 @@ export const STEPS: CompletenessStep[] = [
     id: 'family-emergency-packet',
     label: 'Generate emergency packet',
     why: 'A personalized PDF with every account number, institution contact, and claim step — everything your family needs in one place.',
-    how: 'Once your documents are uploaded, click "Generate Emergency Packet" on the Family Access page.',
+    how: 'Once your documents are uploaded, click "Generate Emergency Packet" on the Trusted Access page.',
     effort: '1 minute',
     weight: 5,
     category: 'family',

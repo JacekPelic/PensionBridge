@@ -35,7 +35,13 @@
       "Bash(pip install:*)",
       "Bash(C:/Users/jacek/AppData/Local/Microsoft/WindowsApps/python.exe -c \"import openpyxl; print\\('OK'\\)\")",
       "Bash(npm list:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(xargs ls:*)",
+      "Bash(xargs -I {} sh -c 'echo \"=== {} ===\" && head -30 {}')",
+      "WebFetch(domain:www.namecheap.com)",
+      "WebFetch(domain:instantdomainsearch.com)",
+      "Bash(whois prevista.com)",
+      "Bash(python:*)"
     ],
     "autoApprove": true
   }

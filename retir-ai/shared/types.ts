@@ -3,7 +3,9 @@ export type Country = 'FR' | 'CH' | 'LU';
 export type PillarType = 'p1' | 'p2' | 'p3';
 export type Severity = 'high' | 'medium' | 'low';
 export type DocStatus = 'verified' | 'pending' | 'missing';
-export type AccessLevel = 'full' | 'beneficiary' | 'emergency' | 'readonly';
+export type AccessLevel = 'full' | 'contributor' | 'beneficiary' | 'emergency' | 'readonly';
+export type DelegateType = 'family' | 'advisor';
+export type AccessScope = 'dashboard' | 'career' | 'pension' | 'vault' | 'simulation' | 'radar' | 'claims';
 
 export interface UserProfile {
   firstName: string;
@@ -113,14 +115,32 @@ export interface RiskAlert {
   effectiveDate?: string;
 }
 
-export interface FamilyMember {
+export interface TrustedDelegate {
   id: string;
   initials: string;
   name: string;
   relation: string;
+  delegateType: DelegateType;
   accessLevel: AccessLevel;
+  scopes: AccessScope[];
   gradientFrom: string;
   gradientTo: string;
+  company?: string;
+  title?: string;
+  addedDate: string;
+}
+
+/** @deprecated Use TrustedDelegate instead */
+export type FamilyMember = TrustedDelegate;
+
+export interface AuditEntry {
+  id: string;
+  delegateId: string;
+  delegateName: string;
+  action: string;
+  scope: AccessScope;
+  timestamp: string;
+  detail: string;
 }
 
 export interface CapitalComponent {

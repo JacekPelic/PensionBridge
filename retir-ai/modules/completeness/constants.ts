@@ -5,6 +5,6 @@ export const CATEGORY_META: Record<StepCategory, { label: string; icon: string; 
   career:    { label: 'Career',            icon: '💼', color: 'var(--amber)' },
   documents: { label: 'Pension Documents', icon: '📋', color: 'var(--green)' },
   insurance: { label: 'Insurance & Personal Savings', icon: '🛡️', color: 'var(--blue)' },
-  family:    { label: 'Family Access',     icon: '👨‍👩‍👧', color: '#ec4899' },
+  family:    { label: 'Trusted Access',    icon: '👥', color: '#ec4899' },
   planning:  { label: 'Planning',          icon: '📈', color: 'var(--gold)' },
 };

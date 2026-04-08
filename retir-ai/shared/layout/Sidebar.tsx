@@ -29,8 +29,8 @@ const navItems = [
     ],
   },
   {
-    section: 'Family',
-    items: [{ label: 'Family Access', icon: '👥', href: '/family', pro: true }],
+    section: 'Sharing',
+    items: [{ label: 'Trusted Access', icon: '👥', href: '/family', pro: true }],
   },
 ];
 

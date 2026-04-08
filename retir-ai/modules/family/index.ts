@@ -1,2 +1,2 @@
 export { FamilyAccess } from './components/FamilyAccess';
-export { familyMembers } from './data/mock-data';
+export { trustedDelegates, familyMembers, auditLog } from './data/mock-data';

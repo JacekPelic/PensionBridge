@@ -38,9 +38,9 @@ const features = [
   },
   {
     icon: '👥',
-    title: 'Family Access',
-    description: 'Protect your family with step-by-step claim guides for every country. Manage access levels, share documents, and ensure no pension goes unclaimed.',
-    highlights: ['Claim guides for FR, CH, LU with deadlines', 'Multi-level family access control', 'Required documents & institution contacts', 'Share & export as PDF'],
+    title: 'Trusted Access',
+    description: 'Share your pension data with family and professional advisors. Scoped permissions, contributor roles, activity logging, and country-specific claim guides.',
+    highlights: ['Invite advisors with scoped contributor access', 'Claim guides for FR, CH, LU with deadlines', 'Activity log tracks every access and change', 'Share & export as PDF'],
     hook: '€3.7B in pensions go unclaimed in France alone every year',
     href: '/family',
     color: 'var(--amber)',
