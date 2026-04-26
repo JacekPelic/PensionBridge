@@ -1,8 +1,11 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
-import type { Pillar1Estimate } from '@/modules/pension/types';
+import { type ReactNode, useMemo } from 'react';
 import type { Country } from '@/shared/types';
+import type { Pillar1Estimate } from '@/modules/pension/types';
+import { usePicture } from './PictureProvider';
+import { estimate } from './components/onboarding-v2/estimate';
+import type { CountryCode } from './picture-types';
 
 export interface UserData {
   firstName: string;
@@ -16,7 +19,8 @@ export interface UserData {
   countriesWorked: Country[];
 }
 
-/** Hardcoded fallback matching the original mock data */
+/** Mats Karlsson fallback — used whenever the picture isn't compatible with
+ * the strict Country type, or to keep older pages working. */
 const FALLBACK: UserData = {
   firstName: 'Mats',
   lastName: 'Karlsson',
@@ -33,7 +37,17 @@ const FALLBACK: UserData = {
   countriesWorked: ['FR', 'CH', 'LU'],
 };
 
-const STORAGE_KEY = 'retir-user-data';
+const STRICT_COUNTRIES: CountryCode[] = ['FR', 'CH', 'LU'];
+
+/**
+ * Compatibility wrapper. The provider is now a pass-through — actual state
+ * lives in `PictureProvider` (mounted at the root). This component remains
+ * so that older pages can `<UserDataProvider>...</UserDataProvider>` without
+ * needing edits; it has no effect.
+ */
+export function UserDataProvider({ children }: { children: ReactNode }) {
+  return <>{children}</>;
+}
 
 interface UserDataContextType {
   userData: UserData;
@@ -41,57 +55,62 @@ interface UserDataContextType {
   isFromOnboarding: boolean;
 }
 
-const UserDataContext = createContext<UserDataContextType>({
-  userData: FALLBACK,
-  setUserData: () => {},
-  isFromOnboarding: false,
-});
+/**
+ * Reads UserData by deriving it from the current picture.
+ * If the picture is in mock mode or has fields incompatible with the legacy
+ * strict Country type, returns the FALLBACK Mats Karlsson data.
+ */
+export function useUserData(): UserDataContextType {
+  const { picture, mode } = usePicture();
 
-function readStoredData(): { data: UserData; fromOnboarding: boolean } {
-  try {
-    const stored = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
-    if (stored) {
-      return { data: JSON.parse(stored) as UserData, fromOnboarding: true };
+  return useMemo<UserDataContextType>(() => {
+    if (mode === 'mock') {
+      return { userData: FALLBACK, setUserData: () => {}, isFromOnboarding: false };
     }
-  } catch {
-    // ignore parse errors
-  }
-  return { data: FALLBACK, fromOnboarding: false };
-}
 
-export function UserDataProvider({ children }: { children: ReactNode }) {
-  const [hydrated, setHydrated] = useState(false);
-  const [userData, setUserDataState] = useState<UserData>(FALLBACK);
-  const [isFromOnboarding, setIsFromOnboarding] = useState(false);
-
-  // Read localStorage once on mount, then mark hydrated
-  useEffect(() => {
-    const { data, fromOnboarding } = readStoredData();
-    setUserDataState(data);
-    setIsFromOnboarding(fromOnboarding);
-    setHydrated(true);
-  }, []);
-
-  const setUserData = useCallback((data: UserData) => {
-    setUserDataState(data);
-    setIsFromOnboarding(true);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch {
-      // ignore storage errors
+    const residence = picture.residenceCountry;
+    if (!residence || !STRICT_COUNTRIES.includes(residence)) {
+      // Picture exists but residence isn't FR/CH/LU — legacy pages can't
+      // render properly. Fall back to mock so navigation stays usable.
+      return { userData: FALLBACK, setUserData: () => {}, isFromOnboarding: false };
     }
-  }, []);
 
-  // Don't render children until we've read localStorage — prevents hydration flash
-  if (!hydrated) return null;
+    const est = estimate(picture);
+    const pillar1Estimates: Pillar1Estimate[] = est.bands
+      .filter((b): b is typeof b & { country: 'FR' | 'CH' | 'LU' } =>
+        STRICT_COUNTRIES.includes(b.country),
+      )
+      .map((b) => {
+        const mid = Math.round((b.low + b.high) / 2);
+        return {
+          country: b.country,
+          monthlyPensionLocal: mid,
+          currency: b.country === 'CH' ? 'CHF' : 'EUR',
+          monthlyPensionEur: mid,
+          isFullRate: false,
+          warnings: [],
+          breakdown: [],
+        };
+      });
 
-  return (
-    <UserDataContext.Provider value={{ userData, setUserData, isFromOnboarding }}>
-      {children}
-    </UserDataContext.Provider>
-  );
-}
+    const firstName = picture.firstName ?? '';
+    const lastName = picture.lastName ?? '';
+    const initials = `${(firstName[0] ?? '').toUpperCase()}${(lastName[0] ?? '').toUpperCase()}` || 'YOU';
 
-export function useUserData() {
-  return useContext(UserDataContext);
+    const userData: UserData = {
+      firstName: firstName || 'You',
+      lastName: lastName || '',
+      initials,
+      residenceCountry: residence as Country,
+      targetRetirementAge: picture.targetRetirementAge ?? 65,
+      monthlyIncomeGoal: picture.monthlyIncomeGoal ?? 5000,
+      pillar1Estimates,
+      pillar1Total: pillar1Estimates.reduce((s, e) => s + e.monthlyPensionEur, 0),
+      countriesWorked: (picture.countriesWorked ?? []).filter(
+        (c): c is Country => STRICT_COUNTRIES.includes(c),
+      ),
+    };
+
+    return { userData, setUserData: () => {}, isFromOnboarding: true };
+  }, [picture, mode]);
 }

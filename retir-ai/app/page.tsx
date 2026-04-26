@@ -2,16 +2,13 @@
 
 import { Sidebar } from '@/shared/layout/Sidebar';
 import { Topbar } from '@/shared/layout/Topbar';
-import { TmiHero } from '@/modules/pension/components/dashboard/TmiHero';
+import { ChatWidget } from '@/shared/chat/ChatWidget';
+import { Button } from '@/shared/ui/Button';
+import { PictureSummary } from '@/modules/identity/components/onboarding-v2/PictureSummary';
 import { KpiCards } from '@/modules/pension/components/dashboard/KpiCards';
 import { RetirementGap } from '@/modules/pension/components/dashboard/RetirementGap';
-import { PensionPicture } from '@/modules/pension/components/dashboard/PensionPicture';
-import { ChatWidget } from '@/shared/chat/ChatWidget';
-import { OnboardingWizard } from '@/modules/identity/components/onboarding/OnboardingWizard';
-import { CompletionNudge } from '@/modules/completeness/components/CompletionNudge';
 import { DataStageProvider, useDataStage } from '@/modules/identity/DataStageProvider';
-import { UserDataProvider } from '@/modules/identity/UserDataProvider';
-import { Button } from '@/shared/ui/Button';
+import { usePicture } from '@/modules/identity/PictureProvider';
 
 function StageToggle() {
   const { stage, toggleStage } = useDataStage();
@@ -28,7 +25,6 @@ function StageToggle() {
         fontFamily: 'var(--font-sans)',
       }}
     >
-      {/* Toggle track */}
       <div
         className="relative w-8 h-[18px] rounded-full transition-all"
         style={{ background: isAfter ? 'var(--green)' : 'var(--navy-4)' }}
@@ -46,45 +42,62 @@ function StageToggle() {
   );
 }
 
-function DashboardContent() {
-  const { stage } = useDataStage();
-  const complete = stage === 'after';
+function DashboardChrome() {
+  const { mode, picture, startFresh, loadMock } = usePicture();
+
+  const hasOpening = picture.residenceCountry != null && picture.age != null;
+  let subtitle: string;
+  if (mode === 'mock') {
+    subtitle = 'Demo \u00B7 Mats Karlsson, 45, LU resident';
+  } else if (hasOpening) {
+    subtitle = 'Based on your picture \u00B7 updates as you refine details';
+  } else {
+    subtitle = 'Add a few details on the Your picture page to see your numbers here';
+  }
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
-        <Topbar
-          title="Dashboard"
-          subtitle="Last synced: today at 09:41 CET"
-          actions={
-            <>
-              <StageToggle />
-              <Button variant="ghost">{'\u21BB'} Refresh</Button>
-              <Button variant="primary">+ Add Period</Button>
-            </>
-          }
-        />
-        <div className="flex-1 p-7 animate-fade-in" key={stage}>
-          <TmiHero />
-          <CompletionNudge />
-          <KpiCards />
-          <RetirementGap />
-          {complete && <PensionPicture />}
-        </div>
-      </div>
-      <ChatWidget />
-      <OnboardingWizard />
+    <Topbar
+      title="Dashboard"
+      subtitle={subtitle}
+      actions={
+        <>
+          <StageToggle />
+          {mode === 'mock' ? (
+            <Button variant="ghost" onClick={startFresh}>
+              Start fresh
+            </Button>
+          ) : (
+            <Button variant="ghost" onClick={loadMock}>
+              View demo
+            </Button>
+          )}
+        </>
+      }
+    />
+  );
+}
+
+function DashboardBody() {
+  return (
+    <div className="flex-1 p-7 animate-fade-in">
+      <PictureSummary />
+      <RetirementGap />
+      <KpiCards />
     </div>
   );
 }
 
 export default function DashboardPage() {
   return (
-    <UserDataProvider>
-      <DataStageProvider>
-        <DashboardContent />
-      </DataStageProvider>
-    </UserDataProvider>
+    <DataStageProvider>
+      <div className="flex min-h-screen">
+        <Sidebar />
+        <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
+          <DashboardChrome />
+          <DashboardBody />
+        </div>
+        <ChatWidget />
+      </div>
+    </DataStageProvider>
   );
 }

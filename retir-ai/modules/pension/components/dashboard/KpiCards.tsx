@@ -76,7 +76,7 @@ export function KpiCards() {
           </div>
           <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>Could add €1,000+/mo</div>
           <div className="mt-2">
-            <Link href="/progress" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--amber)' }}>
+            <Link href="/picture" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--amber)' }}>
               Complete your picture &rarr;
             </Link>
           </div>
