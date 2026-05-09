@@ -1,5 +1,5 @@
 export const SWISS_P2_CAPITAL = 210000;
-export const SWISS_P2_ANNUITY = 840;
+export const SWISS_P2_ANNUITY = 860;
 export const DRAWDOWN_YEARS = 25;
 export const BASE_TMI = 3840;
 export const DEFAULT_TARGET = 5500;

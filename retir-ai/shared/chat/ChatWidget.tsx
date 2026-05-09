@@ -144,7 +144,7 @@ export function ChatWidget() {
         <div className="px-5 py-[18px] flex items-center gap-3 shrink-0"
           style={{ borderBottom: '1px solid var(--border)', background: 'var(--navy-2)' }}>
           <div className="w-[38px] h-[38px] rounded-xl flex items-center justify-center text-base font-bold shrink-0"
-            style={{ background: 'linear-gradient(135deg, var(--gold), var(--gold-light))', fontFamily: 'var(--font-playfair)', color: 'var(--navy)' }}>
+            style={{ background: 'var(--gold)', fontFamily: 'var(--font-playfair)', color: 'var(--navy)' }}>
             P
           </div>
           <div className="flex-1">
@@ -245,14 +245,29 @@ export function ChatWidget() {
       {/* FAB */}
       <button
         onClick={handleOpen}
-        className="fixed z-[90] w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[22px]"
+        className="fixed z-[90] w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300"
         style={{
           bottom: 24, right: 24, border: 'none',
-          background: 'linear-gradient(135deg, var(--gold), var(--gold-light))',
-          boxShadow: '0 4px 20px rgba(201,168,76,0.4)',
+          background: 'var(--gold)',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
         }}
+        aria-label={isOpen ? 'Close advisor' : 'Open advisor'}
       >
-        <span style={{ transition: 'transform 0.3s', transform: isOpen ? 'rotate(45deg)' : 'none', display: 'flex' }}>💬</span>
+        <span
+          style={{
+            transition: 'transform 0.3s',
+            transform: isOpen ? 'rotate(45deg)' : 'none',
+            display: 'flex',
+            fontFamily: 'var(--font-playfair)',
+            fontStyle: 'italic',
+            fontWeight: 700,
+            fontSize: 26,
+            color: 'var(--navy)',
+            lineHeight: 1,
+          }}
+        >
+          {isOpen ? '+' : '?'}
+        </span>
         {badgeVisible && (
           <div className="absolute -top-0.5 -right-0.5 w-[18px] h-[18px] rounded-full flex items-center justify-center text-[10px] font-bold"
             style={{ background: 'var(--red)', color: '#fff', border: '2px solid var(--navy)' }}>

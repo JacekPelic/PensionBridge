@@ -78,6 +78,19 @@ export function QuestionCard({ question, picture, onAnswer }: QuestionCardProps)
         {question.inputType === 'salary-per-country' && (
           <SalaryPerCountryInput picture={picture} onAnswer={onAnswer} />
         )}
+        {question.inputType === 'target-retirement-age' && (
+          <TargetRetirementAgeInput
+            value={picture.targetRetirementAge}
+            currentAge={picture.age}
+            onAnswer={onAnswer}
+          />
+        )}
+        {question.inputType === 'monthly-income-goal' && (
+          <MonthlyIncomeGoalInput
+            value={picture.monthlyIncomeGoal}
+            onAnswer={onAnswer}
+          />
+        )}
       </div>
 
       <div>
@@ -696,6 +709,233 @@ function MultiCountryInput({
             Continue {'\u2192'}
           </Button>
         )}
+      </div>
+    </div>
+  );
+}
+
+// \u2500\u2500\u2500 Target retirement age \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
+function TargetRetirementAgeInput({
+  value,
+  currentAge,
+  onAnswer,
+}: {
+  value?: number;
+  currentAge?: number;
+  onAnswer: (patch: Partial<PartialPicture>) => void;
+}) {
+  const [draft, setDraft] = useState<string>(value != null ? String(value) : '');
+  const [error, setError] = useState<string | null>(null);
+
+  const commit = () => {
+    const trimmed = draft.trim();
+    if (trimmed === '') {
+      setError('Pick a target age to continue.');
+      return;
+    }
+    const n = parseInt(trimmed, 10);
+    if (Number.isNaN(n)) {
+      setError('Use a whole number like 65.');
+      return;
+    }
+    if (n < 55 || n > 75) {
+      setError('Most retirement plans land between 55 and 75.');
+      return;
+    }
+    if (currentAge != null && n <= currentAge) {
+      setError(`You\u2019re already ${currentAge} \u2014 pick a year ahead.`);
+      return;
+    }
+    setError(null);
+    onAnswer({ targetRetirementAge: n });
+  };
+
+  const invalid = error != null;
+  const yearsAway = currentAge != null && value != null ? value - currentAge : null;
+
+  return (
+    <div>
+      <div className="flex items-center gap-3">
+        <input
+          type="number"
+          min={55}
+          max={75}
+          value={draft}
+          onChange={(e) => {
+            setDraft(e.target.value);
+            if (error) setError(null);
+          }}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') commit();
+          }}
+          placeholder="65"
+          aria-invalid={invalid}
+          className="w-28 rounded-lg px-4 py-3 text-[20px] font-semibold outline-none"
+          style={{
+            background: 'var(--navy-3)',
+            border: invalid ? '1px solid var(--red)' : '1px solid var(--border)',
+            color: 'var(--text)',
+            fontFamily: 'var(--font-mono)',
+          }}
+        />
+        <span style={{ color: 'var(--text-dim)' }} className="text-[13px]">
+          years old
+        </span>
+        <div className="flex-1" />
+        <Button variant="primary" onClick={commit}>
+          Continue {'\u2192'}
+        </Button>
+      </div>
+      {error && (
+        <div
+          className="text-[11.5px] mt-2"
+          style={{ color: 'var(--red)' }}
+          role="alert"
+        >
+          {error}
+        </div>
+      )}
+      <div className="flex gap-1.5 mt-3 flex-wrap">
+        {[60, 62, 65, 67, 70].map((preset) => (
+          <button
+            key={preset}
+            type="button"
+            onClick={() => {
+              setDraft(String(preset));
+              setError(null);
+              onAnswer({ targetRetirementAge: preset });
+            }}
+            className="text-[11.5px] px-2.5 py-1 rounded-md cursor-pointer transition-colors"
+            style={{
+              background: 'var(--navy-3)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-dim)',
+            }}
+          >
+            {preset}
+          </button>
+        ))}
+      </div>
+      {yearsAway != null && yearsAway > 0 && (
+        <div className="text-[11.5px] mt-2" style={{ color: 'var(--text-dim)' }}>
+          {yearsAway} years of runway from today.
+        </div>
+      )}
+    </div>
+  );
+}
+
+// \u2500\u2500\u2500 Monthly income goal \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
+function MonthlyIncomeGoalInput({
+  value,
+  onAnswer,
+}: {
+  value?: number;
+  onAnswer: (patch: Partial<PartialPicture>) => void;
+}) {
+  const [draft, setDraft] = useState<string>(value != null ? String(value) : '');
+  const [error, setError] = useState<string | null>(null);
+
+  const commit = () => {
+    const cleaned = draft.replace(/[^\d]/g, '');
+    if (cleaned === '') {
+      setError('Enter a monthly figure to continue.');
+      return;
+    }
+    const n = parseInt(cleaned, 10);
+    if (Number.isNaN(n)) {
+      setError('Use a number, e.g. 5000.');
+      return;
+    }
+    if (n < 500) {
+      setError('Try a figure above \u20ac500.');
+      return;
+    }
+    if (n > 20000) {
+      setError('Goals over \u20ac20,000/mo are capped here \u2014 refine on the picture page.');
+      return;
+    }
+    setError(null);
+    onAnswer({ monthlyIncomeGoal: n });
+  };
+
+  const invalid = error != null;
+
+  return (
+    <div>
+      <div className="flex items-center gap-3 flex-wrap">
+        <div
+          className="rounded-lg flex items-center pl-3 overflow-hidden"
+          style={{
+            background: 'var(--navy-3)',
+            border: invalid ? '1px solid var(--red)' : '1px solid var(--border)',
+          }}
+        >
+          <span className="text-[15px] font-semibold" style={{ color: 'var(--text-dim)' }}>
+            {'\u20ac'}
+          </span>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={draft}
+            onChange={(e) => {
+              setDraft(e.target.value);
+              if (error) setError(null);
+            }}
+            onBlur={commit}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') commit();
+            }}
+            placeholder="5,000"
+            aria-invalid={invalid}
+            className="w-32 px-2 py-3 text-[20px] font-semibold outline-none bg-transparent tabular-nums"
+            style={{
+              color: 'var(--text)',
+              fontFamily: 'var(--font-mono)',
+            }}
+          />
+        </div>
+        <span style={{ color: 'var(--text-dim)' }} className="text-[13px]">
+          per month, net of tax
+        </span>
+        <div className="flex-1" />
+        <Button variant="primary" onClick={commit}>
+          Continue {'\u2192'}
+        </Button>
+      </div>
+      {error && (
+        <div
+          className="text-[11.5px] mt-2"
+          style={{ color: 'var(--red)' }}
+          role="alert"
+        >
+          {error}
+        </div>
+      )}
+      <div className="flex gap-1.5 mt-3 flex-wrap">
+        {[3000, 4000, 5000, 6000, 8000].map((preset) => (
+          <button
+            key={preset}
+            type="button"
+            onClick={() => {
+              setDraft(String(preset));
+              setError(null);
+              onAnswer({ monthlyIncomeGoal: preset });
+            }}
+            className="text-[11.5px] px-2.5 py-1 rounded-md cursor-pointer transition-colors"
+            style={{
+              background: 'var(--navy-3)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-dim)',
+              fontFamily: 'var(--font-mono)',
+            }}
+          >
+            {'\u20ac'}{preset.toLocaleString()}
+          </button>
+        ))}
       </div>
     </div>
   );

@@ -85,9 +85,26 @@ export interface PartialPicture {
   // Tour + per-ask tracking
   tour?: TourState;
   askStatus?: Partial<Record<string, AskStatus>>;
+
+  /**
+   * True once the user has explicitly dismissed the onboarding completion
+   * screen. The gate uses this together with `isOpeningComplete` to decide
+   * whether to surface the standalone onboarding flow. Mock-mode pictures
+   * set this to true so demo users skip the gate entirely.
+   */
+  onboardingDismissed?: boolean;
 }
 
 /** True if the opening sequence (residence + age + countriesWorked) is complete. */
 export function isOpeningComplete(p: PartialPicture): boolean {
   return p.residenceCountry != null && p.age != null && p.countriesWorked != null;
+}
+
+/**
+ * True once the user has cleared the standalone onboarding flow — either by
+ * working through the opening questions and dismissing the completion
+ * screen, or by being seeded with a mock picture (demo mode).
+ */
+export function hasClearedOnboarding(p: PartialPicture): boolean {
+  return isOpeningComplete(p) && p.onboardingDismissed === true;
 }

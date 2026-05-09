@@ -3,29 +3,49 @@
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { usePicture } from '@/modules/identity/PictureProvider';
+import { useDataStage } from '@/modules/identity/DataStageProvider';
+import { useUserData } from '@/modules/identity/UserDataProvider';
+import { calculateTax } from '@/modules/tax';
+import type { ResidenceCountry } from '@/modules/tax';
+import { BASE_TMI } from '@/modules/pension/constants';
 import { estimate, countryAnchor } from './estimate';
 import { QUESTIONS } from './questions';
 
 /**
  * Compact picture strip for the dashboard.
  * The full picture + refinement lives on /picture.
+ *
+ * Numbers shown here are aligned with the dashboard's KPI cards and gap
+ * surface so the whole dashboard tells a single story:
+ *  - Before document upload (stage='before'): Pillar 1 gross → net at residence
+ *  - After document upload  (stage='after'):  verified P1+P2 gross → net at residence
+ *
+ * Sharpness mirrors the same toggle — gold "sharpness" bar when rough,
+ * green "verified" bar once documents are in. Outside the DataStageProvider
+ * the default is 'before', so this is a no-op on surfaces that don't
+ * expose the toggle.
  */
+const VERIFIED_SHARPNESS = 95;
+
 export function PictureSummary() {
   const { picture, mode } = usePicture();
+  const { stage } = useDataStage();
+  const { userData } = useUserData();
+  const verified = stage === 'after';
 
   const est = useMemo(() => estimate(picture), [picture]);
+
+  // Match KpiCards / RetirementGap exactly. Same gross input, same tax engine,
+  // same net result — keeps every dashboard surface speaking with one number.
+  const residence = (userData.residenceCountry ?? 'LU') as ResidenceCountry;
+  const grossProjected = verified ? BASE_TMI : userData.pillar1Total;
+  const { netAnnual } = calculateTax(grossProjected * 12, residence);
+  const netProjected = Math.round(netAnnual / 12);
+  const totalsReady = grossProjected > 0;
+
+  const sharpness = verified ? VERIFIED_SHARPNESS : est.sharpness;
   const answeredCount = QUESTIONS.filter((q) => q.isAnswered(picture)).length;
   const openingComplete = answeredCount === QUESTIONS.length;
-
-  // Show net when available; fall back to gross.
-  const mult = est.net?.netMultiplier ?? 1;
-  const p1LowGross = est.monthlyLow;
-  const p1HighGross = est.monthlyHigh;
-  const hasP2P3 = est.pillar2.length > 0 || est.pillar3 != null;
-  const totalLow = Math.round((hasP2P3 ? est.totalMonthly : p1LowGross) * mult);
-  const totalHigh = Math.round((hasP2P3 ? est.totalMonthly : p1HighGross) * mult);
-  const totalsReady = est.monthlyHigh > 0;
-  const isNet = est.net != null;
 
   const flags = est.bands.length > 0
     ? est.bands.map((b) => countryAnchor(b.country).flag)
@@ -38,51 +58,37 @@ export function PictureSummary() {
       className="rounded-[14px] p-5 mb-5 flex items-center gap-5 flex-wrap"
       style={{ background: 'var(--navy-2)', border: '1px solid var(--border)' }}
     >
-      {/* Headline range */}
+      {/* Headline */}
       <div className="flex-1 min-w-[240px]">
         <div
           className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-1 flex items-center gap-2"
           style={{ color: 'var(--text-dim)' }}
         >
           <span>Projected income at retirement</span>
-          {isNet && (
-            <span
-              className="text-[9.5px] font-bold px-1.5 py-[1px] rounded-[4px]"
-              style={{ background: 'var(--green-dim)', color: 'var(--green)', letterSpacing: '0.04em' }}
-            >
-              NET
-            </span>
-          )}
+          <span
+            className="text-[9.5px] font-bold px-1.5 py-[1px] rounded-[4px]"
+            style={{
+              background: verified ? 'var(--green-dim)' : 'var(--amber-dim)',
+              color: verified ? 'var(--green)' : 'var(--amber)',
+              letterSpacing: '0.04em',
+            }}
+          >
+            {verified ? 'NET \u00B7 VERIFIED' : 'NET \u00B7 ESTIMATE'}
+          </span>
         </div>
         {totalsReady ? (
-          hasP2P3 ? (
-            <div
-              className="text-[26px] leading-none font-semibold tabular-nums"
-              style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}
-            >
-              {'\u20AC'}{totalLow.toLocaleString()}
-              <span className="text-[12px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
-                /mo
-              </span>
-            </div>
-          ) : (
-            <div
-              className="text-[26px] leading-none font-semibold tabular-nums"
-              style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}
-            >
-              <span>{'\u20AC'}{totalLow.toLocaleString()}</span>
-              <span style={{ color: 'var(--text-dim)' }} className="px-2">
-                {'\u2014'}
-              </span>
-              <span>{'\u20AC'}{totalHigh.toLocaleString()}</span>
-              <span
-                className="text-[12px] font-normal ml-2"
-                style={{ color: 'var(--text-dim)' }}
-              >
-                /mo
-              </span>
-            </div>
-          )
+          <div
+            className="text-[26px] leading-none font-semibold tabular-nums"
+            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}
+          >
+            {'\u20AC'}{netProjected.toLocaleString()}
+            <span className="text-[12px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
+              /mo
+            </span>
+            <span className="text-[11px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
+              {'\u00B7'} {verified ? 'P1 + P2 verified' : 'Pillar 1 only \u2014 P2/P3 pending'}
+            </span>
+          </div>
         ) : (
           <div
             className="text-[22px] leading-none font-semibold"
@@ -119,19 +125,22 @@ export function PictureSummary() {
           <div
             className="h-full rounded-full transition-all duration-700"
             style={{
-              width: `${est.sharpness}%`,
-              background: 'linear-gradient(90deg, var(--gold), #f1c889)',
+              width: `${sharpness}%`,
+              background: verified ? 'var(--green)' : 'var(--gold)',
             }}
           />
         </div>
         <span
           className="text-[11.5px] tabular-nums font-semibold"
-          style={{ color: 'var(--gold-light)', fontFamily: 'var(--font-mono)' }}
+          style={{
+            color: verified ? 'var(--green)' : 'var(--gold-light)',
+            fontFamily: 'var(--font-mono)',
+          }}
         >
-          {est.sharpness}%
+          {sharpness}%
         </span>
         <span className="text-[11px]" style={{ color: 'var(--text-dim)' }}>
-          sharpness
+          {verified ? 'verified' : 'sharpness'}
         </span>
       </div>
 

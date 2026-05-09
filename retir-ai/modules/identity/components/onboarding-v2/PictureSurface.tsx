@@ -3,28 +3,21 @@
 import { useMemo, useState } from 'react';
 import { Button } from '@/shared/ui/Button';
 import { PicturePreview } from './PicturePreview';
-import { QuestionCard } from './QuestionCard';
 import { estimate } from './estimate';
-import { nextQuestion, QUESTIONS } from './questions';
 import { usePicture } from '@/modules/identity/PictureProvider';
 import type { MaritalStatus, PartialPicture } from '@/modules/identity/picture-types';
-import { AsksStack, deriveAsks, PillarTour } from '@/modules/guidance';
+import { AsksStack, deriveAsks, OnboardingCapstone, PillarTour } from '@/modules/guidance';
 
 /**
- * The picture surface — the always-on home view.
- *
- * Layout: picture strip on top (full width), then either a centered
- * opening question or a two-section refinement area (quick edits row +
- * full-width asks stack).
+ * The picture surface — the always-on home for ongoing sharpening of the
+ * user's pension picture. The standalone <OnboardingScreen /> handles the
+ * initial opening flow and gates entry to the rest of the app, so this
+ * surface only ever renders for users who have already cleared onboarding.
  */
 export function PictureSurface() {
   const { picture, mode, updatePicture, startFresh, loadMock } = usePicture();
 
   const currentEstimate = useMemo(() => estimate(picture), [picture]);
-  const currentQuestion = useMemo(() => nextQuestion(picture), [picture]);
-
-  const answeredCount = QUESTIONS.filter((q) => q.isAnswered(picture)).length;
-  const totalCount = QUESTIONS.length;
   const asks = useMemo(() => deriveAsks(picture), [picture]);
   const tourActive = picture.tour?.active === true;
   const tourEverCompleted = picture.tour?.everCompleted === true;
@@ -55,15 +48,7 @@ export function PictureSurface() {
 
       <PicturePreview estimate={currentEstimate} />
 
-      {currentQuestion ? (
-        <OpeningSection totalCount={totalCount} answeredCount={answeredCount}>
-          <QuestionCard
-            question={currentQuestion}
-            picture={picture}
-            onAnswer={updatePicture}
-          />
-        </OpeningSection>
-      ) : tourActive ? (
+      {tourActive ? (
         <PillarTour picture={picture} onUpdate={updatePicture} onExit={exitTour} />
       ) : (
         <>
@@ -74,6 +59,7 @@ export function PictureSurface() {
             onStart={startTour}
           />
           <QuickEditsRow picture={picture} onUpdate={updatePicture} />
+          <OnboardingCapstone picture={picture} asks={asks} />
           <AsksSection asks={asks} />
           <FooterActions
             mode={mode}
@@ -183,60 +169,6 @@ function DemoBanner({ onStartFresh }: { onStartFresh: () => void }) {
       >
         Start fresh
       </Button>
-    </div>
-  );
-}
-
-// ─── Opening — centered question + progress ────────────────────────
-
-function OpeningSection({
-  totalCount,
-  answeredCount,
-  children,
-}: {
-  totalCount: number;
-  answeredCount: number;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-full max-w-[640px]">{children}</div>
-      <div className="w-full max-w-[640px]">
-        <ProgressBar answered={answeredCount} total={totalCount} />
-      </div>
-    </div>
-  );
-}
-
-function ProgressBar({ answered, total }: { answered: number; total: number }) {
-  return (
-    <div
-      className="rounded-lg p-3 flex items-center gap-3"
-      style={{ background: 'var(--navy-2)', border: '1px solid var(--border)' }}
-    >
-      <span
-        className="text-[10.5px] uppercase tracking-[0.14em] font-semibold"
-        style={{ color: 'var(--text-dim)' }}
-      >
-        Opening
-      </span>
-      <div className="flex-1 flex gap-1">
-        {Array.from({ length: total }).map((_, i) => (
-          <div
-            key={i}
-            className="flex-1 h-1.5 rounded-full transition-all"
-            style={{
-              background: i < answered ? 'var(--gold)' : 'var(--navy-3)',
-            }}
-          />
-        ))}
-      </div>
-      <span
-        className="text-[11px] tabular-nums"
-        style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
-      >
-        {answered}/{total}
-      </span>
     </div>
   );
 }

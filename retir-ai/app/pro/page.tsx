@@ -10,7 +10,7 @@ import { useTier } from '@/shared/TierProvider';
 
 const features = [
   {
-    icon: '🧮',
+    icon: '◈',
     title: 'Retirement Simulation',
     description: 'Compare net income across 6 countries, model retirement age scenarios, and optimise your capital split between annuity and lump sum.',
     highlights: ['Tax comparison across FR, CH, LU, PT, ES, IT', 'Retirement age modelling (57–70)', 'Capital vs annuity optimiser'],
@@ -19,7 +19,7 @@ const features = [
     color: 'var(--blue)',
   },
   {
-    icon: '🗄',
+    icon: '▤',
     title: 'Vault Pro',
     description: 'AI-powered cross-referencing detects discrepancies between your documents and projections. Automated correction workflows with institution-specific SLAs.',
     highlights: ['Cross-document discrepancy alerts', 'Pre-filled correction letters', 'Document age & expiry monitoring', 'Consolidated dossier export'],
@@ -28,7 +28,7 @@ const features = [
     color: 'var(--green)',
   },
   {
-    icon: '📡',
+    icon: '◎',
     title: 'Legislative Radar',
     description: 'Real-time monitoring of pension law changes, tax reforms, and regulatory updates across every country in your career — with personal impact analysis.',
     highlights: ['6 active alerts across 3 jurisdictions', '3 high-priority changes requiring attention', 'Financial impact estimates per alert', 'Source references & effective dates'],
@@ -37,7 +37,7 @@ const features = [
     color: 'var(--red)',
   },
   {
-    icon: '👥',
+    icon: '◐',
     title: 'Trusted Access',
     description: 'Share your pension data with family and professional advisors. Scoped permissions, contributor roles, activity logging, and country-specific claim guides.',
     highlights: ['Invite advisors with scoped contributor access', 'Claim guides for FR, CH, LU with deadlines', 'Activity log tracks every access and change', 'Share & export as PDF'],
@@ -46,7 +46,7 @@ const features = [
     color: 'var(--amber)',
   },
   {
-    icon: '💬',
+    icon: '◇',
     title: 'Personalised AI Advisor',
     description: 'Get advice that references your actual career data — gap analysis, country-specific product expertise, tax optimisation, and live help when the self-service routes don\u2019t work for you.',
     highlights: [
@@ -78,12 +78,10 @@ export default function ProPage() {
           <div
             className="rounded-[18px] p-8 mb-6 relative overflow-hidden text-center"
             style={{
-              background: 'linear-gradient(135deg, var(--navy-3) 0%, var(--navy-4) 100%)',
+              background: 'var(--navy-2)',
               border: '1px solid var(--gold-border)',
             }}
           >
-            <div className="absolute inset-0 pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse at center top, rgba(201,168,76,0.08), transparent 60%)' }} />
             <div className="relative">
               <div className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--gold)' }}>
                 Prevista Pro
@@ -98,11 +96,11 @@ export default function ProPage() {
 
               {/* Pricing */}
               <div className="inline-flex items-end gap-1 mb-2">
-                <span className="text-[42px] font-bold" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--gold-light)', lineHeight: 1 }}>€14.90</span>
+                <span className="text-[42px] font-bold tabular-nums" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--gold-light)', lineHeight: 1 }}>€4.99</span>
                 <span className="text-[15px] mb-1" style={{ color: 'var(--text-dim)' }}>/ month</span>
               </div>
               <div className="text-[12px] mb-5" style={{ color: 'var(--text-dim)' }}>
-                or €149/year (save 17%) · cancel anytime
+                or €49/year (save 18%) · cancel anytime
               </div>
 
               {isPro ? (
@@ -112,7 +110,7 @@ export default function ProPage() {
                 </div>
               ) : (
                 <Button variant="primary" onClick={toggleTier}>
-                  Start Pro — €14.90/mo
+                  Start Pro — €4.99/mo
                 </Button>
               )}
             </div>
@@ -222,7 +220,7 @@ export default function ProPage() {
           {!isPro && (
             <div className="text-center py-4">
               <Button variant="primary" onClick={toggleTier}>
-                Start Pro — €14.90/mo
+                Start Pro — €4.99/mo
               </Button>
               <div className="text-[11px] mt-2" style={{ color: 'var(--text-dim)' }}>
                 Cancel anytime · no commitment · instant access

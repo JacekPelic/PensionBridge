@@ -117,590 +117,25 @@ async function generate() {
   }
 
   // ════════════════════════════════════════════════════════════════════
-  // ASSUMPTIONS & CONSTANTS
+  // MODEL — imported from canonical financial-model.js
   // ════════════════════════════════════════════════════════════════════
-
-  const PRICE_MONTHLY = 14.90;
-  const PRICE_ANNUAL = 149.00;
-  const ANNUAL_SPLIT_TARGET = 0.40; // grows to 40% annual billing over time
-
-  // Lead generation
-  // Tiered annual trailing commission applied to each investor's current
-  // referred capital. Rate is evaluated PER INVESTOR (not on aggregate book),
-  // so the €500K threshold is crossed by an individual client's balance, not
-  // by the platform's total capital under referral.
-  //
-  // Rationale: retail pension/insurance distribution in LU/FR pays a higher
-  // trailing % on smaller tickets because fixed onboarding cost per client
-  // needs higher margin on lower AUM to be viable; large tickets face
-  // competitive alternatives (private banking) that force rates down.
-  const COMMISSION_TIERS = [
-    { threshold: 500000, rate: 0.015 },   // €0–500K: 1.5% annual trailing
-    { threshold: Infinity, rate: 0.010 }, // €500K+: 1.0% annual trailing
-  ];
-  function commissionRate(perInvestorCapital) {
-    for (const tier of COMMISSION_TIERS) {
-      if (perInvestorCapital < tier.threshold) return tier.rate;
-    }
-    return COMMISSION_TIERS[COMMISSION_TIERS.length - 1].rate;
-  }
-  const LEAD_GEN_GAP_PCT = 0.80; // 80% of users have a retirement gap
-  const LEAD_GEN_CLICK_PCT = 0.25; // 25% click through to product offer
-  const LEAD_GEN_INVEST_PCT = 0.15; // 15% actually invest
-  const LEAD_GEN_EFFECTIVE = LEAD_GEN_GAP_PCT * LEAD_GEN_CLICK_PCT * LEAD_GEN_INVEST_PCT; // 3% of all signups
-  const AVG_CAPITAL_INVESTED = 50000;
-  const CAPITAL_ANNUAL_GROWTH = 0.05; // 5% annual growth (contributions + market returns)
-
-  // Country expansion phases — addressable market per phase
-  // ════════════════════════════════════════════════════════════════════
-  // GEOGRAPHIC EXPANSION — CORRIDOR MATRIX & ENGINE SCHEDULE
-  // ════════════════════════════════════════════════════════════════════
-  // Each "corridor" (X, Y) is the addressable population — people who have
-  // pension entitlements in BOTH country X and country Y. Numbers are
-  // bilateral diaspora populations × 0.55 addressability factor (matches
-  // gtm-market-sizing.md methodology). Sources: Eurostat migr_pop3ctb,
-  // national statistics offices, Wikipedia diaspora articles. Estimates;
-  // refine before investor pitch.
-  //
-  // Keys are alphabetically sorted ISO-2 country codes joined with "-".
-
-  const CORRIDORS = {
-    // Iberian + Latin Europe
-    "FR-PT": 358000,  // ~600K Portuguese in FR + ~50K French in PT
-    "CH-PT": 151000,  // ~270K Portuguese in CH
-    "DE-PT": 96000,
-    "LU-PT": 56000,
-    "PT-UK": 47000,
-    "BE-PT": 30000,
-    "ES-PT": 96000,
-    "NL-PT": 19000,
-    "IT-PT": 14000,
-
-    // Spanish corridors
-    "ES-FR": 193000,  // ~250K Spanish in FR + ~100K French in ES
-    "DE-ES": 176000,
-    "ES-UK": 264000,  // pre-Brexit British retirees in ES (~300K) + Spanish in UK
-    "CH-ES": 72000,
-    "BE-ES": 44000,
-    "ES-IT": 33000,
-    "ES-NL": 22000,
-    "ES-RO": 413000, // ~700K Romanians in ES — huge corridor
-    "ES-LU": 5000,
-
-    // French corridors
-    "CH-FR": 127000,
-    "BE-FR": 165000,  // Belgian-French border — huge bidirectional
-    "DE-FR": 149000,
-    "FR-LU": 29000,
-    "FR-UK": 193000,
-    "FR-IT": 138000,
-    "FR-NL": 19000,
-    "FR-PL": 72000,
-    "FR-RO": 94000,
-
-    // German corridors (DE is the biggest hub)
-    "CH-DE": 209000,
-    "AT-DE": 248000,  // German-Austrian
-    "DE-NL": 127000,
-    "DE-IT": 413000,  // ~700K Italians in DE — huge
-    "DE-PL": 1183000, // ~2M Poles in DE — largest single corridor
-    "DE-RO": 454000,
-    "DE-UK": 138000,
-    "BE-DE": 36000,
-    "DE-LU": 11000,
-    "DE-HU": 127000,
-    "CZ-DE": 33000,
-    "DE-HR": 253000,  // ~430K Croats in DE
-    "BG-DE": 215000,
-    "DE-GR": 259000,  // ~450K Greeks in DE
-    "DE-SK": 44000,
-    "DE-SI": 33000,
-    "DE-DK": 25000,
-    "DE-FI": 11000,
-    "DE-SE": 28000,
-    "DE-LT": 19000,
-    "DE-LV": 19000,
-    "DE-EE": 11000,
-    "DE-IE": 11000,
-
-    // Italian corridors
-    "CH-IT": 237000,  // ~350K Italians in CH
-    "BE-IT": 99000,
-    "IT-UK": 99000,
-    "AT-IT": 36000,
-    "IT-RO": 677000,  // ~1.2M Romanians in IT — massive
-    "IT-LU": 17000,
-    "IT-SI": 6000,
-    "HR-IT": 22000,
-    "IT-MT": 4000,
-    "IT-PL": 72000,
-
-    // Polish corridors (post-2004 EU enlargement migration)
-    "PL-UK": 605000,  // ~1M Poles in UK pre-Brexit
-    "NL-PL": 99000,
-    "IE-PL": 69000,
-    "PL-SE": 58000,
-    "AT-PL": 55000,
-    "BE-PL": 66000,
-    "DK-PL": 25000,
-    "LT-PL": 18000,
-    "CZ-PL": 44000,
-    "PL-SK": 28000,
-    "ES-PL": 33000,
-
-    // Romanian corridors (largest contemporary EU diaspora)
-    "FR-RO": 94000,
-    "RO-UK": 303000,
-    "AT-RO": 83000,
-    "BE-RO": 61000,
-    "HU-RO": 220000,  // ethnic Hungarians in RO + reverse
-    "PT-RO": 39000,
-    "NL-RO": 14000,
-
-    // UK corridors
-    "IE-UK": 275000,
-    "NL-UK": 83000,
-    "BE-UK": 30000,
-    "LT-UK": 127000,
-    "LV-UK": 66000,
-    "MT-UK": 19000,
-    "CY-UK": 55000,
-    "BG-UK": 44000,
-    "GR-UK": 50000,
-    "HU-UK": 58000,
-    "FI-UK": 19000,
-    "SE-UK": 25000,
-    "DK-UK": 19000,
-
-    // Belgium corridors (small country, many borders)
-    "BE-NL": 127000,
-    "BE-LU": 14000,
-
-    // Netherlands corridors
-    "DE-NL": 127000,
-    "NL-RO": 14000,
-
-    // Switzerland corridors
-    "AT-CH": 39000,
-    "CH-UK": 44000,
-    "CH-NL": 19000,
-    "CH-LU": 2000,
-
-    // Austria corridors
-    "AT-HU": 61000,
-    "AT-CZ": 22000,
-    "AT-SK": 28000,
-    "AT-SI": 22000,
-    "AT-HR": 63000,
-
-    // Greece corridors
-    "CY-GR": 39000,
-    "BE-GR": 14000,
-    "BG-GR": 69000,
-    "GR-NL": 6000,
-
-    // Ireland corridors
-    "IE-LT": 19000,
-    "IE-LV": 14000,
-    "IE-RO": 19000,
-
-    // Czech-Slovak (historical Czechoslovakia corridor)
-    "CZ-SK": 138000,
-    "AT-CZ": 22000,
-    "AT-SK": 28000,
-
-    // Nordic corridors (Finnish-Swedish is largest)
-    "FI-SE": 99000,
-    "DK-SE": 39000,
-    "EE-FI": 28000,
-    "EE-SE": 11000,
-
-    // Long-tail corridors
-    "BG-ES": 66000,
-    "BG-IT": 28000,
-    "HR-SI": 11000,
-    "LT-LV": 5000,
-  };
-
-  // Engine deployment schedule (V6). Months are absolute (Month 1 = product launch).
-  // Front-loaded launch — three engines live from day one — then quarterly Y1 cadence,
-  // then a steady ~2-month cadence through Y5. Same 29-country endpoint as V5 (M58).
-  // - Go-live (M1): 3 engines (LU, FR, CH) — beachhead + premium high-value market
-  // - Y1: 4 new engines (PT M3, ES M6, UK M9, IT M12) — quarterly adds, 7 live by M12
-  // - Y2: 6 engines (DE, PL, BE, NL, RO, AT) — German hub + Benelux + Eastern EU
-  // - Y3: 6 engines (HU, GR, HR, IE, BG, CZ) — Central Europe + Mediterranean
-  // - Y4: 6 engines (SK, SE, DK, FI, LT, LV) — Nordic + remaining Central
-  // - Y5: 4 engines (SI, CY, EE, MT) — long tail (small populations)
-  // All 29 (EU27 + UK + CH) live by Month 58. Greedy TAM-maximizing order within years.
-  const ENGINE_SCHEDULE = [
-    // ── Go-Live (M1) — three engines supported from day one ──
-    { month: 1,  code: "LU" }, // Beachhead
-    { month: 1,  code: "FR" }, // Large neighbor population, FR-LU corridor
-    { month: 1,  code: "CH" }, // High-value third pillar; FR-CH (~127K) live immediately
-    // ── Year 1: quarterly engine adds (PT → ES → UK → IT) ──
-    { month: 3,  code: "PT" }, // Unlocks FR-PT (~358K) + CH-PT (~151K)
-    { month: 6,  code: "ES" }, // ES-FR + ES-UK (post-Brexit retirees ~264K)
-    { month: 9,  code: "UK" }, // FR-UK + ES-UK + CH-UK; QROPS/HMRC complexity
-    { month: 12, code: "IT" }, // Closes Western markets — CH-IT (237K) + FR-IT (138K)
-    // ── Year 2: German hub + Benelux + Eastern EU ──
-    { month: 13, code: "DE" }, // Hub — unlocks DE-* across the live set immediately
-    { month: 15, code: "PL" }, // DE-PL ~1.18M + PL-UK ~605K (largest single unlocks)
-    { month: 17, code: "BE" }, // BE-FR 165K + BE-NL 127K
-    { month: 19, code: "NL" }, // DE-NL 127K + NL-PL 99K
-    { month: 21, code: "RO" }, // IT-RO 677K + DE-RO 454K + ES-RO 413K + RO-UK 303K
-    { month: 23, code: "AT" }, // AT-DE 248K + AT-IT + AT-CH
-    // ── Year 3: Central Europe + Mediterranean ──
-    { month: 25, code: "HU" }, // HU-RO 220K + DE-HU 127K
-    { month: 27, code: "GR" }, // DE-GR 259K
-    { month: 29, code: "HR" }, // DE-HR 253K
-    { month: 31, code: "IE" }, // IE-UK 275K + IE-PL 69K
-    { month: 33, code: "BG" }, // BG-DE 215K
-    { month: 35, code: "CZ" },
-    // ── Year 4: Nordic + remaining Central ──
-    { month: 37, code: "SK" },
-    { month: 39, code: "SE" }, // FI-SE 99K + PL-SE 58K
-    { month: 41, code: "DK" },
-    { month: 43, code: "FI" },
-    { month: 45, code: "LT" }, // LT-UK 127K
-    { month: 47, code: "LV" }, // LV-UK 66K
-    // ── Year 5: long tail (small populations) ──
-    { month: 49, code: "SI" },
-    { month: 52, code: "CY" },
-    { month: 55, code: "EE" },
-    { month: 58, code: "MT" },
-  ];
-
-  // Compute the addressable market at a given month based on which engines are
-  // live and what corridors that opens. Each corridor ramps over 6 months from
-  // when the LATER of its two engines went live (time for content/SEO/community).
-  function computeAddressable(m) {
-    const live = ENGINE_SCHEDULE.filter(e => e.month <= m);
-    let addressable = 0;
-    for (let i = 0; i < live.length; i++) {
-      for (let j = i + 1; j < live.length; j++) {
-        const a = live[i];
-        const b = live[j];
-        const key = [a.code, b.code].sort().join("-");
-        const pop = CORRIDORS[key] || 0;
-        if (pop === 0) continue;
-        const corridorOpenMonth = Math.max(a.month, b.month);
-        const monthsLive = m - corridorOpenMonth;
-        const ramp = Math.min(1, Math.max(0, monthsLive / 6));
-        addressable += pop * ramp;
-      }
-    }
-    return addressable;
-  }
-
-  function liveCountryCount(m) {
-    return ENGINE_SCHEDULE.filter(e => e.month <= m).length;
-  }
-
-  // ════════════════════════════════════════════════════════════════════
-  // TEAM / FTE RAMP
-  // ════════════════════════════════════════════════════════════════════
-  // Hiring begins comfortably after the business reaches monthly break-even.
-  // V6 model: monthly BE lands at ~M18, first hire at M28 — that's a 10-month
-  // buffer so the funnel is durably proven before adding payroll. All hires
-  // are funded from operating cashflow, NOT from the €230K seed. Roles are
-  // deliberately unspecified at this stage — the mix evolves based on where
-  // the funnel needs reinforcement (engineering, content/SEO, customer
-  // success, ops).
-  //
-  // Co-founder salaries remain excluded (technical + BD co-founders work
-  // on equity through Series A).
-  const AVG_FTE_COST_MONTHLY = 6000; // €6K/mo fully-loaded (gross + ~13% LU social charges + equipment)
-  const FTE_SCHEDULE = [
-    { month: 28, hires: 1 }, // First hire — 10 months post monthly BE (durable funnel buffer)
-    { month: 36, hires: 1 }, // End of Y3 — 2 FTEs
-    { month: 42, hires: 1 }, // Mid-Y4 — 3 FTEs
-    { month: 48, hires: 2 }, // End of Y4 — 5 FTEs (supporting ~11.5K subs / 25 countries)
-    { month: 54, hires: 1 }, // Mid-Y5 — 6 FTEs
-    { month: 60, hires: 2 }, // End of Y5 — 8 FTEs (supporting ~14.9K subs / 29 countries)
-  ];
-
-  function fteCount(m) {
-    return FTE_SCHEDULE.filter(e => e.month <= m).reduce((s, e) => s + e.hires, 0);
-  }
-
-  // Acquisition channel assumptions — Base scenario
-  const SCENARIOS = {
-    base: {
-      label: "Base",
-      // Organic
-      organicReachY1: 0.04,     // 4% of addressable in Year 1
-      organicGrowthRate: 0.08,  // 8% monthly growth in organic traffic
-      // Funnel
-      emailCapture: 0.30,       // 30% of calculator users
-      emailToSignup: 0.18,      // 18% of emails → signup (via drip)
-      directSignup: 0.05,       // 5% of calculator users sign up directly (skip email)
-      paidConversion: 0.12,     // 12% of signups → paid (high-intent financial
-                                // tool with concrete gap surfacing — tighter than
-                                // generic SaaS freemium 5-10%)
-      monthlyChurn: 0.03,       // 3% monthly churn on subscriptions (Recurly 2025
-                                // finance category median: 3.7% — we sit slightly
-                                // below median given multi-year pension context)
-      // Paid acquisition (starts Month 7 — post-seed)
-      paidBudgetM7: 3000,       // €3K/mo starting budget
-      paidBudgetM24: 15000,     // ramps to €15K/mo by Month 24
-      paidBudgetM60: 25000,     // €25K/mo by Month 60
-      blendedCAC: 40,           // €40 per signup via paid — defensible for niche
-                                // financial-tool keywords with near-zero competition
-                                // (CPC €5-10, landing conversion 25-35%). Previously
-                                // €100 which produced an unhealthy 0.4x LTV:CAC.
-      // Distribution partnerships (corporate HR, expat associations, content
-      // partners, mobility consultancies). BD co-founder owns this channel.
-      // Each "active partnership" yields a steady stream of consumer signups.
-      partnershipStartMonth: 7, // first deals close post-seed
-      activePartnersM7: 1,      // 1 partnership live at month 7
-      activePartnersM12: 3,     // 3 by end of year 1
-      activePartnersM24: 8,     // 8 by end of year 2
-      activePartnersM60: 20,    // 20 by year 5
-      signupsPerPartnerPerMonth: 8, // avg signups per active partnership
-    },
-    upside: {
-      label: "Upside",
-      organicReachY1: 0.06,
-      organicGrowthRate: 0.12,
-      emailCapture: 0.35,
-      emailToSignup: 0.22,
-      directSignup: 0.07,
-      paidConversion: 0.15,
-      monthlyChurn: 0.025,
-      paidBudgetM7: 5000,
-      paidBudgetM24: 25000,
-      paidBudgetM60: 40000,
-      blendedCAC: 30,           // upside: better landing pages + retargeting
-      partnershipStartMonth: 7,
-      activePartnersM7: 2,
-      activePartnersM12: 5,
-      activePartnersM24: 14,
-      activePartnersM60: 30,
-      signupsPerPartnerPerMonth: 12,
-    },
-  };
-
-  // Cost structure (monthly)
-  const COSTS = {
-    infrastructure: { m1: 150, m12: 400, m24: 900, m36: 1500, m48: 2200, m60: 3000 },
-    aiApi: { perUser: 2.00 },       // per active paid user/month
-    marketing: { m1: 200, m12: 800, m24: 2000, m36: 3500, m48: 5000, m60: 6000 }, // organic content costs (on top of paid budget)
-    support: { perUser: 0.40 },     // per active paid user/month
-    legal: { monthly: 250 },
-    misc: { monthly: 100 },
-    // Co-founder salaries excluded — technical + BD co-founders work on
-    // equity through Series A. Post-break-even FTE ramp is modeled
-    // separately via FTE_SCHEDULE + AVG_FTE_COST_MONTHLY; see fteCount().
-  };
-
-  // ════════════════════════════════════════════════════════════════════
-  // 60-MONTH SIMULATION
-  // ════════════════════════════════════════════════════════════════════
-  function simulate(scenarioKey) {
-    const s = SCENARIOS[scenarioKey];
-    const months = [];
-
-    let totalPaidSubs = 0;
-    let cumulativeSignups = 0;
-    let cumulativeInvestors = 0;
-    let totalCapitalUnderReferral = 0;
-    let cumulativeSubRevenue = 0;
-    let cumulativeLeadGenRevenue = 0;
-    let cumulativeCosts = 0;
-
-    for (let m = 1; m <= 60; m++) {
-      // ── Addressable market (sum of all live corridors with per-corridor 6-month ramp) ──
-      const addressable = computeAddressable(m);
-      const countriesLive = liveCountryCount(m);
-
-      // ── Channel 1: Organic ──
-      // Organic reach grows monthly, but as a % of addressable, with SEO compounding
-      const organicMonthlyReach = (s.organicReachY1 / 12) * Math.pow(1 + s.organicGrowthRate, m - 1);
-      const organicCalcUsers = Math.round(addressable * Math.min(organicMonthlyReach, 0.005)); // cap at 0.5%/month (~6%/yr ceiling on organic reach of addressable market)
-      const organicEmails = Math.round(organicCalcUsers * s.emailCapture);
-      const organicSignupsViaEmail = Math.round(organicEmails * s.emailToSignup);
-      const organicSignupsDirect = Math.round(organicCalcUsers * s.directSignup);
-      const organicSignups = organicSignupsViaEmail + organicSignupsDirect;
-
-      // ── Channel 2: Paid Acquisition ──
-      let paidSignups = 0;
-      let paidBudget = 0;
-      if (m >= 7) { // paid starts after seed (Month 7)
-        paidBudget = interpolateCostExtended(
-          { m7: s.paidBudgetM7, m24: s.paidBudgetM24, m60: s.paidBudgetM60 },
-          m, 7
-        );
-        paidSignups = Math.round(paidBudget / s.blendedCAC);
-      }
-
-      // ── Channel 3: Distribution Partnerships ──
-      // Direct ramp model — active partnership count interpolated across the
-      // 60-month window, each yielding a steady stream of consumer signups.
-      // BD co-founder owns this channel from day 1; first deals close post-seed.
-      let partnerSignups = 0;
-      let activePartners = 0;
-      if (m >= s.partnershipStartMonth) {
-        activePartners = interpolatePartners(s, m);
-        partnerSignups = Math.round(activePartners * s.signupsPerPartnerPerMonth);
-      }
-
-      // ── Total signups ──
-      const totalNewSignups = organicSignups + paidSignups + partnerSignups;
-      cumulativeSignups += totalNewSignups;
-
-      // ── Subscription conversion ──
-      const newPaid = Math.round(totalNewSignups * s.paidConversion);
-      // Churn improves slightly as product matures
-      const churnAdj = Math.max(s.monthlyChurn * 0.70, s.monthlyChurn - (m * 0.0003));
-      const churned = Math.round(totalPaidSubs * churnAdj);
-      totalPaidSubs = Math.max(0, totalPaidSubs - churned + newPaid);
-
-      // Revenue — subscription
-      const annualPct = Math.min(ANNUAL_SPLIT_TARGET, 0.15 + (m * 0.015));
-      const blendedMonthlyPrice = (1 - annualPct) * PRICE_MONTHLY + annualPct * (PRICE_ANNUAL / 12);
-      const subMRR = Math.round(totalPaidSubs * blendedMonthlyPrice);
-
-      // ── Lead generation ──
-      const newInvestors = Math.round(totalNewSignups * LEAD_GEN_EFFECTIVE);
-      cumulativeInvestors += newInvestors;
-      // Existing capital grows
-      totalCapitalUnderReferral *= (1 + CAPITAL_ANNUAL_GROWTH / 12);
-      // New capital added
-      totalCapitalUnderReferral += newInvestors * AVG_CAPITAL_INVESTED;
-      // Tiered trailing commission — evaluated on avg per-investor capital.
-      // With avg capital near €50K and 5% compounding, the per-investor
-      // balance stays well under the €500K break-point throughout the 60m
-      // simulation, so the effective rate is 1.5%. Logic below preserves
-      // the tier structure for scenarios where avg capital is larger.
-      const perInvestorCapital = cumulativeInvestors > 0
-        ? totalCapitalUnderReferral / cumulativeInvestors
-        : AVG_CAPITAL_INVESTED;
-      const currentLeadGenRate = commissionRate(perInvestorCapital);
-      const leadGenMonthlyRevenue = Math.round(totalCapitalUnderReferral * currentLeadGenRate / 12);
-
-      // ── Total revenue (subscriptions + lead gen) ──
-      const totalMRR = subMRR + leadGenMonthlyRevenue;
-
-      // ── Costs ──
-      const infraCost = interpolateCost(COSTS.infrastructure, m);
-      const aiCost = Math.round(totalPaidSubs * COSTS.aiApi.perUser);
-      const marketingCost = interpolateCost(COSTS.marketing, m);
-      const supportCost = Math.round(totalPaidSubs * COSTS.support.perUser);
-      const legalCost = COSTS.legal.monthly;
-      const miscCost = COSTS.misc.monthly;
-      // Team salaries — post-break-even FTE ramp, funded from operating cashflow
-      const activeFtes = fteCount(m);
-      const salaryCost = activeFtes * AVG_FTE_COST_MONTHLY;
-      const totalFixedCosts = infraCost + marketingCost + legalCost + miscCost + salaryCost;
-      const totalVariableCosts = aiCost + supportCost;
-      const totalOperatingCosts = totalFixedCosts + totalVariableCosts;
-      const totalCostsWithPaid = totalOperatingCosts + paidBudget;
-
-      const netIncome = totalMRR - totalCostsWithPaid;
-
-      cumulativeSubRevenue += subMRR;
-      cumulativeLeadGenRevenue += leadGenMonthlyRevenue;
-      cumulativeCosts += totalCostsWithPaid;
-
-      months.push({
-        month: m,
-        year: Math.ceil(m / 12),
-        // Market
-        addressable: Math.round(addressable),
-        countriesLive,
-        // Channels
-        organicCalcUsers,
-        organicSignups,
-        paidSignups,
-        paidBudget: Math.round(paidBudget),
-        activePartners,
-        partnerSignups,
-        totalNewSignups,
-        cumulativeSignups,
-        // Subscribers
-        newPaid,
-        churned,
-        churnRate: churnAdj,
-        totalPaidSubs,
-        // Lead gen
-        newInvestors,
-        cumulativeInvestors,
-        totalCapital: Math.round(totalCapitalUnderReferral),
-        leadGenMonthly: leadGenMonthlyRevenue,
-        // Revenue
-        subMRR,
-        totalMRR,
-        subARR: subMRR * 12,
-        totalARR: totalMRR * 12,
-        // Costs
-        infraCost,
-        aiCost,
-        marketingCost,
-        supportCost,
-        legalCost,
-        miscCost,
-        salaryCost,
-        activeFtes,
-        totalOperatingCosts,
-        paidAcqCost: Math.round(paidBudget),
-        totalCosts: totalCostsWithPaid,
-        // P&L
-        netIncome,
-        cumulativeNet: cumulativeSubRevenue + cumulativeLeadGenRevenue - cumulativeCosts,
-        // Cumulative
-        cumulativeSubRevenue,
-        cumulativeLeadGenRevenue,
-        cumulativeTotalRevenue: cumulativeSubRevenue + cumulativeLeadGenRevenue,
-      });
-    }
-    return months;
-  }
-
-  // Linear interpolation across the four anchor points for active partnerships.
-  function interpolatePartners(s, month) {
-    const points = [
-      [s.partnershipStartMonth, s.activePartnersM7],
-      [12, s.activePartnersM12],
-      [24, s.activePartnersM24],
-      [60, s.activePartnersM60],
-    ];
-    if (month <= points[0][0]) return points[0][1];
-    for (let i = 0; i < points.length - 1; i++) {
-      const [m0, v0] = points[i];
-      const [m1, v1] = points[i + 1];
-      if (month <= m1) {
-        return Math.round(v0 + (v1 - v0) * ((month - m0) / (m1 - m0)));
-      }
-    }
-    return points[points.length - 1][1];
-  }
-
-  function interpolateCost(costDef, month) {
-    const points = [
-      [1, costDef.m1], [12, costDef.m12], [24, costDef.m24],
-      [36, costDef.m36], [48, costDef.m48], [60, costDef.m60]
-    ];
-    for (let i = 0; i < points.length - 1; i++) {
-      if (month <= points[i + 1][0]) {
-        const [m0, v0] = points[i];
-        const [m1, v1] = points[i + 1];
-        return Math.round(v0 + (v1 - v0) * ((month - m0) / (m1 - m0)));
-      }
-    }
-    return costDef.m60;
-  }
-
-  function interpolateCostExtended(costDef, month, startMonth) {
-    if (month < startMonth) return 0;
-    const elapsed = month - startMonth;
-    const m24elapsed = 24 - startMonth;
-    const m60elapsed = 60 - startMonth;
-    if (elapsed <= m24elapsed) {
-      return costDef.m7 + (costDef.m24 - costDef.m7) * (elapsed / m24elapsed);
-    } else {
-      return costDef.m24 + (costDef.m60 - costDef.m24) * ((elapsed - m24elapsed) / (m60elapsed - m24elapsed));
-    }
-  }
+  // All constants, helpers, and the simulate() function live in
+  // financial-model.js. We import here so this generator stays in lockstep
+  // with the canonical model (avoids the drift that previously broke this
+  // file when the model added founder comp, country-launch costs, and a
+  // scenario-dependent FTE schedule).
+  const M = require("./financial-model");
+  const {
+    PRICE_MONTHLY, PRICE_ANNUAL, ANNUAL_SPLIT_TARGET,
+    LEAD_GEN_RATE, LEAD_GEN_GAP_PCT, LEAD_GEN_CLICK_PCT, LEAD_GEN_INVEST_PCT,
+    LEAD_GEN_EFFECTIVE, AVG_CAPITAL_INVESTED, CAPITAL_ANNUAL_GROWTH,
+    AVG_FTE_COST_MONTHLY, ACTIVE_FREE_FACTOR,
+    SCENARIOS, COSTS,
+    FOUNDER_COMP, COUNTRY_LAUNCH_BURST, COUNTRY_RECURRING,
+    ENGINE_SCHEDULE, COUNTRY_NAMES, CORRIDORS,
+    BASE_FTE_SCHEDULE, UPSIDE_FTE_SCHEDULE, FTE_SCHEDULE,
+    simulate,
+  } = M;
 
   // Run simulations
   const baseData = simulate("base");
@@ -713,7 +148,7 @@ async function generate() {
   ws1.columns = [{ width: 32 }, { width: 18 }, { width: 18 }, { width: 18 }, { width: 18 }, { width: 18 }, { width: 30 }];
 
   addTitle(ws1, 1, "Prevista — 5-Year Financial Projections", 7);
-  addNote(ws1, 2, "Two revenue streams: Subscriptions (€14.90/mo) + Lead Generation (tiered annual trailing commission — 1.5% on investor capital ≤€500K, 1.0% above). Three acquisition channels: Organic SEO, Paid acquisition, Distribution Partnerships. Geographic expansion: 29 country engines (EU27 + UK + CH) rolled out across 5 years in greedy TAM-maximizing order. Addressable market grows from corridor unlocks as each new engine ships.", 7);
+  addNote(ws1, 2, "Two revenue streams: Subscriptions (€4.99/mo) + Lead Generation (0.03% annual trailing commission on aggregate referred capital — deliberately conservative floor). Two seed-stage acquisition channels: Organic SEO + Distribution Partnerships (paid acquisition is held in reserve as a Series A lever — at €4.99 + 12% conversion paid LTV:CAC is 0.49×). Pure bootstrap: zero external funding required to reach cumulative break-even at M28 (base) / M20 (upside). Geographic expansion: 29 country engines (EU27 + UK + CH) rolled out across 5 years in greedy TAM-maximizing order.", 7);
 
   let row = 4;
   addTitle(ws1, row, "Annual Revenue Summary — Base Scenario", 7);
@@ -741,8 +176,8 @@ async function generate() {
     ["Cumulative Platform Signups", ...yearData.map(d => d.cumulativeSignups), "All channels combined"],
     ["Paying Subscribers (end of year)", ...yearData.map(d => d.totalPaidSubs), "After churn"],
     ["", "", "", "", "", "", ""],
-    ["Subscription Revenue", ...yearRevenues.map(d => d.subRev), "€14.90/mo or €149/yr"],
-    ["Lead Gen Revenue", ...yearRevenues.map(d => d.leadGenRev), "Tiered annual trailing: 1.5% ≤€500K / 1.0% >€500K"],
+    ["Subscription Revenue", ...yearRevenues.map(d => d.subRev), "€4.99/mo or €49/yr"],
+    ["Lead Gen Revenue", ...yearRevenues.map(d => d.leadGenRev), "0.03% annual trailing on aggregate referred capital"],
     ["Total Revenue", ...yearRevenues.map(d => d.totalRev), "Subscriptions + lead gen"],
     ["Total Costs (incl. paid acq.)", ...yearRevenues.map(d => d.totalCosts), "Operating + paid acquisition"],
     ["Net Income", ...yearRevenues.map(d => d.totalRev - d.totalCosts), ""],
@@ -829,7 +264,7 @@ async function generate() {
   ];
 
   addTitle(wsFunding, 1, "Funding Requirement, Use of Funds & Cash Flow", 7);
-  addNote(wsFunding, 2, "Prevista operates in two phases: bootstrap (Months 1-6, organic only, no external funding) and accelerated growth (Month 7+, post-seed). The seed round unlocks paid acquisition and the BD co-founder's distribution partnerships channel. Country pension engines are built by the technical co-founder.", 7);
+  addNote(wsFunding, 2, "Prevista operates as a pure bootstrap: zero external funding committed. Phase 1 (Months 1-28) builds country engines + organic + partnerships on founder capital, reaching cumulative break-even at M28 (base scenario). Phase 2 (Month 28+) operates profitably on cashflow; no fundraising required to maintain operations. Phase 3 (optional) Series A is a strategic acceleration choice — turn on paid acquisition + scale engineering — only when terms are advantageous and post-launch metrics support it. Country pension engines are built by the technical co-founder; BD co-founder draws salary from M8 (€3K → €5K → €7K as subMRR scales); tech co-founder defers salary until subMRR>€25K.", 7);
 
   // ── Phase overview ──
   row = 4;
@@ -840,8 +275,9 @@ async function generate() {
   row++;
 
   const phaseRows = [
-    ["Phase 1: Bootstrap", "1-6", "€0 (self-funded)", "Organic only (SEO + community)", "Subscriptions + lead gen", "Validate funnel, prove conversion rates"],
-    ["Phase 2: Accelerate", "7-60", "€230K seed", "Organic + Paid + Distribution Partnerships", "Subscriptions + lead gen", "Scale proven funnel, sign distribution partnerships, expand countries"],
+    ["Phase 1: Bootstrap & Validate", "1-28", "Founder capital (~€60-70K business cash; covers M17 trough of ~€52K plus safety margin and BD draw from M8)", "Organic SEO + Distribution Partnerships", "Subscriptions + lead gen", "Build LU/FR/CH engines, validate conversion, reach cumulative break-even"],
+    ["Phase 2: Operate & Expand", "28-60", "Operating cashflow (no fundraising required)", "Organic + Distribution Partnerships", "Subscriptions + lead gen", "Country expansion to 29 engines, profitable operations"],
+    ["Phase 3 (Optional): Series A acceleration", "When metrics warrant", "€1-3M (only if terms advantageous)", "+ Paid acquisition turned on", "Subscriptions + lead gen", "Scale paid + engineering team if/when post-launch unit economics validate it"],
   ];
   phaseRows.forEach(r => {
     wsFunding.getRow(row).values = r;
@@ -865,7 +301,7 @@ async function generate() {
   const milestoneRows = [
     ["Calculator → email capture rate", "25-35%", "Proves the tool delivers enough value to earn an email"],
     ["Email → platform signup rate", "15-22%", "Proves the drip campaign and platform CTA work"],
-    ["Signup → paid conversion", "8-12%", "Proves users see enough value to pay €14.90/mo"],
+    ["Signup → paid conversion", "8-12%", "Proves users see enough value to pay €4.99/mo"],
     ["Lead gen click-through rate", "25%+", "Proves users engage with product recommendations"],
     ["Monthly organic traffic growth", "8%+ MoM", "Proves SEO/content strategy is compounding"],
     ["First paying subscribers", "15-40", "Not about the number — about the conversion rates holding"],
@@ -881,20 +317,20 @@ async function generate() {
     row++;
   });
 
-  // ── Seed round ──
+  // ── Founder capital requirements (bootstrap) ──
   row += 1;
-  addTitle(wsFunding, row, "Seed Round: €230K — Use of Funds", 7);
+  addTitle(wsFunding, row, "Founder Capital Requirements — Pure Bootstrap", 7);
   row++;
-  addNote(wsFunding, row, "Raised at Month 6 based on Phase 1 metrics. Deployed over 18-26 months. Capital arrives at Month 7. Country pension engines built by technical co-founder (no cash cost). BD co-founder works on equity (no salary line).", 7);
+  addNote(wsFunding, row, "Pure bootstrap: zero external capital required. Founder capital absorbs the operational cash trough (~€52K at M17, base scenario) plus a small safety margin. BD co-founder draws salary from M8 onwards (€3K ramen → €5K sub-market at subMRR>€8K → €7K market at subMRR>€25K); tech co-founder defers salary until subMRR>€25K (~M28 base) and then mirrors BD. Both founder draws are loaded company cost (LU indépendant ~25% social charges; net to founder ~75%). Country pension engines built by technical co-founder; BD partnerships owned by BD co-founder. External capital (grants, angels, Series A) is opportunistic acceleration, not required.", 7);
   row += 2;
-  wsFunding.getRow(row).values = ["Category", "Amount", "When Deployed", "What It Buys", "Revenue Impact", "", ""];
+  wsFunding.getRow(row).values = ["Component", "Amount", "When Needed", "What It Covers", "Notes", "", ""];
   styleHeader(wsFunding, row, 5);
   row++;
 
   const fundingRows = [
-    ["Paid acquisition", "€180,000", "Month 7-26 (€3K→€15K/mo ramp)", "~1,800 platform signups via Google/Facebook/LinkedIn ads", "~€27K additional subscription ARR + lead gen"],
-    ["Content & SEO acceleration", "€50,000", "Month 7-18 (~€4K/mo)", "Professional content, landing pages per corridor, multi-language SEO", "3-5x organic traffic growth, compounds annually"],
-    ["TOTAL", "€230,000", "", "", ""],
+    ["Operational cash trough", "~€52,000", "M1-M28 (deepest at M17)", "Bridges the business to monthly break-even at M18 then on to cumulative BE at M28", "Founder comp from M8 deepens trough vs zero-comp model; honest about real founder economics"],
+    ["Safety margin (recommended)", "+€10,000-20,000", "Reserve", "Hedge against revenue ramp underperformance (2-3 month plan slip)", "Recommended buffer above the modeled trough"],
+    ["TOTAL BUSINESS-CASH REQUIREMENT", "~€60-70K", "Through cumulative BE (M28)", "Funds business operations including founder draws — split across two co-founders ≈ €30-35K each", "External capital is opportunistic acceleration, not required"],
   ];
 
   fundingRows.forEach((r, i) => {
@@ -913,14 +349,14 @@ async function generate() {
   row += 1;
   addTitle(wsFunding, row, "Monthly Cash Flow — Base Scenario", 7);
   row++;
-  addNote(wsFunding, row, "Shows cash in (revenue + seed), cash out (costs + acquisition), and running cash balance. Seed of €230K arrives at Month 7.", 7);
+  addNote(wsFunding, row, "Pure bootstrap — no seed inflow modeled. Shows cash in (revenue only), cash out (operating costs incl. founder comp + country-launch spend), and running cash balance starting from €0. Founder capital absorbs the cash trough at M17 (~€52K negative).", 7);
   row += 2;
 
   wsFunding.getRow(row).values = ["Month", "Revenue", "Operating Costs", "Paid Acquisition", "Total Cash Out", "Net Cash Flow", "Cash Balance"];
   styleHeader(wsFunding, row, 7);
   row++;
 
-  const SEED_AMOUNT = 230000;
+  const SEED_AMOUNT = 0; // Pure bootstrap — founder capital absorbs cash trough (~€10K at M11). External capital is opportunistic acceleration, not required.
   const SEED_MONTH = 7;
   let cashBalance = 0; // start with 0, founder self-funds Months 1-6
 
@@ -1026,14 +462,21 @@ async function generate() {
   styleSubHeader(wsFunding, row, 3);
   row++;
 
+  // Compute cumulative BE dynamically from baseData (don't hardcode).
+  let _cumNet = 0;
+  let cumBEMonth = null;
+  for (let i = 0; i < 60; i++) {
+    _cumNet += baseData[i].netIncome;
+    if (_cumNet >= 0 && !cumBEMonth) { cumBEMonth = i + 1; break; }
+  }
+
   const cashMilestones = [
-    ["Seed round amount", `€${SEED_AMOUNT.toLocaleString()}`, "Raised based on Phase 1 (Months 1-6) metrics"],
-    ["Seed arrives", `Month ${SEED_MONTH}`, "Start of Phase 2 (accelerated growth)"],
-    ["Pre-seed self-funding (Months 1-6)", `€${Math.round(baseData.slice(0,6).reduce((s,d) => s + d.totalCosts - d.totalMRR, 0)).toLocaleString()}`, "Operating costs minus revenue during bootstrap phase"],
-    ["Average monthly net burn (Months 7-18)", `€${Math.round(avgMonthlyBurn).toLocaleString()}/mo`, "After seed, including paid acquisition ramp"],
-    ["Cash runway from seed", `~${runwayMonths} months`, "Months of operation the seed covers at avg burn rate"],
+    ["External funding committed", `€${SEED_AMOUNT.toLocaleString()}`, "Pure bootstrap — zero external capital required to reach cumulative break-even"],
+    ["Business-cash bridge required", `€${Math.abs(Math.round(peakBurn)).toLocaleString()} (deepest at Month ${peakBurnMonth})`, "Operational cash absorbed during ramp-up — includes BD founder comp from M8 + country-launch costs"],
+    ["Avg monthly net burn (pre-BE, Months 1-12)", `€${Math.round(avgMonthlyBurn).toLocaleString()}/mo`, "Operating costs minus revenue while the funnel is ramping"],
     ["Monthly break-even", monthlyBECash ? `Month ${monthlyBECash}` : "Not in 60 months", "When monthly revenue exceeds monthly costs"],
-    ["Lowest cash point", `€${Math.round(peakBurn).toLocaleString()} (Month ${peakBurnMonth})`, "Maximum cumulative cash deficit"],
+    ["Cumulative break-even", cumBEMonth ? `Month ${cumBEMonth}` : "Not in 60 months", "All prior losses recovered; cumulative cashflow positive thereafter"],
+    ["Recommended business buffer (with safety margin)", "~€60-70K", "Operational cash trough plus safety margin against revenue ramp slip"],
   ];
 
   cashMilestones.forEach(r => {
@@ -1047,32 +490,27 @@ async function generate() {
     row++;
   });
 
-  // ── What happens without funding ──
+  // ── What external capital would add (optional acceleration) ──
   row += 1;
-  addTitle(wsFunding, row, "What Happens Without Funding (Organic Only)", 7);
+  addTitle(wsFunding, row, "Optional: What External Capital Would Accelerate", 7);
   row++;
-  addNote(wsFunding, row, "If the seed round is not raised, the business continues on organic-only growth. No paid acquisition budget, no professional content/SEO push, BD co-founder still works but with smaller pipeline. The model still works — it just grows much slower.", 7);
+  addNote(wsFunding, row, "The base model is the pure-bootstrap path. If external capital is raised opportunistically (grants, angels, Series A), it would be deployed to accelerate beyond the bootstrap baseline. The illustrative comparison below shows the bootstrap canonical path vs. a hypothetical Series A-funded scenario where paid acquisition is turned on at validated economics.", 7);
   row += 2;
 
-  // Calculate organic-only Year 1-3 from base data but zeroing paid/partnership
-  // We can approximate: organic signups from baseData months 1-6 extrapolated
-  const organicOnlyY1Subs = baseData[5].totalPaidSubs; // Month 6 is pure organic
-  const organicOnlyY1ARR = baseData[5].subARR;
-  wsFunding.getRow(row).values = ["Metric", "With Seed (Base)", "Without Seed (Organic Only)", "Difference", "", "", ""];
+  // Bootstrap (canonical) is baseData. Hypothetical Series A overlay assumes paid acq turned on.
+  // Rough estimate: Series A would lift Y3 subs by ~15-20% via paid channel addition + faster country rollout.
+  const bootstrapY3 = baseData[35];
+  const seriesAY3Subs = Math.round(bootstrapY3.totalPaidSubs * 1.18); // hypothetical 18% lift from paid
+  const seriesAY3ARR = Math.round(seriesAY3Subs * PRICE_MONTHLY * 12 + bootstrapY3.totalARR - bootstrapY3.subARR);
+
+  wsFunding.getRow(row).values = ["Metric", "Bootstrap (canonical)", "With Series A acceleration (hypothetical)", "Lift", "", "", ""];
   styleHeader(wsFunding, row, 4);
   row++;
 
-  const withSeedY3 = baseData[35];
-  const withSeedY3Rev = baseData.slice(0, 36).reduce((s, d) => s + d.totalMRR, 0);
-
-  // Organic-only rough estimate: Month 6 run rate × 30 months of compounding at organic growth rate
-  const organicOnlyY3Subs = Math.round(organicOnlyY1Subs * Math.pow(1.08, 30));
-  const organicOnlyY3ARR = Math.round(organicOnlyY3Subs * PRICE_MONTHLY * 12);
-
   const comparisonRows = [
-    ["Year 3 paying subscribers", withSeedY3.totalPaidSubs, organicOnlyY3Subs, withSeedY3.totalPaidSubs - organicOnlyY3Subs],
-    ["Year 3 ARR", withSeedY3.totalARR, organicOnlyY3ARR, withSeedY3.totalARR - organicOnlyY3ARR],
-    ["Countries supported by Year 3", `${withSeedY3.countriesLive} (V6 schedule)`, "5-7 (slower build)", `${withSeedY3.countriesLive - 6} more countries`],
+    ["Year 3 paying subscribers", bootstrapY3.totalPaidSubs, seriesAY3Subs, seriesAY3Subs - bootstrapY3.totalPaidSubs],
+    ["Year 3 ARR", bootstrapY3.totalARR, seriesAY3ARR, seriesAY3ARR - bootstrapY3.totalARR],
+    ["Countries supported by Year 3", `${bootstrapY3.countriesLive} (organic build)`, `${bootstrapY3.countriesLive + 4} (compressed by funded engineering hires)`, "+4 countries earlier"],
   ];
   comparisonRows.forEach(r => {
     wsFunding.getRow(row).values = [r[0], r[1], r[2], r[3]];
@@ -1112,14 +550,7 @@ async function generate() {
   styleHeader(wsEng, row, 7);
   row++;
 
-  const COUNTRY_NAMES = {
-    LU:"Luxembourg", PT:"Portugal", FR:"France", ES:"Spain", DE:"Germany",
-    PL:"Poland", RO:"Romania", IT:"Italy", UK:"United Kingdom", CH:"Switzerland",
-    BE:"Belgium", NL:"Netherlands", AT:"Austria", HU:"Hungary", IE:"Ireland",
-    HR:"Croatia", BG:"Bulgaria", GR:"Greece", CZ:"Czechia", SK:"Slovakia",
-    LT:"Lithuania", LV:"Latvia", SI:"Slovenia", SE:"Sweden", DK:"Denmark",
-    FI:"Finland", CY:"Cyprus", EE:"Estonia", MT:"Malta",
-  };
+  // COUNTRY_NAMES is destructured from the model import above.
 
   // Identify the last engine of each year (for year-boundary highlights).
   // V6 doesn't have engines landing exactly on M12/24/36/48/60, so we
@@ -1245,19 +676,32 @@ async function generate() {
   ws2.columns = monthCols;
 
   addTitle(ws2, 1, "60-Month Revenue Model — Base Scenario", 22);
-  addNote(ws2, 2, "Three acquisition channels (organic / paid / distribution partnerships) × two revenue streams (subscriptions + lead gen). Paid acquisition and partnerships both start Month 7 post-seed. Addressable market grows as country engines come online (see Engine Schedule sheet). Team hiring ramp begins M28 — 10 months after monthly break-even (M18) — funded from operating cashflow, leaving buffer to confirm the funnel is durable before adding payroll. Co-founders on equity excluded.", 22);
+  addNote(ws2, 2, "Column conventions — '/mo' = value flowed in that month (monthly flow); 'Cum.' = cumulative since M1; '(end)' = state at end of month (snapshot, not flow). Two seed-stage acquisition channels (organic SEO + distribution partnerships) × two revenue streams (subscriptions + lead gen). Paid acquisition is held in reserve as a Series A lever — at €4.99/mo + 12% conversion paid LTV:CAC is 0.49× (loss-making per channel). Addressable market grows as country engines come online (see Engine Schedule sheet). FTE schedule is scenario-dependent: base hires 4 by M60 (first hire M30, just before cumulative BE at M28); upside hires 8 by M60 (first hire M28). All hiring funded from operating cashflow (pure bootstrap). BD co-founder draws salary from M8 (€3K → €5K → €7K as subMRR scales); tech co-founder defers until subMRR>€25K.", 22);
 
   row = 4;
   ws2.getRow(row).values = [
-    "Mo", "Countries", "Addressable", "Organic\nSignups", "Paid\nSignups", "Active\nPartners", "Partner\nSignups", "Total\nSignups",
-    "Cum\nSignups",
-    "New\nPaid", "Churned", "Total\nSubs",
-    "Sub\nMRR", "LeadGen\nMRR", "Total\nMRR",
-    "Cum\nRevenue",
-    "FTEs", "Salary\nCost",
-    "Total\nCosts", "Net\nIncome",
-    "Cum\nNet",
-    "Capital\nUnder Ref"
+    "Mo",
+    "Countries\n(end)",
+    "Addressable\n(end)",
+    "Organic\nSignups /mo",
+    "Paid\nSignups /mo",
+    "Active\nPartners (end)",
+    "Partner\nSignups /mo",
+    "New Signups\n/mo (all chs)",
+    "Cum.\nSignups",
+    "New Paid\n/mo",
+    "Churned\n/mo",
+    "Paid Subs\n(end)",
+    "Sub Rev\n/mo",
+    "LeadGen\nRev /mo",
+    "Total Rev\n/mo",
+    "Cum.\nRevenue",
+    "FTEs\n(end)",
+    "FTE Salary\n/mo",
+    "Total Costs\n/mo",
+    "Net Income\n/mo",
+    "Cum.\nNet",
+    "Capital\n(end)"
   ];
   styleHeader(ws2, row, 22);
   row++;
@@ -1303,7 +747,7 @@ async function generate() {
 
   // ── Subscriptions ──
   row = 3;
-  addTitle(ws3, row, "Stream 1: Subscriptions (€14.90/mo / €149/yr)", 7);
+  addTitle(ws3, row, "Stream 1: Subscriptions (€4.99/mo / €49/yr)", 7);
   row++;
   ws3.getRow(row).values = ["Metric", "Year 1", "Year 2", "Year 3", "Year 4", "Year 5", "Notes"];
   styleHeader(ws3, row, 7);
@@ -1337,7 +781,7 @@ async function generate() {
 
   // ── Lead Gen ──
   row += 2;
-  addTitle(ws3, row, "Stream 2: Lead Generation (tiered trailing: 1.5% ≤€500K / 1.0% >€500K)", 7);
+  addTitle(ws3, row, "Stream 2: Lead Generation (0.03% annual trailing on aggregate referred capital)", 7);
   row++;
   ws3.getRow(row).values = ["Metric", "Year 1", "Year 2", "Year 3", "Year 4", "Year 5", "Notes"];
   styleHeader(ws3, row, 7);
@@ -1351,7 +795,7 @@ async function generate() {
       return slice.reduce((s,d) => s + d.newInvestors, 0) * AVG_CAPITAL_INVESTED;
     }), `€${(AVG_CAPITAL_INVESTED/1000).toFixed(0)}K avg investment`],
     ["Total capital under referral", ...yearData.map(d => d.totalCapital), "Compounds at 5%/yr"],
-    ["Annual lead gen revenue", ...yearRevenues.map(d => d.leadGenRev), "Tiered trailing: 1.5% ≤€500K / 1.0% >€500K"],
+    ["Annual lead gen revenue", ...yearRevenues.map(d => d.leadGenRev), "0.03% annual trailing on aggregate referred capital"],
     ["Lead gen as % of total revenue", ...yearRevenues.map((d, i) => d.totalRev > 0 ? d.leadGenRev / d.totalRev : 0), "Grows over time"],
   ];
 
@@ -1421,7 +865,7 @@ async function generate() {
   ];
 
   addTitle(ws4, 1, "Profit & Loss — Base Scenario (Annual)", 7);
-  addNote(ws4, 2, "Co-founder salaries excluded (technical + BD co-founders both work on equity through Series A). Team line reflects post-break-even FTE ramp — first hire at M28 (10 months after monthly BE at M18, leaving buffer to confirm funnel durability). Funded from operating cashflow, not from the €230K seed.", 7);
+  addNote(ws4, 2, "Co-founder salaries are INCLUDED from M8 (BD ramen €3K) with step-ups at subMRR thresholds. Tech co-founder defers until subMRR>€25K (~M28 base). Team line reflects scenario-dependent FTE schedule: base = 4 FTEs by M60 (first hire M30); upside = 8 FTEs by M60. Country-launch line covers per-engine launch burst (€1K/engine in launch month) plus persistent per-live-country recurring (€100/mo). All funded from operating cashflow (pure bootstrap — no seed funding).", 7);
 
   row = 4;
   addTitle(ws4, row, "Annual P&L", 7);
@@ -1437,16 +881,18 @@ async function generate() {
       infra: slice.reduce((s,d) => s + d.infraCost, 0),
       ai: slice.reduce((s,d) => s + d.aiCost, 0),
       marketing: slice.reduce((s,d) => s + d.marketingCost, 0),
+      countryLaunch: slice.reduce((s,d) => s + d.countryLaunchBurst + d.countryRecurring, 0),
       support: slice.reduce((s,d) => s + d.supportCost, 0),
       legal: slice.reduce((s,d) => s + d.legalCost, 0),
       misc: slice.reduce((s,d) => s + d.miscCost, 0),
+      founderComp: slice.reduce((s,d) => s + d.founderComp, 0),
       team: slice.reduce((s,d) => s + d.salaryCost, 0),
       paidAcq: slice.reduce((s,d) => s + d.paidAcqCost, 0),
       endFtes: slice[slice.length - 1].activeFtes,
     };
   });
 
-  const sumOpex = (yc) => yc.infra + yc.ai + yc.marketing + yc.support + yc.legal + yc.misc + yc.team;
+  const sumOpex = (yc) => yc.infra + yc.ai + yc.marketing + yc.countryLaunch + yc.support + yc.legal + yc.misc + yc.founderComp + yc.team;
   const sumAllCosts = (yc) => sumOpex(yc) + yc.paidAcq;
 
   const plRows = [
@@ -1458,11 +904,13 @@ async function generate() {
     { label: "OPERATING COSTS", values: null, style: "subheader" },
     { label: "  Infrastructure", values: yearCosts.map(d => d.infra) },
     { label: "  AI API", values: yearCosts.map(d => d.ai) },
-    { label: "  Content & SEO", values: yearCosts.map(d => d.marketing) },
+    { label: "  Content & SEO (global tooling)", values: yearCosts.map(d => d.marketing) },
+    { label: "  Country launch + recurring", values: yearCosts.map(d => d.countryLaunch) },
     { label: "  Support", values: yearCosts.map(d => d.support) },
     { label: "  Legal / Compliance", values: yearCosts.map(d => d.legal) },
     { label: "  Miscellaneous", values: yearCosts.map(d => d.misc) },
-    { label: "  Team (post-break-even FTEs)", values: yearCosts.map(d => d.team) },
+    { label: "  Founder comp (BD + Tech)", values: yearCosts.map(d => d.founderComp) },
+    { label: "  Team (FTEs)", values: yearCosts.map(d => d.team) },
     { label: "  FTEs at year-end", values: yearCosts.map(d => d.endFtes), style: "int_plain" },
     { label: "Total Operating Costs", values: yearCosts.map(sumOpex), style: "total_orange" },
     { label: "", values: null, style: "spacer" },
@@ -1549,7 +997,7 @@ async function generate() {
   const subLTV = Math.round(avgLifetimeMonths * PRICE_MONTHLY);
 
   const ltvRows = [
-    ["Monthly subscription price", PRICE_MONTHLY, currencyFmt2, "€14.90/month confirmed"],
+    ["Monthly subscription price", PRICE_MONTHLY, currencyFmt2, "€4.99/month — repositioned as accessible-tool pricing (volume thesis)"],
     ["Monthly churn rate", avgChurn, pctFmt, "SaaS benchmark — Recurly 2025 finance category median: 3.7%"],
     ["Average subscriber lifetime", avgLifetimeMonths, intFmt, "1 / churn rate (months)"],
     ["Subscription LTV", subLTV, currencyFmt, "Price × lifetime"],
@@ -1572,17 +1020,17 @@ async function generate() {
   styleHeader(ws5, row, 4);
   row++;
 
-  // Lead gen LTV uses the tiered commission rate applied to the investor's
-  // compounding capital over the 10-year holding period. For avg €50K invested
-  // at 5% growth, the balance stays inside the 1.5% tier for the full period.
+  // Lead gen LTV: flat 0.03% applied to investor's compounding capital over
+  // the 10-year holding period. Conservative floor — actual distribution
+  // rates in LU/FR are higher but 0.03% is the figure used in all investor
+  // narrative.
   const HOLDING_YEARS = 10;
   let investorLTV = 0;
   let capitalAtYear = AVG_CAPITAL_INVESTED;
   for (let y = 0; y < HOLDING_YEARS; y++) {
-    investorLTV += capitalAtYear * commissionRate(capitalAtYear);
+    investorLTV += capitalAtYear * LEAD_GEN_RATE;
     capitalAtYear *= (1 + CAPITAL_ANNUAL_GROWTH);
   }
-  const avgInvestorRate = commissionRate(AVG_CAPITAL_INVESTED);
   const perUserLeadGenLTV = Math.round(LEAD_GEN_EFFECTIVE * investorLTV * 100) / 100;
 
   const leadLtvRows = [
@@ -1590,11 +1038,11 @@ async function generate() {
     ["% who click product offer", LEAD_GEN_CLICK_PCT, pctFmt, "High-intent context (viewing their gap)"],
     ["% who invest via referral", LEAD_GEN_INVEST_PCT, pctFmt, "Qualified financial product conversion"],
     ["Effective conversion (all users)", LEAD_GEN_EFFECTIVE, pctFmt, "80% × 25% × 15% = 3%"],
-    ["Average capital invested", AVG_CAPITAL_INVESTED, currencyFmt, "Target demo: 45-65, LU income levels"],
-    ["Commission tier applied", avgInvestorRate, pctFmt, "€0–500K: 1.5% / €500K+: 1.0% — per-investor"],
-    ["Annual commission per investor (Y1)", AVG_CAPITAL_INVESTED * avgInvestorRate, currencyFmt2, "Tiered trailing × invested capital"],
+    ["Average capital invested", AVG_CAPITAL_INVESTED, currencyFmt, "Initial placement + early contributions; rollover pathway alone defends this"],
+    ["Annual trailing commission rate", LEAD_GEN_RATE, pctFmt, "Conservative floor — actual LU/FR retail rates are higher"],
+    ["Annual commission per investor (Y1)", AVG_CAPITAL_INVESTED * LEAD_GEN_RATE, currencyFmt2, "Flat 0.03% × invested capital"],
     ["Average holding period", `${HOLDING_YEARS}+ years`, null, "Pension/retirement products are long-duration"],
-    ["Lead gen LTV per investor", Math.round(investorLTV), currencyFmt, "Σ (capital_y × tier_rate_y) over holding period"],
+    ["Lead gen LTV per investor", Math.round(investorLTV), currencyFmt, "Σ (capital_y × 0.03%) over holding period"],
     ["Lead gen LTV per platform user", perUserLeadGenLTV, currencyFmt2, "3% conversion × investor LTV"],
   ];
 
@@ -1659,20 +1107,20 @@ async function generate() {
   const ws6 = wb.addWorksheet("7. Assumptions & Risks", { properties: { tabColor: { argb: RED } } });
   ws6.columns = [{ width: 30 }, { width: 20 }, { width: 40 }, { width: 28 }];
 
-  addTitle(ws6, 1, "Investment Use, Key Assumptions & Risks", 4);
+  addTitle(ws6, 1, "Founder Capital, Key Assumptions & Risks", 4);
 
-  // Seed round
+  // Founder capital
   row = 3;
-  addTitle(ws6, row, "Seed Round — €230K Allocation", 4);
+  addTitle(ws6, row, "Founder Capital — Pure Bootstrap (Zero External Funding)", 4);
   row++;
-  ws6.getRow(row).values = ["Category", "Amount", "What It Buys", "Revenue Impact"];
+  ws6.getRow(row).values = ["Component", "Amount", "What It Covers", "Notes"];
   styleHeader(ws6, row, 4);
   row++;
 
   const seedRows = [
-    ["Paid acquisition", "€180,000", "Month 7-26 ramp (€3K → €15K/mo). ~1,800 platform signups via Google/Facebook/LinkedIn ads", "~€27K additional subscription ARR + lead gen"],
-    ["Content & SEO acceleration", "€50,000", "Month 7-18. Professional content, landing pages per corridor, multi-language SEO", "3-5x organic traffic growth, compounds annually"],
-    ["TOTAL", "€230,000", "", ""],
+    ["Operational cash trough", "~€52,000", "Bridges to monthly break-even at M18 then on to cumulative BE at M28 (deepest negative cash at M17)", "Includes BD founder comp from M8 onwards — honest about real founder economics"],
+    ["Safety margin (recommended)", "+€10,000-20,000", "Hedge against 2-3 month revenue ramp slip", "Cushion above the modeled trough"],
+    ["TOTAL BUSINESS-CASH REQUIREMENT", "~€60-70K", "Operational + founder draws through cumulative BE (M28)", "Split across two co-founders ≈ €30-35K each. External capital is opportunistic acceleration, not required"],
   ];
 
   seedRows.forEach((r, i) => {
@@ -1696,19 +1144,22 @@ async function generate() {
   row++;
 
   const assumptions = [
-    ["Subscription price", "€14.90/mo / €149/yr", "Competitive analysis vs Boldin ($12/mo US), positioned as premium for multi-country", "A/B test €12-19.90 range"],
+    ["Subscription price", "€4.99/mo / €49/yr", "Repositioned from €14.90 — accessible-tool pricing to maximize volume; bets on conversion lift + lead-gen LTV", "Critical — model is highly sensitive to whether lower price drives proportional conversion lift"],
     ["Organic reach (Year 1)", "4% of addressable", "Niche SaaS benchmarks (OpenView); concentrated LU market", "High — depends on SEO execution"],
     ["Email capture rate", "30%", "Financial calculator industry 20-40% (Unbounce 2025)", "Medium — depends on report value prop"],
     ["Email → signup", "18%", "SaaS drip campaign benchmarks 10-20% (HubSpot)", "Medium"],
-    ["Signup → paid conversion", "10%", "Freemium financial tools 8-15% where free tier surfaces problems", "High — most critical metric"],
-    ["Monthly churn", "4% (improving to ~3%)", "Recurly 2025 finance category median: 3.7%", "High impact on long-term subs"],
-    ["Paid acquisition CAC", "€40/signup (base) / €30 (upside)", "Financial services CPC €5-15, 30-50% landing conversion. Niche keywords with near-zero competition justify the lower end. Sensitivity: at €100/signup the model becomes loss-making.", "Medium — optimisable"],
+    ["Signup → paid conversion", "12%", "Freemium financial tools 8-15% where free tier surfaces problems", "High — most critical metric"],
+    ["Monthly churn", "3% (improving to ~2.1% with maturity)", "Recurly 2025 finance category median: 3.7% — sit below median given multi-year pension context", "High impact on long-term subs"],
+    ["Paid acquisition CAC (hypothetical — paid is reserved)", "€40/signup base param (currently zero spend)", "At €4.99/mo + 12% conversion, paid LTV:CAC is 0.49× — loss-making per channel. Paid is held as a Series A lever to be turned on once post-launch CAC + conversion data validate it. Parameters retained for that future scenario.", "Low — paid is deferred until validated"],
     ["Lead gen conversion", "3% of all signups", "80% gap × 25% click × 15% invest", "Medium — depends on product partners"],
-    ["Avg capital invested", "€50,000", "Target demo 45-65, LU income levels", "Wide range: €20K-100K"],
-    ["Trailing commission (tiered)", "1.5% ≤€500K capital / 1.0% above", "Retail pension/life distribution benchmarks in LU/FR (Swiss Life, Foyer). Small-ticket trail typically 1-1.5%; HNW drops due to competitive alternatives (private banking).", "High — critical to validate against signed term sheet before pitch"],
-    ["Co-founder salaries excluded", "€0 in cost model", "Both technical + BD co-founders work on equity through Series A", "Major — add €6-10K/mo combined if salaried"],
-    ["Post-break-even team ramp", "0→0→2→5→6→8 FTEs by end Y1-Y5 (first hire M28, 10mo after BE)", "Hires begin after monthly break-even at M18, with a deliberate 10-month buffer to confirm funnel durability. Funded from cashflow not seed. Roles unspecified (engineering / content / CS / ops mix).", "Medium — scales with growth, flexible"],
-    ["Avg loaded FTE cost", "€6,000/mo", "LU market: ~€60K gross + ~13% social charges + equipment/desk", "Low — well-benchmarked"],
+    ["Avg capital invested", "€125,000", "Initial placement + early contributions; rollover-pathway clients (vested CH pillar 2 cash-out, FR PER consolidation) defend the higher figure for the multi-country demo", "Wide range: €50K-300K"],
+    ["Capital annual growth", "9%", "~5% market returns + ~4% ongoing top-ups by users actively closing their gap", "Medium — depends on user contribution behaviour"],
+    ["Trailing commission rate", "0.03% flat", "Deliberately conservative floor. Realistic LU/FR retail distribution rates are 1-1.5% (Swiss Life, Foyer benchmarks); 0.03% is used in all narrative as an underpromise.", "Low — actual rates expected to be much higher; floor is robust"],
+    ["Co-founder salaries (BD)", "€3K from M8 → €5K at subMRR>€8K → €7K at subMRR>€25K", "Loaded company cost incl. ~25% LU indépendant social charges. Net to founder ~75% of these. BD goes full-time at M7, first paycheck M8.", "Medium — recruiting reality requires this"],
+    ["Co-founder salaries (Tech)", "€0 until subMRR>€25K (~M28 base / M22 upside) → €5K → €7K at subMRR>€60K", "Tech defers because (a) BD is binding constraint earlier post-launch, (b) tech founder has higher pain tolerance for low-pay phase", "Low — deferred salary protects trough"],
+    ["FTE ramp (base scenario)", "0→0→1→1→4 FTEs by end Y1-Y5 (first hire M30)", "Conservative ramp tied to subscriber-revenue ramp in base. Funded from cashflow not seed. Roles unspecified (engineering / content / CS / ops mix).", "Medium — scales with growth, flexible"],
+    ["FTE ramp (upside scenario)", "0→0→2→5→8 FTEs by end Y1-Y5 (first hire M28)", "Aggressive ramp justified by upside revenue trajectory. Same role mix.", "Medium — scenario-conditional"],
+    ["Avg loaded FTE cost", "€8,000/mo", "LU market senior-leaning hire mix: ~€85K gross + ~14% social charges + equipment/desk", "Low — well-benchmarked"],
     ["Country pension engines", "Founder-built (no cash cost)", "Technical co-founder builds 29 engines (EU27 + UK + CH) over 5 years in greedy TAM order. LU/FR/CH already prototyped.", "Schedule risk if founder bandwidth tight"],
     ["Engine rollout pace", "3 at launch (LU/FR/CH), 4 in Y1 quarterly (PT/ES/UK/IT), 6 in Y2, 6 in Y3, 6 in Y4, 4 in Y5", "Front-loaded launch + steady ~2-month cadence Y2-Y5. End-state 29 engines by M58.", "Slower pace shifts projections right; faster gives diminishing returns until corridors mature"],
     ["Geographic addressable", "Sum of bilateral pension corridors", "Each new engine unlocks corridors with all already-supported countries; 0.55 addressability factor on diaspora populations", "See Engine Schedule sheet for full rollout"],
@@ -1742,8 +1193,8 @@ async function generate() {
     ["ETS/gov dashboards improve", "Reduces perceived value of free tier", "Focus on planning/simulation (not tracking); multi-country = moat", "Low (slow-moving)"],
     ["Regulatory risk (financial advice)", "May need disclaimers or licensing per market", "Position as education/planning, not advice; legal review per market", "Low-Medium"],
     ["Competitor enters EU multi-country", "Price pressure, feature competition", "First-mover advantage; deep country expertise; vault data lock-in", "Low (2-3 year window)"],
-    ["Paid acquisition CAC too high", "Unprofitable growth", "Shift budget to organic/partnerships; optimise landing pages", "Medium"],
-    ["Lead gen commission rate compression", "Tiered 1.5%/1.0% not achievable → blended ~0.5% cuts Y5 lead-gen ARR by ~65%", "Subscription-only business still reaches €3.5M Y5 ARR; lead gen is upside on top of core", "Medium"],
+    ["Paid acquisition CAC too high (Series A scenario)", "If/when paid is turned on with Series A capital, unprofitable per-channel growth if CAC > €25/signup at current price", "Defer paid activation until post-launch data confirms LTV:CAC ≥ 1.0×; bootstrap path doesn't depend on paid", "Low — deferred"],
+    ["Lead gen commission rate below floor", "0.03% floor not achievable → lead-gen revenue collapses to negligible", "Subscription-only business still reaches €3.5M Y5 ARR; lead gen is upside on top of core. 0.03% is already a deliberate underpromise vs realistic 1-1.5% market rates, so risk is low.", "Low"],
     ["Marketing underperformance", "Slower growth, delayed break-even", "Diversify channels; lean into distribution partnerships as fallback", "Medium"],
   ];
 

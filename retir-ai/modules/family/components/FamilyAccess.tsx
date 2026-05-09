@@ -175,7 +175,7 @@ function DelegateCard({ delegate }: { delegate: TrustedDelegate }) {
       >
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center text-[15px] font-bold shrink-0 text-white"
-          style={{ background: `linear-gradient(135deg, ${delegate.gradientFrom}, ${delegate.gradientTo})` }}
+          style={{ background: delegate.gradientFrom }}
         >
           {delegate.initials}
         </div>
@@ -287,15 +287,13 @@ export function FamilyAccess() {
       <div
         className="rounded-[18px] p-7 mb-5 relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, var(--navy-3) 0%, var(--navy-4) 100%)',
+          background: 'var(--navy-2)',
           border: '1px solid var(--border)',
         }}
       >
-        <div className="absolute rounded-full" style={{ top: -50, right: -50, width: 220, height: 220, background: 'radial-gradient(circle, rgba(239,68,68,0.06) 0%, transparent 70%)' }} />
-
         <div className="flex items-start gap-5 mb-5">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0" style={{ background: 'var(--red-dim)', border: '1px solid rgba(239,68,68,0.2)' }}>
-            ⚠️
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0" style={{ background: 'var(--red-dim)', border: '1px solid rgba(239,68,68,0.2)', color: 'var(--red)', fontFamily: 'var(--font-playfair)', fontWeight: 700 }}>
+            !
           </div>
           <div>
             <div className="text-[17px] font-bold mb-1" style={{ color: 'var(--text)' }}>

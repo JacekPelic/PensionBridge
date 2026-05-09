@@ -7,7 +7,7 @@ import { useTier } from '@/shared/TierProvider';
 import type { DataAsk, AskPriority, Pillar } from './types';
 import { stuckPromptFor } from './stuckPrompts';
 
-type Tab = 'upload' | 'manual' | 'guide';
+type Tab = 'upload' | 'manual' | 'guide' | 'product';
 
 const PRIORITY_STYLE: Record<AskPriority, { bg: string; color: string; label: string }> = {
   high: { bg: 'var(--red-dim)', color: 'var(--red)', label: 'High priority' },
@@ -100,12 +100,18 @@ export function AskCard({ ask }: { ask: DataAsk }) {
                 How to get it
               </TabButton>
             )}
+            {ask.productOffer && (
+              <TabButton active={tab === 'product'} onClick={() => setTab('product')}>
+                Open one
+              </TabButton>
+            )}
           </div>
 
           <div className="p-4">
             {tab === 'upload' && <UploadPane ask={ask} />}
             {tab === 'manual' && <ManualPane ask={ask} onDone={() => setExpanded(false)} />}
             {tab === 'guide' && ask.guide && <GuidePane ask={ask} />}
+            {tab === 'product' && ask.productOffer && <ProductPane ask={ask} />}
           </div>
 
           <StuckFooter ask={ask} />
@@ -279,6 +285,100 @@ function ManualPane({ ask, onDone }: { ask: DataAsk; onDone: () => void }) {
         <Button variant="ghost" onClick={onDone}>
           Cancel
         </Button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Product ────────────────────────────────────────────────────────
+//
+// Surfaces when the user doesn't yet have the asset the ask is asking
+// about. The card mirrors the dashboard ProductOffers shape so the
+// commercial logic is consistent across the app. Disclosure language
+// matches the trailing-partnership-fee model — never per-subscribe CPA.
+
+function ProductPane({ ask }: { ask: DataAsk }) {
+  const offer = ask.productOffer!;
+  const totalContributed = offer.monthlyContribution * 12 * offer.horizon;
+
+  return (
+    <div className="flex flex-col gap-3.5">
+      <div className="text-[12px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+        Don’t have one yet? You can open one with a regulated partner. Prevista is paid only if you fund the product —
+        a small trailing partnership fee, never a subscription. You stay in full control.
+      </div>
+
+      <div
+        className="rounded-[12px] p-4 flex flex-col"
+        style={{ background: 'var(--navy-2)', border: '1px solid var(--gold-border)' }}
+      >
+        {/* Provider header */}
+        <div className="flex items-center gap-3 mb-3">
+          <div
+            className="w-10 h-10 rounded-lg flex items-center justify-center text-[14px] font-bold text-white shrink-0"
+            style={{ background: offer.providerColor, fontFamily: 'var(--font-playfair)' }}
+          >
+            {offer.providerInitial}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[13.5px] font-semibold" style={{ color: 'var(--text)' }}>
+              {offer.provider}
+            </div>
+            <div className="text-[11px]" style={{ color: 'var(--text-dim)' }}>
+              {offer.productName}
+            </div>
+          </div>
+          <span
+            className="text-[9.5px] font-bold uppercase tracking-wider px-2 py-[3px] rounded-md shrink-0"
+            style={{ background: 'var(--gold-dim)', color: 'var(--gold-light)', border: '1px solid var(--gold-border)' }}
+          >
+            Partner
+          </span>
+        </div>
+
+        <div className="text-[12px] leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
+          {offer.description}
+        </div>
+
+        {/* Impact panel */}
+        <div
+          className="rounded-lg p-3 mb-3.5"
+          style={{ background: 'var(--green-dim)', border: '1px solid rgba(62,207,142,0.2)' }}
+        >
+          <div className="text-[10.5px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-dim)' }}>
+            Projected gap impact
+          </div>
+          <div className="flex items-baseline gap-1.5 mb-1">
+            <span
+              className="text-[22px] font-bold tabular-nums"
+              style={{ fontFamily: 'var(--font-playfair)', color: 'var(--green)', lineHeight: 1 }}
+            >
+              +€{offer.gapImpact.toLocaleString()}
+            </span>
+            <span className="text-[11.5px]" style={{ color: 'var(--text-muted)' }}>
+              / month at retirement
+            </span>
+          </div>
+          <div className="text-[11px]" style={{ color: 'var(--text-dim)' }}>
+            €{offer.monthlyContribution}/mo for {offer.horizon} yrs ({'≈'}€{totalContributed.toLocaleString()} contributed)
+          </div>
+        </div>
+
+        {offer.taxNote && (
+          <div className="text-[11px] mb-3.5 flex items-start gap-1.5" style={{ color: 'var(--gold-light)' }}>
+            <span className="shrink-0">{'✪'}</span>
+            <span>{offer.taxNote}</span>
+          </div>
+        )}
+
+        <Button variant="primary" className="w-full justify-center">
+          See offer {'→'}
+        </Button>
+      </div>
+
+      <div className="text-[10.5px] leading-relaxed" style={{ color: 'var(--text-dim)' }}>
+        Projection assumes 4% annual return. Actual outcome depends on market performance, fees, and your tax situation.
+        You can compare alternatives or speak to an independent advisor before committing.
       </div>
     </div>
   );

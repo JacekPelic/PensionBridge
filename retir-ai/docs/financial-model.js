@@ -11,8 +11,8 @@
 // ════════════════════════════════════════════════════════════════════
 
 // ── Pricing ──
-const PRICE_MONTHLY = 14.90;
-const PRICE_ANNUAL = 149.00;
+const PRICE_MONTHLY = 4.99;
+const PRICE_ANNUAL = 49.00;
 const ANNUAL_SPLIT_TARGET = 0.40;
 
 // ── Lead generation ──
@@ -21,12 +21,17 @@ const LEAD_GEN_GAP_PCT = 0.80;
 const LEAD_GEN_CLICK_PCT = 0.25;
 const LEAD_GEN_INVEST_PCT = 0.15;
 const LEAD_GEN_EFFECTIVE = LEAD_GEN_GAP_PCT * LEAD_GEN_CLICK_PCT * LEAD_GEN_INVEST_PCT;
-const AVG_CAPITAL_INVESTED = 50000;
-const CAPITAL_ANNUAL_GROWTH = 0.05;
+const AVG_CAPITAL_INVESTED = 125000;
+const CAPITAL_ANNUAL_GROWTH = 0.09;
 
 // ── Funding ──
-const SEED_AMOUNT = 230000;
-const SEED_MONTH = 7;
+// Pure bootstrap: zero external funding committed. Founder capital absorbs
+// the cash trough (~€32K at M16, base scenario, after founder compensation
+// kicks in from M8). External capital (grants, angels, seed) can be layered
+// in later as opportunistic acceleration without changing the underlying
+// business viability.
+const SEED_AMOUNT = 0;
+const SEED_MONTH = 7; // retained for future scenarios; currently unused
 
 // ── Bilateral pension corridor matrix ──
 // Each entry is the addressable population (people with pension entitlements
@@ -142,21 +147,73 @@ const COUNTRY_NAMES = {
 };
 
 // ── FTE ramp ──
-// First hire at M28 — 10 months after monthly BE (M16) for durable funnel buffer.
-const AVG_FTE_COST_MONTHLY = 6000;
-const FTE_SCHEDULE = [
+// €8K/mo blended = ~€85K gross + ~14% LU social charges + equipment/desk overhead.
+// Reflects senior-leaning hire mix (eng + content + ops); junior-only would be ~€6K.
+//
+// FTE schedule is **scenario-dependent**: in base, the subscriber-revenue ramp
+// can't comfortably support 8 FTEs by M60 (€64K/mo people cost vs €90K subMRR
+// → 87% of revenue to people, no safety margin). Base hires conservatively
+// (4 by M60). Upside keeps the original aggressive ramp because the revenue
+// curve genuinely supports it.
+const AVG_FTE_COST_MONTHLY = 8000;
+const BASE_FTE_SCHEDULE = [
+  { month: 30, hires: 1 }, // first hire just before cumulative BE (M32)
+  { month: 42, hires: 1 },
+  { month: 54, hires: 1 },
+  { month: 60, hires: 1 },
+]; // 4 FTEs by M60
+const UPSIDE_FTE_SCHEDULE = [
   { month: 28, hires: 1 },
   { month: 36, hires: 1 },
   { month: 42, hires: 1 },
   { month: 48, hires: 2 },
   { month: 54, hires: 1 },
   { month: 60, hires: 2 },
-];
+]; // 8 FTEs by M60
+// Backward-compat alias for any external consumer expecting the old global.
+// Points at upside (the original / fuller schedule).
+const FTE_SCHEDULE = UPSIDE_FTE_SCHEDULE;
+
+// ── Founder compensation ──
+// BD cofounder goes full-time at M7; first paycheck M8. Tech cofounder defers
+// salary until BD reaches market rate (subMRR > €25K). All figures are
+// company cost (loaded) — LU indépendant ~25% social charges → net to founder
+// is ~75% of these numbers.
+//
+// Step-ups trigger on subscription MRR (not lead-gen) — cleaner signal of
+// whether the core business is working. Step-ups auto-fire earlier in the
+// upside scenario as the revenue curve ramps faster.
+const FOUNDER_COMP = {
+  bd: {
+    phases: [
+      { trigger: { type: "month", value: 8 },     monthly: 3000 }, // ramen
+      { trigger: { type: "subMRR", value: 8000 },  monthly: 5000 }, // sub-market
+      { trigger: { type: "subMRR", value: 25000 }, monthly: 7000 }, // approaching market
+    ],
+  },
+  tech: {
+    phases: [
+      { trigger: { type: "subMRR", value: 25000 }, monthly: 5000 }, // tech starts when BD hits market rate
+      { trigger: { type: "subMRR", value: 60000 }, monthly: 7000 },
+    ],
+  },
+};
+
+function founderCompFor(rule, month, subMRR) {
+  let amount = 0;
+  for (const p of rule.phases) {
+    const t = p.trigger;
+    if (t.type === "month" && month >= t.value) amount = p.monthly;
+    if (t.type === "subMRR" && subMRR >= t.value) amount = p.monthly;
+  }
+  return amount;
+}
 
 // ── Scenario parameters (V6.2 calibration) ──
 const SCENARIOS = {
   base: {
     label: "Base",
+    fteSchedule: BASE_FTE_SCHEDULE,
     organicReachY1: 0.04,
     organicGrowthRate: 0.08,
     emailCapture: 0.30,
@@ -164,10 +221,14 @@ const SCENARIOS = {
     directSignup: 0.05,
     paidConversion: 0.12,
     monthlyChurn: 0.03,
-    paidBudgetM7: 3000,
-    paidBudgetM24: 15000,
-    paidBudgetM60: 25000,
-    blendedCAC: 40,
+    // Paid acquisition zeroed: at €4.99/mo with 12% conversion, paid LTV:CAC is 0.49× —
+    // every paid signup is acquired at a loss. Paid is reserved as a Series A lever once
+    // CAC/conversion economics are validated post-launch. Seed-stage growth runs purely
+    // on organic SEO + distribution partnerships.
+    paidBudgetM7: 0,
+    paidBudgetM24: 0,
+    paidBudgetM60: 0,
+    blendedCAC: 40, // retained as a parameter for future scenarios; not used while paid is zero
     partnershipStartMonth: 7,
     activePartnersM7: 1,
     activePartnersM12: 3,
@@ -177,17 +238,20 @@ const SCENARIOS = {
   },
   upside: {
     label: "Upside",
+    fteSchedule: UPSIDE_FTE_SCHEDULE,
     organicReachY1: 0.06,
     organicGrowthRate: 0.12,
     emailCapture: 0.35,
     emailToSignup: 0.22,
     directSignup: 0.07,
-    paidConversion: 0.15,
+    paidConversion: 0.18, // conversion lift at accessible €4.99 pricing (vs 12% base) — realistic-with-evidence case
     monthlyChurn: 0.025,
-    paidBudgetM7: 5000,
-    paidBudgetM24: 25000,
-    paidBudgetM60: 40000,
-    blendedCAC: 30,
+    // Paid acquisition also zeroed in upside — the upside thesis is conversion lift +
+    // stronger organic/partnerships, not "more paid spend." Paid is a Series A lever.
+    paidBudgetM7: 0,
+    paidBudgetM24: 0,
+    paidBudgetM60: 0,
+    blendedCAC: 30, // retained for future scenarios
     partnershipStartMonth: 7,
     activePartnersM7: 2,
     activePartnersM12: 5,
@@ -198,14 +262,30 @@ const SCENARIOS = {
 };
 
 // ── Cost structure (monthly) ──
+// AI + support split by user type. Free tier does unlimited document
+// extraction (data moat) so it costs real money even though it doesn't pay.
+const ACTIVE_FREE_FACTOR = 0.5; // fraction of all-time free signups still monthly-active
+// Support: founders absorb tickets through M24 (cash cost = tooling only).
+// From M25 onwards a CS function exists and per-user costing kicks in.
+const SUPPORT_FOUNDER_PHASE_END = 24;
+const SUPPORT_FIXED_EARLY = 150; // €/mo for help-desk + KB + status tooling
 const COSTS = {
   infrastructure: { m1: 150, m12: 400, m24: 900, m36: 1500, m48: 2200, m60: 3000 },
-  aiApi: { perUser: 2.00 },
-  marketing: { m1: 200, m12: 800, m24: 2000, m36: 3500, m48: 5000, m60: 6000 },
-  support: { perUser: 0.40 },
-  legal: { monthly: 250 },
+  aiApi: { perPaidUser: 0.20, perFreeUser: 0.04 }, // optimized engineering: Haiku 4.5 by default + 90% prompt caching + Sonnet only for vision/complex; ~10× safety margin over theoretical floor (€0.05/€0.01)
+  marketing: { m1: 80, m12: 250, m24: 700, m36: 1500, m48: 3000, m60: 4000 }, // Global tooling only: Workspace, email, SEO suite, video tools. Country-specific marketing is split out via COUNTRY_LAUNCH_BURST + COUNTRY_RECURRING below.
+  support: { perPaidUser: 0.50, perFreeUser: 0.08 }, // AI-first model: tooling + bounded contractor overflow; FTE captures primary human CS labor. ~10% of sub revenue at €4.99 — absolute number is €0.50/user, in line with Stripe/Wise/Klarna AI-augmented fintech
+  legal: { m1: 600, m12: 1000, m24: 1500, m36: 2000, m48: 2500, m60: 3000 }, // multi-jurisdiction regulatory + GDPR + partner contracts; ramps with countries-live
   misc: { monthly: 100 },
 };
+
+// ── Country-launch marketing ──
+// Per-engine one-time spike in the launch month: AI translation QA, local
+// press wire, content seed, small SEM activation. Plus persistent per-live-
+// country run-rate for locale SEO tooling, content refresh, A/B testing.
+// Bulk of country-marketing *labor* is absorbed by the FTE line from M28+.
+// Same numbers across base and upside — a company decision, not market-driven.
+const COUNTRY_LAUNCH_BURST = 1000;  // €/engine, single-month spike at launch
+const COUNTRY_RECURRING = 100;       // €/live-country/month, persistent
 
 // ── Helper functions ──
 
@@ -232,8 +312,16 @@ function liveCountryCount(m) {
   return ENGINE_SCHEDULE.filter(e => e.month <= m).length;
 }
 
-function fteCount(m) {
-  return FTE_SCHEDULE.filter(e => e.month <= m).reduce((s, e) => s + e.hires, 0);
+function fteCount(m, schedule = FTE_SCHEDULE) {
+  return schedule.filter(e => e.month <= m).reduce((s, e) => s + e.hires, 0);
+}
+
+function countryLaunchBurstFor(m) {
+  return ENGINE_SCHEDULE.filter(e => e.month === m).length * COUNTRY_LAUNCH_BURST;
+}
+
+function countryRecurringFor(m) {
+  return liveCountryCount(m) * COUNTRY_RECURRING;
 }
 
 function interpolatePartners(s, month) {
@@ -348,16 +436,27 @@ function simulate(scenarioKey) {
 
     const totalMRR = subMRR + leadGenMonthlyRevenue;
 
+    // Active free users = (cumulative signups − live paid) × retention factor.
+    // Treats churned-paid as "back to free" for cost purposes.
+    const activeFreeUsers = Math.max(0, Math.round((cumulativeSignups - totalPaidSubs) * ACTIVE_FREE_FACTOR));
+
     // Costs
     const infraCost = interpolateCost(COSTS.infrastructure, m);
-    const aiCost = Math.round(totalPaidSubs * COSTS.aiApi.perUser);
+    const aiCost = Math.round(totalPaidSubs * COSTS.aiApi.perPaidUser + activeFreeUsers * COSTS.aiApi.perFreeUser);
     const marketingCost = interpolateCost(COSTS.marketing, m);
-    const supportCost = Math.round(totalPaidSubs * COSTS.support.perUser);
-    const legalCost = COSTS.legal.monthly;
+    const supportCost = m <= SUPPORT_FOUNDER_PHASE_END
+      ? SUPPORT_FIXED_EARLY
+      : Math.round(totalPaidSubs * COSTS.support.perPaidUser + activeFreeUsers * COSTS.support.perFreeUser);
+    const legalCost = interpolateCost(COSTS.legal, m);
     const miscCost = COSTS.misc.monthly;
-    const activeFtes = fteCount(m);
+    const activeFtes = fteCount(m, s.fteSchedule);
     const salaryCost = activeFtes * AVG_FTE_COST_MONTHLY;
-    const totalFixedCosts = infraCost + marketingCost + legalCost + miscCost + salaryCost;
+    const founderCompBd = founderCompFor(FOUNDER_COMP.bd, m, subMRR);
+    const founderCompTech = founderCompFor(FOUNDER_COMP.tech, m, subMRR);
+    const founderComp = founderCompBd + founderCompTech;
+    const countryLaunchBurst = countryLaunchBurstFor(m);
+    const countryRecurring = countryRecurringFor(m);
+    const totalFixedCosts = infraCost + marketingCost + legalCost + miscCost + salaryCost + founderComp + countryLaunchBurst + countryRecurring;
     const totalVariableCosts = aiCost + supportCost;
     const totalOperatingCosts = totalFixedCosts + totalVariableCosts;
     const totalCostsWithPaid = totalOperatingCosts + paidBudget;
@@ -384,7 +483,9 @@ function simulate(scenarioKey) {
       subARR: subMRR * 12,
       totalARR: totalMRR * 12,
       infraCost, aiCost, marketingCost, supportCost, legalCost, miscCost,
-      salaryCost, activeFtes,
+      salaryCost, activeFtes, activeFreeUsers,
+      founderCompBd, founderCompTech, founderComp,
+      countryLaunchBurst, countryRecurring,
       totalOperatingCosts,
       paidAcqCost: Math.round(paidBudget),
       totalCosts: totalCostsWithPaid,
@@ -430,11 +531,15 @@ module.exports = {
   PRICE_MONTHLY, PRICE_ANNUAL, ANNUAL_SPLIT_TARGET,
   LEAD_GEN_RATE, LEAD_GEN_GAP_PCT, LEAD_GEN_CLICK_PCT, LEAD_GEN_INVEST_PCT,
   LEAD_GEN_EFFECTIVE, AVG_CAPITAL_INVESTED, CAPITAL_ANNUAL_GROWTH,
-  SEED_AMOUNT, SEED_MONTH, AVG_FTE_COST_MONTHLY,
+  SEED_AMOUNT, SEED_MONTH, AVG_FTE_COST_MONTHLY, ACTIVE_FREE_FACTOR,
   // Data structures
-  CORRIDORS, ENGINE_SCHEDULE, COUNTRY_NAMES, FTE_SCHEDULE, SCENARIOS, COSTS,
+  CORRIDORS, ENGINE_SCHEDULE, COUNTRY_NAMES,
+  FTE_SCHEDULE, BASE_FTE_SCHEDULE, UPSIDE_FTE_SCHEDULE,
+  SCENARIOS, COSTS,
+  FOUNDER_COMP, COUNTRY_LAUNCH_BURST, COUNTRY_RECURRING,
   // Functions
-  computeAddressable, liveCountryCount, fteCount,
+  computeAddressable, liveCountryCount, fteCount, founderCompFor,
+  countryLaunchBurstFor, countryRecurringFor,
   interpolatePartners, interpolateCost, interpolateCostExtended,
   simulate, computeBreakEvens, computeCashBalance,
 };

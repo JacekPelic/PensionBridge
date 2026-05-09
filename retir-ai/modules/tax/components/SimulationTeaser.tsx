@@ -45,9 +45,9 @@ export function SimulationTeaser({ results }: Props) {
             />
             <div className="flex justify-center gap-4 mt-4">
               {[
-                { icon: '🌍', label: 'Tax comparison' },
-                { icon: '📊', label: 'Country ranking' },
-                { icon: '🏦', label: 'Capital modeller' },
+                { icon: '◎', label: 'Tax comparison' },
+                { icon: '⊞', label: 'Country ranking' },
+                { icon: '▣', label: 'Capital modeller' },
               ].map((f) => (
                 <div key={f.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium"
                   style={{ background: 'var(--navy-3)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}>

@@ -4,6 +4,7 @@ import { Sidebar } from '@/shared/layout/Sidebar';
 import { Topbar } from '@/shared/layout/Topbar';
 import { ChatWidget } from '@/shared/chat/ChatWidget';
 import { Button } from '@/shared/ui/Button';
+import { StageToggle } from '@/shared/ui/StageToggle';
 import { PictureSurface } from '@/modules/identity/components/onboarding-v2/PictureSurface';
 import { usePicture } from '@/modules/identity/PictureProvider';
 
@@ -29,15 +30,18 @@ function PictureChrome() {
       title="Your pension picture"
       subtitle={subtitle}
       actions={
-        mode === 'mock' ? (
-          <Button variant="ghost" onClick={startFresh}>
-            Start fresh
-          </Button>
-        ) : (
-          <Button variant="ghost" onClick={loadMock}>
-            View demo
-          </Button>
-        )
+        <>
+          <StageToggle />
+          {mode === 'mock' ? (
+            <Button variant="ghost" onClick={startFresh}>
+              Start fresh
+            </Button>
+          ) : (
+            <Button variant="ghost" onClick={loadMock}>
+              View demo
+            </Button>
+          )}
+        </>
       }
     />
   );

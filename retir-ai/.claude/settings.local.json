@@ -69,7 +69,13 @@
       "Bash(wait)",
       "Bash(ls .claude/skills/)",
       "Bash(ls .impeccable.md)",
-      "Bash(ls /c/Users/jacek/.claude/plugins/cache/impeccable/impeccable/2.1.1/.claude/skills/impeccable/scripts/cleanup-deprecated.mjs)"
+      "Bash(ls /c/Users/jacek/.claude/plugins/cache/impeccable/impeccable/2.1.1/.claude/skills/impeccable/scripts/cleanup-deprecated.mjs)",
+      "WebFetch(domain:www.spuerkeess.lu)",
+      "Read(//usr/local/bin/**)",
+      "Bash(brew list *)",
+      "Bash(zsh -i -c 'which node; node --version')",
+      "Bash(brew install *)",
+      "Bash(grep *)"
     ],
     "autoApprove": true
   }

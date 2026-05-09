@@ -16,21 +16,21 @@ const navItems = [
   {
     section: 'Planning',
     items: [
-      { label: 'Career Journey', icon: '🗺', href: '/career' },
-      { label: 'Payout Estimation', icon: '📊', href: '/estimation' },
-      { label: 'Retirement Simulation', icon: '🧮', href: '/simulation', pro: true },
+      { label: 'Career Journey', icon: '▦', href: '/career' },
+      { label: 'Payout Estimation', icon: '⊞', href: '/estimation' },
+      { label: 'Retirement Simulation', icon: '◈', href: '/simulation', pro: true },
     ],
   },
   {
     section: 'Protection',
     items: [
-      { label: 'Document Vault', icon: '🗄', href: '/vault' },
-      { label: 'Legislative Radar', icon: '📡', href: '/radar', badge: '6', pro: true },
+      { label: 'Document Vault', icon: '▤', href: '/vault' },
+      { label: 'Legislative Radar', icon: '◎', href: '/radar', badge: '6', pro: true },
     ],
   },
   {
     section: 'Sharing',
-    items: [{ label: 'Trusted Access', icon: '👥', href: '/family', pro: true }],
+    items: [{ label: 'Trusted Access', icon: '◐', href: '/family', pro: true }],
   },
 ];
 
@@ -147,7 +147,7 @@ export function Sidebar() {
                 }}
               />
             </div>
-            {isPro ? 'Pro' : 'Free tier'}
+            {isPro ? 'Pro preview' : 'Free preview'}
           </button>
           {!isPro && (
             <Link
@@ -173,8 +173,8 @@ export function Sidebar() {
             fontFamily: 'var(--font-sans)',
           }}
         >
-          <span className="text-sm">{theme === 'dark' ? '☀️' : '🌙'}</span>
-          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          <span className="text-sm" style={{ color: 'var(--text-dim)' }}>{theme === 'dark' ? '○' : '●'}</span>
+          {theme === 'dark' ? 'Light mode' : 'Dark mode'}
         </button>
       </div>
 
@@ -187,7 +187,7 @@ export function Sidebar() {
         >
           <div
             className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-[13px] font-bold shrink-0"
-            style={{ background: 'linear-gradient(135deg, var(--gold), var(--gold-light))', color: 'var(--navy)' }}
+            style={{ background: 'var(--gold)', color: 'var(--navy)' }}
           >
             MK
           </div>

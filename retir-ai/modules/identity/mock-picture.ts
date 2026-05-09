@@ -69,4 +69,5 @@ export const MOCK_PICTURE: PartialPicture = {
     'fr-agirc-arrco': 'fulfilled',
     'private-savings': 'fulfilled',
   },
+  onboardingDismissed: true,
 };

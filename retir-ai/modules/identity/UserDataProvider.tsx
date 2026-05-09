@@ -31,9 +31,9 @@ const FALLBACK: UserData = {
   pillar1Estimates: [
     { country: 'FR', monthlyPensionLocal: 1220, currency: 'EUR', monthlyPensionEur: 1220, isFullRate: false, warnings: [], breakdown: [] },
     { country: 'CH', monthlyPensionLocal: 337, currency: 'CHF', monthlyPensionEur: 320, isFullRate: false, warnings: [], breakdown: [] },
-    { country: 'LU', monthlyPensionLocal: 980, currency: 'EUR', monthlyPensionEur: 980, isFullRate: false, warnings: [], breakdown: [] },
+    { country: 'LU', monthlyPensionLocal: 1020, currency: 'EUR', monthlyPensionEur: 1020, isFullRate: false, warnings: [], breakdown: [] },
   ],
-  pillar1Total: 2520,
+  pillar1Total: 2560,
   countriesWorked: ['FR', 'CH', 'LU'],
 };
 

@@ -15,8 +15,6 @@ export function UpgradePrompt({ title, description, featureCount, badge = 'Pro',
   return (
     <div className="rounded-xl p-5 text-center relative overflow-hidden"
       style={{ background: 'var(--navy-3)', border: '1px solid var(--gold-border)' }}>
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(circle at center, rgba(201,168,76,0.06), transparent 70%)' }} />
       <div className="relative">
         <div className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--gold)' }}>
           {badge}

@@ -119,7 +119,7 @@ export function CountryComparison({ results }: Props) {
                   <div className="absolute top-0 left-0 h-full rounded-l-lg flex items-center pl-2.5"
                     style={{
                       width: `${barPct}%`,
-                      background: isBest ? 'linear-gradient(90deg,#3ecf8e,#2ba87a)' : 'linear-gradient(90deg,rgba(62,207,142,0.6),rgba(43,168,122,0.6))',
+                      background: isBest ? 'var(--green)' : 'rgba(62,207,142,0.55)',
                     }}>
                     {barPct > 15 && (
                       <span className="text-[10px] font-bold text-white">

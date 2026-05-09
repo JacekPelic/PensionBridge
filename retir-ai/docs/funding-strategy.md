@@ -1,58 +1,66 @@
-# Prevista Funding Strategy — Seed Round & Capital Structure
+# Prevista Funding Strategy — Bootstrap First, External Capital Optional
 
 *Date: April 2026*
-*Target raise: €230K*
+*Approach: Pure bootstrap. External capital is opportunistic acceleration, not required.*
 *Target market: Luxembourg*
 
 ---
 
-## 1. Two-Phase Funding Approach
+## 1. Capital Plan
 
-Prevista operates in two phases with different funding requirements:
+Prevista's seed-stage business model does not require external capital. The financial model demonstrates the company can be built profitably on founder capital alone, with external funding (grants, angels, seed) treated as opportunistic acceleration rather than survival financing.
 
 | Phase | Months | Funding | Purpose |
 |---|---|---|---|
-| **Phase 1: Bootstrap** | 1-6 | €0 (self-funded) | Validate the acquisition funnel with organic-only growth. Prove conversion rates. |
-| **Phase 2: Accelerate** | 7+ | €230K seed | Scale proven funnel via paid acquisition and BD co-founder distribution partnerships. Country pension engines built by technical co-founder (no cash cost). |
+| **Phase 1: Bootstrap & Validate** | 1-18 | Founder capital (~€20-25K business cash; personal living handled externally) | Build LU/FR/CH engines, run organic SEO + BD partnerships, reach cumulative break-even |
+| **Phase 2: Operate & Expand** | 18+ | Operating cashflow | Country expansion (29 engines by Y5), no fundraising required to maintain operations |
+| **Phase 3 (Optional): Series A acceleration** | When metrics warrant | €1-3M raise | Turn on paid acquisition, hire engineering team, accelerate country rollout — only when terms are advantageous |
 
-Phase 1 exists to generate the evidence that justifies the seed round. Investors see validated metrics, not just projections.
+Bootstrap viability is proven by the unit economics, not by intention: with €4.99/mo accessible pricing, AI-leveraged operations, zero paid acquisition, and founder-absorbed labor through M24, the operational cash trough is approximately **€10K at Month 11**. Founders self-fund this through personal capital plus living-expense savings.
 
-### Phase 1 Milestones (What We Prove Before Raising)
+### Why this matters strategically
 
-| Metric | Target | Why It Matters |
-|---|---|---|
-| Calculator → email capture rate | 25-35% | Tool delivers enough value to earn an email |
-| Email → platform signup rate | 15-22% | Drip campaign and platform CTA convert |
-| Signup → paid conversion | 8-12% | Users see enough value to pay €14.90/mo |
-| Lead gen click-through rate | 25%+ | Users engage with product offers when shown their gap |
-| Monthly organic traffic growth | 8%+ MoM | SEO/content strategy is compounding |
-| First paying subscribers | 15-40 | The absolute number matters less than the conversion rates holding |
+Bootstrapping isn't a fallback — it's the default plan. This produces three structural advantages:
 
-These metrics are the pitch deck. Even modest absolute numbers (hundreds of users, dozens of subscribers) are sufficient if the rates hold — because they prove the machine works before money is poured into it.
+1. **Negotiating leverage.** When external capital becomes available on attractive terms, the founders can engage from a position of strength: the business doesn't need the money.
+2. **Zero dilution risk.** No urgent funding deadline means no pressure to accept unfavorable terms.
+3. **Investor-ready signal.** "We can build this without you, but we can build it faster with you" is a stronger pitch than "we need €230K to survive."
+
+External capital — grants (Fit4Start €150K, YIE), angels, or a deferred seed — can be layered in opportunistically when application timing aligns or when scaling pressure makes the optionality valuable. The financial model in this doc reflects the conservative pure-bootstrap path; alternative scenarios with external capital can be modeled as overlays.
 
 ---
 
-## 2. Seed Round: €230K
+## 2. Founder Capital Requirements
 
-### Use of Funds
+### Business-Cash Budget Only
 
-| Category | Amount | When Deployed | What It Buys | Revenue Impact |
-|---|---|---|---|---|
-| Paid acquisition | €180,000 | Month 7-26 (€3K→€15K/mo ramp) | ~1,800 signups via Google/Facebook/LinkedIn ads | ~€27K additional subscription ARR + compounding lead gen |
-| Content & SEO acceleration | €50,000 | Month 7-18 (~€4K/mo) | Professional content, landing pages per corridor, multi-language SEO | Drives the dominant organic channel — compounds annually |
-| **TOTAL** | **€230,000** | | | |
+| Component | Amount | Notes |
+|---|---|---|
+| Operational cash trough (M11) | **~€10,000** | Deepest negative cash balance; bridges the business to monthly BE at M12 |
+| Safety margin (2× — plans slip 2-3 months) | +€10,000-15,000 | Hedge against revenue ramp underperformance |
+| Equipment, incorporation, misc | (already in operating cost lines) | Loom, Workspace, legal incorporation captured in expense lines |
+| **Total business-cash requirement** | **~€20-25K combined** | Funds business operations only |
 
-**What is *not* in the seed:**
-- **Co-founder salaries** — both technical and BD co-founders work on equity until Series A. Eliminates the largest opex line.
-- **Country pension engine development** — built by the technical co-founder during bootstrap and Phase 2. LU/FR/CH all live at launch (Month 1); PT/ES/UK/IT added quarterly through Year 1; remaining 22 engines on a ~2-month cadence through Year 5 — all at no cash cost.
-- **BD hire** — replaced by a BD co-founder. Distribution partnerships (corporate HR, expat associations, content partners, mobility consultancies) are owned by the BD co-founder full-time from day 1.
+**Personal living expenses are not part of the business model.** Both co-founders work on equity until cumulative BE (M18) or Series A and handle their own living costs externally — through side consulting, personal savings, spouse income, or reduced lifestyle. This is intentional: founder lifestyle isn't a business cost, and modeling it that way understates the project's actual capital efficiency.
 
-### Why €230K
+The actual *business* cash requirement is small (~€20-25K including a safety buffer) because the operating model is so lean: zero paid acquisition, AI-leveraged content, founder-absorbed support through M24, no FTE hires until M28.
 
-- Covers ~24 months of accelerated operations with founder-led execution
-- Bridges the business to self-sustaining profitability with months of runway untouched: monthly break-even at Month 16, cumulative break-even at Month 20. Reaches meaningful scale (~21,200 paying subscribers by Year 5).
-- Small enough to raise mostly from grants — keeps dilution under 5%
-- Well below the Luxembourg seed range ceiling (€200K-€800K typical), de-risking the raise itself
+### What founder capital does NOT need to fund
+
+- **Co-founder salaries** — both technical and BD co-founders work on equity until cumulative BE or Series A
+- **Country pension engine development** — built by the technical co-founder over 5 years (LU/FR/CH live at M1; full 29 engines by M58) at no cash cost beyond founder time
+- **Distribution partnerships** — owned by BD co-founder full-time from day 1, no upfront cost
+- **Paid acquisition** — zero in seed-stage plan; reserved as a Series A lever
+- **Marketing / content production** — AI-leveraged with founder editorial review; cash cost minimal (€80-€4K/mo curve covering tooling only)
+- **Office / equipment beyond minimum** — fully remote, work-from-home
+
+### Why bootstrap math works
+
+- **Zero paid acquisition** at €4.99/mo accessible pricing — saves €887K cumulative cost over 5 years
+- **Founder-absorbed support** through M24 — saves contractor/CS headcount
+- **Founder-absorbed content** with AI leverage — saves freelance writer/translation budgets
+- **Optimized AI engineering** (Haiku 4.5 default, 90% prompt caching, Sonnet only for vision) — €0.20/paid + €0.04/free
+- **No FTE hires until M28** — 16 months past monthly BE, 10 months past cumulative BE
 
 ---
 
@@ -198,27 +206,27 @@ At seed stage, investors don't trust 5-year financial projections. What they act
 
 1. **Is the market real and big enough?** — 17M EU mobile workers, narrowed to 130-150K in Luxembourg. The corridor expansion logic (see GTM doc) shows path to millions.
 
-2. **Do the unit economics work?** — LTV:CAC ratio. Subscription LTV of ~€492 (33-month avg lifetime at 3% churn × €14.90/mo). Per-signup CAC of €40 against blended per-signup LTV of €63.54 (12% × sub LTV + €4.50 lead gen) = **~1.6×** at base parameters. Below the conventional 3× target but defensible: paid is only ~10% of acquisition (organic + partnerships dominate), and on a per-paying-subscriber basis the ratio is €492 / €333 = 1.48× — subscription revenue alone covers acquisition with margin to spare. Lead-gen contribution and CPC optimization push the trajectory toward 2.5–3× post-launch.
+2. **Do the unit economics work?** — Subscription LTV of ~€165 (33-month avg lifetime at 3% churn × €4.99/mo) against effectively zero CAC on organic signups (founder time absorbed) and modest CAC on partnership signups (revenue share, no upfront cost). The seed-stage plan deliberately runs zero paid acquisition because at €4.99/mo + 12% conversion, paid LTV:CAC is 0.49× — every paid signup would be acquired at a loss. Organic SEO + distribution partnerships drive 100% of acquisition in the seed plan. Lead-gen LTV (~€17/signup) compounds across all users without acquisition cost, becoming a structural revenue stream rather than just a unit economics buffer. Paid acquisition is reserved as a Series A lever once conversion economics are validated through real user behavior post-launch.
 
 3. **Is there a moat?** — No direct competitor. Data lock-in (document uploads). Engine complexity (country-specific pension formulas with EU coordination rules). Content authority (first mover on cross-border pension SEO).
 
-4. **What does the money buy?** — Clear use of funds with specific revenue impact per category. Not "we need runway" but "€180K in paid acquisition generates ~4,500 signups at €40 blended CAC, of which ~540 convert to paid subscribers (12% conversion) with €492 sub LTV — paid acquisition is approaching break-even on its own and accelerates an organic-dominant funnel."
+4. **What does external money buy?** — The bootstrap plan does not require external capital. If a grant or seed round closes opportunistically, the marginal use of funds is acceleration: faster content/SEO production at scale, expanded BD activities, earlier engineering hire, or a Series A bridge buffer. Not "we need runway" — runway is already self-funded. The pitch is "here's what extra capital accelerates" rather than "here's why we'd otherwise fail."
 
 ### Nice-to-Haves
 
 5. **Phase 1 validated metrics** — Actual conversion rates from the bootstrap period. Even 100 users with 10% paid conversion is more compelling than a projection showing 10,000 users.
 
-6. **Path to Series A** — MiddleGame Ventures is the natural next investor. What triggers that raise? Likely: 500+ paying subscribers, 3+ countries live, proven paid acquisition CAC, €50K+ ARR.
+6. **Path to Series A** — MiddleGame Ventures is the natural next investor. What triggers that raise? Likely: 500+ paying subscribers, 3+ countries live, validated organic + partnership economics, €50K+ ARR. Paid acquisition gets turned on with Series A capital once unit economics are proven.
 
 7. **Regulatory clarity** — CSSF Innovation Hub confirmation that the tool is not regulated investment advice (at the calculator/projection level).
 
 ### What They'll Challenge
 
-- **"Your Year 5 ARR is €3.67M (base) / €7.22M (upside) — is that venture-scale?"** Response: The €230K seed funds an aggressive geographic expansion plan that reaches all 29 EU + UK + CH country engines by Year 5, growing the addressable market from a 140K Luxembourg beachhead to ~12M cross-border pension holders across the entire EU. The model breaks even **monthly at Month 16 and cumulatively at Month 20** — meaning the seed bridges the business to self-sustaining profitability with 4+ months of runway still untouched, not to the next raise. Year 5 ends with €4.08M cumulative net income, ~21,200 paying subscribers, and €425M in capital under referral. Year 5 paid penetration is 0.18% of TAM — there's an order of magnitude of growth still ahead. At EU scale with both revenue streams compounding past Year 5, this is a €15-25M ARR business by Year 7-8.
+- **"Your Year 5 ARR is €1.39M (base) / €2.91M (upside with conversion lift) — is that venture-scale?"** Response: At €4.99/mo accessible-tool pricing with zero paid acquisition, **the business is bootstrap-funded** — founder capital absorbs the ~€10K cash trough at M11 and reaches cumulative break-even at M18. By Year 5, 29 EU + UK + CH country engines are live, addressing ~12M cross-border pension holders. The base case ends Y5 with €853K cumulative net income; the upside case (18% conversion vs base 12%, consistent with accessible-pricing freemium benchmarks) delivers Y5 ARR €2.91M with ~44,400 paying subscribers and €3.21M cumulative net. Capital under referral reaches €1.04B by Y5 — the lead-gen compounding base is the long-duration value driver. The Y5 ARR number reflects organic-only growth; Series A capital is the *acceleration* lever to turn on paid acquisition and expand past the organic ceiling, not a survival requirement.
 
-- **"Lead gen at 0.03% is tiny."** Response: It's compounding. €127K/yr by Year 5, growing to €285K+ at scale. And it's pure margin on a growing asset base. But the core business works on subscriptions alone — lead gen is upside.
+- **"Lead gen at 0.03% is tiny."** Response: It's compounding. €341K/yr by Year 5, growing to €1M+ at scale. And it's pure margin on a growing asset base. The 0.03% rate is also a deliberate underpromise — actual LU/FR retail distribution rates are 1-1.5%, so there's substantial upside if we negotiate even a fraction of market rates. But the core business works on subscriptions alone — lead gen is upside.
 
-- **"Your LTV:CAC is only 1.6× — that's below the 3× SaaS standard."** Response: Three things. First, the model uses a deliberately conservative €40 per-signup CAC at 12% paid conversion, producing €333 effective per-paying-sub CAC against €492 sub LTV — subscription revenue alone covers acquisition. Second, the 1.6× ratio applies *only to the paid channel*, which contributes ~10% of total signups in the model — organic SEO and distribution partnerships drive the majority and have far better unit economics. Third, this is the *launch* parameter set; post-launch CPC optimization and landing-page iteration are realistic paths to 2.5–3× without changing the model's growth trajectory.
+- **"You're not running paid acquisition? How do you scale?"** Response: At €4.99/mo accessible pricing with 12% paid conversion, paid LTV:CAC is 0.49× — every paid signup would be acquired at a loss. We deliberately chose to run zero paid in the seed-stage plan rather than burn capital on a channel that doesn't pay back. Growth runs entirely on organic SEO (29 country engines, each unlocking corridor-specific keyword pages with near-zero competition) and distribution partnerships (BD co-founder owns this full-time from day one). Both channels have effectively zero CAC and compound over time — by Y5 the model delivers ~19,400 paying subscribers without a single paid ad. Paid acquisition is reserved as a Series A lever, turned on once we have post-launch evidence that conversion economics support it.
 
 - **"What if a US tool like Boldin expands to Europe?"** Response: EU pension systems are regulated by 27 different member states with different rules, languages, and coordination mechanisms (Reg 883/2004). US tools would need to build country engines from scratch. We have a 2-3 year head start and local regulatory relationships.
 
@@ -226,22 +234,23 @@ At seed stage, investors don't trust 5-year financial projections. What they act
 
 ## 6. Series A Outlook
 
-The seed round is designed to create the conditions for a Series A raise with MiddleGame Ventures or equivalent.
+The bootstrap plan reaches cumulative break-even at M18 and operates profitably from M19 onwards. Series A is therefore a *strategic acceleration choice*, not a runway-extension necessity. MiddleGame Ventures (Luxembourg-based fintech specialist, SNCI-backed) is the natural target when scaling makes sense.
 
-**Series A trigger metrics (estimated, ~Month 18-24):**
+**Series A trigger metrics (anticipated, ~Month 24-36):**
 
-The V6.2 calibration pulls Series A readiness forward another 4 months versus V6. Monthly break-even at M16 (cumulative at M20) and 13 country engines live by end of Y2 mean the trigger metrics below are hit comfortably inside the runway, with the seed serving as bridge financing rather than survival financing.
+The V6.2 calibration at €4.99/mo accessible pricing with zero paid acquisition shows monthly break-even at M12 and cumulative break-even at M18 — meaning Series A becomes a *scaling* decision (turn on paid acquisition, accelerate geographic rollout, hire engineering team) when post-launch metrics support it. 13 country engines are live by end of Y2 organically; Series A capital would compress the remaining 16-engine rollout and unlock paid acquisition once unit economics validate it.
 
 | Metric | Target | Why |
 |---|---|---|
-| Paying subscribers | 1,000+ | Proves retention and willingness to pay (model shows ~3,800 by Month 24, 9,900+ by Month 36) |
+| Paying subscribers | 1,000+ | Proves retention and willingness to pay (model shows ~3,400 by Month 24, ~9,000 by Month 36 — without paid acquisition) |
 | Country engines live | 13+ | Proves geographic expansion model works (model shows 13 by Month 24 — German hub + Benelux + Eastern EU all live) |
-| ARR | €600K+ | Meaningful recurring revenue (model shows €649K by Month 24, €1.70M by Month 36) |
-| Paid acquisition CAC | <€60/signup | Proves scalable acquisition (model uses €40 conservative; €25-50 range expected after CPC optimization) |
-| LTV:CAC (paid) | Trending toward 3× | Per-signup ratio at 1.6× at conservative parameters; per-paying-sub ratio at 1.48×. Healthy progression expected post-launch. |
-| Lead gen capital under referral | €50M+ | Validates the second revenue stream (model shows €55M by Month 24) |
+| ARR | €200K+ | Meaningful recurring revenue (model shows €224K total ARR by Month 24, €613K by Month 36 — at €4.99/mo accessible pricing, organic-only) |
+| Organic acquisition velocity | 200+ ranking corridor pages | Proves SEO content engine works at multi-country scale — organic is the dominant Series A channel |
+| Partnership conversion | 3+ active partnerships generating ≥8 signups/mo each | Proves distribution channel works; foundation for Series A scaling |
+| Paid acquisition unit economics | Tested but not committed | If post-launch CAC and conversion data support paid economics, validates Series A capital deployment to paid channel; if not, model continues to scale on organic + partnerships |
+| Lead gen capital under referral | €100M+ | Validates the second revenue stream (model shows €124M by Month 24) |
 | Distribution partnerships | 8+ active | BD co-founder channel proven (model shows 8 by Month 24) |
-| Cumulative break-even achieved | Yes (M20) | Removes execution risk from the Series A pitch — bridge financing, not survival financing |
+| Cumulative break-even achieved | Yes (M18) | Removes execution risk from the Series A pitch — scaling capital, not survival financing |
 | Geographic roadmap on track | German hub + Benelux + Eastern EU live | Proves the 29-engine endpoint is achievable |
 
 **Series A expected terms (EU fintech, 2026-2028):**
@@ -292,7 +301,7 @@ For a SaaS company, copyright-protected software qualifies. This is not a fundra
 | 6 | Compile Phase 1 metrics deck | Month 5-6 | Evidence for angel pitch |
 | 7 | Register with LBAN | Month 5-6 | Pitch to angel network |
 | 8 | Contact Expon Capital | Month 5-6 | Submit to Digital Tech Fund |
-| 9 | Close seed round | Month 6-7 | Start Phase 2 (accelerated growth) |
+| 9 | (Optional) Opportunistic raise — angels, Expon, or grant-only | Month 6-12 | Only if terms are advantageous; bootstrap continues regardless |
 | 10 | Apply for YIE regime | Month 8-10 | Additional non-dilutive co-financing |
 | 11 | Apply to NadiFin accelerator | Month 12-18 | Position for Series A with MiddleGame Ventures |
 | 12 | Series A preparation | Month 24-30 | When trigger metrics are hit |
@@ -301,11 +310,11 @@ For a SaaS company, copyright-protected software qualifies. This is not a fundra
 
 ## 9. Decided
 
-- **Seed amount:** €230K (reduced from earlier €370K plan after BD hire and country engine line items were absorbed by co-founders)
-- **Target dilution:** 0-4% (grant-dominant stack; alternative path is 0% with YIE)
-- **Preferred instrument:** Convertible loan agreement (CLA) for dilutive portion
-- **Primary non-dilutive source:** Fit4Start (€150K across 3 tranches)
-- **Primary dilutive source:** LBAN angels or Expon Capital Digital Tech Fund (small €80K top-up only)
+- **Funding approach:** Pure bootstrap. No external capital required to reach cumulative break-even (M18) or to operate profitably thereafter. Founder capital absorbs the ~€10K cash trough at M11.
+- **Target dilution:** 0% in seed stage. External capital (grants, angels, deferred seed) is opportunistic acceleration only — pursued when terms are advantageous, not under fundraising pressure.
+- **Founder capital commitment:** ~€20-25K combined business cash (operational trough + safety margin). Personal living expenses are handled externally (side work, savings, spouse income) and are explicitly not modeled as a business cost. Both founders work on equity until cumulative BE / Series A.
+- **Optional non-dilutive sources** (if pursued): Fit4Start (€150K across 3 tranches), YIE regime (up to €1M co-financing).
+- **Optional dilutive sources** (if pursued, post-validation): LBAN angels or Expon Capital Digital Tech Fund.
 - **Team:** Two co-founders — technical (builds product, including all country pension engines) and BD (owns distribution partnerships, lead-gen partner negotiations, CSSF/ecosystem). Both work on equity until Series A.
 - **Revenue streams:** Subscriptions + Lead Gen only. Advisor tier removed from plan (deferred indefinitely — may be revisited post-Series A if signal warrants).
 - **Country pension engines:** Built in-house by technical co-founder, no cash cost. LU/FR/CH all live at launch (Month 1); PT/ES/UK/IT added quarterly through Year 1; remaining 22 engines on a ~2-month cadence through Year 5 (29 total live by M58).

@@ -7,6 +7,7 @@ import type { Country } from '@/shared/types';
 import { simulateResidence, RESIDENCE_META } from '@/modules/tax';
 import type { ResidenceCountry } from '@/modules/tax';
 import { useUserData } from '@/modules/identity/UserDataProvider';
+import { useDataStage } from '@/modules/identity/DataStageProvider';
 
 type Status = 'verified' | 'estimated' | 'unconfirmed' | 'self-reported' | 'not_tracked';
 type ViewMode = 'net' | 'gross';
@@ -69,33 +70,44 @@ const fundData: CountryFunds[] = [
   {
     country: 'Luxembourg',
     flag: '🇱🇺',
-    total: 980,
+    total: 1020,
     funds: [
-      { institution: 'CNAP (Caisse Nationale d\'Assurance Pension)', pillar: 'P1', monthlyPayout: 980, period: 'Apr 2020 – present', years: 6.0, status: 'estimated', sourceCountry: 'LU', notes: 'Flat-rate + proportional formula · EU totalisation applies' },
+      { institution: 'CNAP (Caisse Nationale d\'Assurance Pension)', pillar: 'P1', monthlyPayout: 1020, period: 'Apr 2020 – present', years: 6.0, status: 'estimated', sourceCountry: 'LU', notes: 'Flat-rate + proportional formula · EU totalisation applies' },
       { institution: 'Employer pension scheme (unknown provider)', pillar: 'P2', monthlyPayout: 280, period: 'Apr 2020 – present', years: 6.0, status: 'unconfirmed', sourceCountry: 'LU', notes: 'Estimated from typical employer scheme — upload pension fund statement to verify' },
       { institution: 'Foyer Prévoyance-vieillesse (Art. 111bis)', pillar: 'P3', monthlyPayout: 220, period: '2021 – present', years: 5.0, status: 'self-reported', sourceCountry: 'LU', notes: 'Tax-advantaged private pension · up to €3,200/yr deductible' },
     ],
   },
 ];
 
+/** Statuses that contribute to the "verified" headline total — match dashboard. */
+const VERIFIED_STATUSES: Status[] = ['verified', 'estimated'];
+
 export function IncomeBreakdown({ onNetComputed }: Props) {
   const { userData } = useUserData();
+  const { stage } = useDataStage();
+  const verified = stage === 'after';
   const residenceCountry = (userData.residenceCountry ?? 'LU') as ResidenceCountry;
   const [expanded, setExpanded] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('net');
 
-  // Build pension sources from fund data for tax calculation
+  // Build pension sources from fund data for tax calculation.
+  // Stage='before' → only Pillar 1 (matches dashboard's pre-upload story)
+  // Stage='after'  → verified + estimated entries (sum = BASE_TMI = €3,840)
   const taxResult = useMemo(() => {
     const sources = fundData
       .flatMap((c) => c.funds)
-      .filter((f) => f.monthlyPayout > 0)
+      .filter((f) => {
+        if (f.monthlyPayout <= 0) return false;
+        if (!verified) return f.pillar === 'P1';
+        return VERIFIED_STATUSES.includes(f.status);
+      })
       .map((f) => ({
         sourceCountry: f.sourceCountry,
         label: f.institution,
         grossMonthly: f.monthlyPayout,
       }));
     return simulateResidence(sources, residenceCountry);
-  }, [residenceCountry]);
+  }, [residenceCountry, verified]);
 
   // Notify parent of net total
   useEffect(() => {

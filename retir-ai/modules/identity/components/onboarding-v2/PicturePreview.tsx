@@ -1,9 +1,22 @@
 'use client';
 
-import type { Estimate, CountryBand, Pillar2Row, Pillar3Row, NetSummary } from './estimate';
+import { useDataStage } from '@/modules/identity/DataStageProvider';
+import { useUserData } from '@/modules/identity/UserDataProvider';
+import { calculateTax } from '@/modules/tax';
+import type { ResidenceCountry } from '@/modules/tax';
+import { BASE_TMI } from '@/modules/pension/constants';
+import type { Estimate, CountryBand, Pillar2Row, Pillar3Row } from './estimate';
 
 interface PicturePreviewProps {
   estimate: Estimate;
+  /**
+   * When true, forces the "ESTIMATE" labeling regardless of the global
+   * DataStage toggle, and uses the estimate midpoint as the displayed gross
+   * (instead of the dashboard's BASE_TMI alignment). Use at onboarding
+   * completion — at that point the user has only answered questions; nothing
+   * has been uploaded or verified, so claiming "VERIFIED" would be dishonest.
+   */
+  forceUnverified?: boolean;
 }
 
 const COUNTRY_COLORS: Record<string, string> = {
@@ -18,28 +31,46 @@ const COUNTRY_COLORS: Record<string, string> = {
   NL: '#f472b6',
 };
 
-export function PicturePreview({ estimate }: PicturePreviewProps) {
+export function PicturePreview({ estimate, forceUnverified = false }: PicturePreviewProps) {
   const {
     monthlyLow,
     monthlyHigh,
     bands,
     pillar2,
     pillar3,
-    totalMonthly,
     net,
     sharpness,
     insight,
   } = estimate;
 
+  // Verification state. In onboarding (forceUnverified=true) we ignore the
+  // global DataStage toggle because the user has only answered questions —
+  // nothing has actually been verified. Elsewhere, the toggle drives whether
+  // the headline matches the dashboard's "before / after docs" view.
+  const { stage } = useDataStage();
+  const { userData } = useUserData();
+  const verified = forceUnverified ? false : stage === 'after';
+  const residence = (userData.residenceCountry ?? 'LU') as ResidenceCountry;
+  // Pick the gross figure powering the headline net.
+  // - Onboarding: midpoint of the user's own P1 estimate range (their answers).
+  // - Dashboard before docs: the same gross KpiCards uses.
+  // - Dashboard after docs: BASE_TMI (canonical verified gross).
+  const estimateMidGross = (monthlyLow + monthlyHigh) / 2;
+  const alignedGross = forceUnverified
+    ? Math.round(estimateMidGross)
+    : verified
+      ? BASE_TMI
+      : userData.pillar1Total;
+  const alignedTax = calculateTax(alignedGross * 12, residence);
+  const alignedNet = Math.round(alignedTax.netAnnual / 12);
+  const alignedEffectivePct = Math.round(alignedTax.effectiveRate * 100);
+
   const hasData = monthlyHigh > 0;
   const hasP2 = pillar2.length > 0;
   const hasP3 = pillar3 != null && pillar3.monthlyEur > 0;
-  const hasMultiplePillars = hasP2 || hasP3;
 
   const mult = net?.netMultiplier ?? 1;
 
-  const p1MidGross = Math.round((monthlyLow + monthlyHigh) / 2);
-  const p1MidNet = Math.round(p1MidGross * mult);
   const p1LowNet = Math.round(monthlyLow * mult);
   const p1HighNet = Math.round(monthlyHigh * mult);
 
@@ -48,9 +79,6 @@ export function PicturePreview({ estimate }: PicturePreviewProps) {
 
   const p3TotalGross = pillar3?.monthlyEur ?? 0;
   const p3TotalNet = Math.round(p3TotalGross * mult);
-
-  const headlineNet = net?.totalMonthly ?? 0;
-  const effectivePct = net ? Math.round(net.effectiveRate * 100) : null;
 
   return (
     <div
@@ -64,43 +92,28 @@ export function PicturePreview({ estimate }: PicturePreviewProps) {
             className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-2 flex items-center gap-2"
             style={{ color: 'var(--text-dim)' }}
           >
-            <span>
-              {hasMultiplePillars
-                ? 'Your monthly income at retirement'
-                : 'Your monthly pension at retirement'}
+            <span>Your monthly income at retirement</span>
+            <span
+              className="text-[9.5px] font-bold px-1.5 py-[1px] rounded-[4px]"
+              style={{
+                background: verified ? 'var(--green-dim)' : 'var(--amber-dim)',
+                color: verified ? 'var(--green)' : 'var(--amber)',
+                letterSpacing: '0.04em',
+              }}
+            >
+              {verified ? 'NET \u00B7 VERIFIED' : 'NET \u00B7 ESTIMATE'}
             </span>
-            {net && (
-              <span
-                className="text-[9.5px] font-bold px-1.5 py-[1px] rounded-[4px]"
-                style={{ background: 'var(--green-dim)', color: 'var(--green)', letterSpacing: '0.04em' }}
-              >
-                NET
-              </span>
-            )}
           </div>
           {hasData ? (
-            hasMultiplePillars ? (
-              <div
-                className="text-[36px] leading-none font-semibold tabular-nums"
-                style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}
-              >
-                {'\u20AC'}{(net?.totalMonthly ?? totalMonthly).toLocaleString()}
-                <span className="text-[13px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
-                  /mo
-                </span>
-              </div>
-            ) : (
-              <div
-                className="text-[36px] leading-none font-semibold tabular-nums"
-                style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}
-              >
-                <span>{'\u20AC'}{p1LowNet.toLocaleString()}</span>
-                <span style={{ color: 'var(--text-dim)' }} className="px-2">
-                  {'\u2014'}
-                </span>
-                <span>{'\u20AC'}{p1HighNet.toLocaleString()}</span>
-              </div>
-            )
+            <div
+              className="text-[36px] leading-none font-semibold tabular-nums"
+              style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}
+            >
+              {'\u20AC'}{alignedNet.toLocaleString()}
+              <span className="text-[13px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
+                /mo
+              </span>
+            </div>
           ) : (
             <div
               className="text-[30px] leading-none font-semibold"
@@ -111,36 +124,20 @@ export function PicturePreview({ estimate }: PicturePreviewProps) {
           )}
           {hasData && (
             <div className="text-[11.5px] mt-2 flex items-center gap-3 flex-wrap" style={{ color: 'var(--text-dim)' }}>
-              {net ? (
-                <span>
-                  after {effectivePct}% tax
-                  {' '}{'\u00B7'}{' '}
-                  <span style={{ color: 'var(--text-muted)' }}>
-                    {'\u20AC'}{totalMonthly.toLocaleString()}/mo gross
-                  </span>
+              <span>
+                after {alignedEffectivePct}% tax
+                {' '}{'\u00B7'}{' '}
+                <span style={{ color: 'var(--text-muted)' }}>
+                  {'\u20AC'}{alignedGross.toLocaleString()}/mo gross
                 </span>
-              ) : (
-                <span style={{ color: 'var(--amber)' }}>
-                  gross only {'\u00B7'} tax for {residenceName(estimate)} not modelled
-                </span>
-              )}
-              {hasMultiplePillars && (
-                <>
-                  <span>
-                    {'\u00B7'} State <strong style={{ color: 'var(--text-muted)' }}>{'\u20AC'}{p1MidNet.toLocaleString()}</strong>
-                  </span>
-                  {hasP2 && (
-                    <span>
-                      Workplace <strong style={{ color: 'var(--text-muted)' }}>{'\u20AC'}{p2TotalNet.toLocaleString()}</strong>
-                    </span>
-                  )}
-                  {hasP3 && (
-                    <span>
-                      Personal <strong style={{ color: 'var(--text-muted)' }}>{'\u20AC'}{p3TotalNet.toLocaleString()}</strong>
-                    </span>
-                  )}
-                </>
-              )}
+              </span>
+              <span>
+                {'\u00B7'} {verified
+                  ? 'P1 + P2 verified'
+                  : forceUnverified
+                    ? 'Estimate from your answers \u2014 sharpen by uploading documents'
+                    : 'Pillar 1 only \u2014 P2 / P3 pending upload'}
+              </span>
             </div>
           )}
           {!hasData && (
@@ -179,7 +176,7 @@ export function PicturePreview({ estimate }: PicturePreviewProps) {
               className="h-full rounded-full transition-all duration-700 ease-out"
               style={{
                 width: `${Math.max(0, Math.min(100, sharpness))}%`,
-                background: 'linear-gradient(90deg, var(--gold), #f1c889)',
+                background: 'var(--gold)',
               }}
             />
           </div>
@@ -311,13 +308,6 @@ function nextActionHint({
     return `Upload your ${unverified[0].name} career extract to verify.`;
   }
   return 'All sources verified \u2014 the range is as tight as it gets.';
-}
-
-function residenceName(est: Estimate): string {
-  // Find residence from the bands (the country that fulfils the "residence is in bands" rule)
-  // Fallback heuristic — just use first band country. Good enough for the tax warning.
-  const first = est.bands[0];
-  return first?.name ?? 'your country';
 }
 
 // ─── Pillar section frame ───────────────────────────────────────────

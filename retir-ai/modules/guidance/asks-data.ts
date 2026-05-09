@@ -632,6 +632,18 @@ export const ASK_FR_PER: DataAsk = {
   icon: '\u{1F1EB}\u{1F1F7}',
   uploadable: true,
   uploadHint: 'Annual PER statement from your bank or insurer',
+  productOffer: {
+    provider: 'BoursoBank',
+    providerInitial: 'B',
+    providerColor: '#dc2626',
+    productName: 'PER Individuel',
+    description:
+      'Tax-deductible monthly contributions, ETF allocation, no entry fees. Withdraw as capital, annuity, or mix at retirement.',
+    gapImpact: 500,
+    monthlyContribution: 300,
+    horizon: 20,
+    taxNote: 'Up to 10% of pro income deductible (capped \u2248 \u20AC37k/yr)',
+  },
   guide: {
     title: 'How to review your French PER',
     timeEstimate: 'Instant \u2013 5 min',
@@ -722,6 +734,18 @@ export const ASK_CH_3A: DataAsk = {
   icon: '\u{1F1E8}\u{1F1ED}',
   uploadable: true,
   uploadHint: 'Annual 3a Bescheinigung / attestation from your provider',
+  productOffer: {
+    provider: 'VIAC',
+    providerInitial: 'V',
+    providerColor: '#0f4c75',
+    productName: 'Pillar 3a \u2014 flexible ETF',
+    description:
+      'Digital 3a with up to 99% equity allocation. Full tax deduction (max CHF 7,258/yr), no account fees, fund TER 0.44%.',
+    gapImpact: 700,
+    monthlyContribution: 600,
+    horizon: 20,
+    taxNote: 'Max CHF 7,258/yr deductible at full marginal rate',
+  },
   guide: {
     title: 'How to review your Swiss Pillar 3a',
     timeEstimate: 'Instant',
@@ -812,6 +836,18 @@ export const ASK_LU_PREVOYANCE: DataAsk = {
   icon: '\u{1F1F1}\u{1F1FA}',
   uploadable: true,
   uploadHint: 'Annual statement from your bank or insurer',
+  productOffer: {
+    provider: 'Foyer',
+    providerInitial: 'F',
+    providerColor: '#1a365d',
+    productName: 'Pr\u00E9voyance-vieillesse',
+    description:
+      'Art. 111bis LIR contract. Up to \u20AC3,200/yr deductible from taxable income. Capital, annuity, or mix from age 60.',
+    gapImpact: 450,
+    monthlyContribution: 267,
+    horizon: 20,
+    taxNote: '\u20AC3,200/yr deductible \u2014 LU resident only',
+  },
   guide: {
     title: 'How to review your pr\u00e9voyance-vieillesse',
     timeEstimate: '5 min',
@@ -897,6 +933,18 @@ export const ASK_PRIVATE_SAVINGS: DataAsk = {
   impact: 'completes the 3-pillar picture',
   icon: '\u{1F4B0}',
   uploadable: false,
+  productOffer: {
+    provider: 'Swissquote',
+    providerInitial: 'S',
+    providerColor: '#0d7c3e',
+    productName: 'ETF Savings Plan',
+    description:
+      'Automated monthly investing in diversified global ETFs. Low fees (TER 0.12\u20130.25%). Pause, adjust, or withdraw anytime.',
+    gapImpact: 350,
+    monthlyContribution: 250,
+    horizon: 20,
+    taxNote: 'Outside tax-advantaged wrappers \u2014 fully flexible',
+  },
   manualForm: {
     title: 'Tell us roughly what you\u2019re saving',
     description:

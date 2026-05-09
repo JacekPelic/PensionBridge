@@ -9,7 +9,7 @@
 
 ### The Strategy in One Paragraph
 
-Launch with a free pension calculator that validates the acquisition funnel organically in Luxembourg. Use early metrics (conversion rates, engagement, lead gen clicks) to prove unit economics. Raise a €230K seed round to accelerate via paid acquisition, content, and the BD co-founder's distribution partnerships channel. Expand aggressively across EU migration corridors, adding country engines in greedy TAM-maximizing order until the entire EU + UK + CH (29 countries) is covered by Year 5. Each new country engine unlocks bilateral pension corridors with all already-supported countries, multiplying all three revenue streams. Build a compounding capital-under-referral base that becomes increasingly valuable over time, transforming from a pure SaaS into a financial platform with asset-based recurring revenue.
+Launch with a free pension calculator that validates the acquisition funnel organically in Luxembourg. Use early metrics (conversion rates, engagement, lead gen clicks) to prove unit economics. **Bootstrap-first plan: founder capital absorbs the ~€10K cash trough at M11; cumulative break-even at M18 is reached without external funding.** Country pension engines built by the technical co-founder; distribution partnerships owned by the BD co-founder full-time from day one. Expand aggressively across EU migration corridors, adding country engines in greedy TAM-maximizing order until the entire EU + UK + CH (29 countries) is covered by Year 5. Each new country engine unlocks bilateral pension corridors with all already-supported countries, multiplying both revenue streams. Build a compounding capital-under-referral base that becomes increasingly valuable over time, transforming from a pure SaaS into a financial platform with asset-based recurring revenue. Paid acquisition is held in reserve as a Series A scaling lever — at €4.99/mo accessible pricing, paid economics don't clear in the seed stage. External capital (grants, angels, Series A) is opportunistic acceleration when terms are advantageous, not a survival requirement.
 
 ### Phase 1: Bootstrap — Validate the Funnel (Pre-Investment)
 
@@ -49,7 +49,7 @@ These metrics are the evidence for raising investment. Even modest absolute numb
 
 The organic baseline proves the funnel. Investment is what turns a working funnel into a growth business. Without investment, Prevista is a lifestyle business doing ~€20-30K ARR by Year 3 on organic alone. With investment, the same funnel scales to €1.70M ARR by Year 3 across the corridor expansion roadmap.
 
-**What changes with investment — three acquisition channels instead of one:**
+**What changes with investment — two seed-stage acquisition channels (paid reserved for Series A) instead of one:**
 
 | Channel | Pre-Investment | Post-Investment | Role |
 |---|---|---|---|
@@ -65,23 +65,24 @@ Paid acquisition breaks the reach ceiling. €100 in ads → 1 signup with €55
 
 Distribution partnerships break the trust barrier. Financial tools need credibility. An HR department recommending Prevista to relocating employees, or an expat association featuring it in their newsletter, is worth more than any ad. The BD co-founder owns this channel from day 1; first deals close post-seed.
 
-**What the investment buys (€230K seed):**
+**What founder capital covers (bootstrap, business-cash only):**
 
-| Allocation | Amount | What It Does | Revenue Impact |
-|---|---|---|---|
-| Paid acquisition | €180K | Month 7-26 ramp (€3K → €15K/mo). ~1,800 platform signups via Google/Facebook/LinkedIn ads | ~€27K additional subscription ARR + compounding lead gen |
-| Content/SEO acceleration | €50K | Month 7-18 (~€4K/mo). Professional content, landing pages per corridor, multi-language SEO | Drives the dominant organic channel — compounds annually |
-| **TOTAL** | **€230K** | | |
+| Allocation | Amount | What It Does |
+|---|---|---|
+| Operational cash trough | ~€10K | Bridges the business to monthly break-even at M12 |
+| Safety margin (2× — plans slip 2-3 months) | +€10-15K | Hedge against revenue ramp underperformance |
+| **TOTAL BUSINESS-CASH REQUIREMENT** | **~€20-25K** | Funds business operations only — founder personal living is handled externally |
 
-**What is *not* in the seed:**
+**What is *not* in this commitment:**
 
 - **Co-founder salaries** — both technical and BD co-founders work on equity until Series A.
 - **Country pension engine development** — the technical co-founder builds all 29 country engines (EU27 + UK + CH) over 5 years as part of normal product work, no cash cost. LU/FR/CH are already prototyped.
 - **BD hire** — replaced by a BD co-founder who owns distribution partnerships full-time.
+- **Paid acquisition** — zero in seed-stage plan; held as a Series A lever once unit economics are validated post-launch.
 
-**The investor ROI thesis:**
+**The investor narrative:**
 
-Without investment, Year 3 ARR is small — limited by organic reach in a single Luxembourg beachhead. With €230K invested, Year 3 ARR is €1.70M (base) and Year 5 ARR is €3.67M (base) / €7.22M (upside). By Year 5, Prevista covers the entire EU + UK + CH (29 country engines), serving ~21,200 paying subscribers across all major European migration corridors. The model breaks even monthly at Month 16 and cumulatively at Month 20 — meaning the seed capital bridges the business to self-sustaining profitability with months of runway still untouched. The investment isn't funding losses — it's **buying speed** into a market with proven unit economics, zero direct competitors, and a 17M-person EU addressable ceiling.
+Without ANY external investment, Year 3 ARR is €0.61M (base) and Year 5 ARR is €1.39M (base 12% conv) / €2.91M (upside 18% conv) at €4.99/mo accessible-tool pricing. By Year 5, Prevista covers the entire EU + UK + CH (29 country engines), serving ~19,400 paying subscribers in the base case (~44,400 in upside) — entirely through organic SEO + distribution partnerships, no paid ads. The base case breaks even monthly at Month 12 and cumulatively at Month 18 — fully self-funded. The upside case delivers cumulative break-even at M13. The story isn't "we need money to survive" — it's **"the country engine buildout creates an order-of-magnitude bigger addressable market over time, and the unit economics of the bootstrap path mean external capital becomes a strategic acceleration choice (paid acquisition, faster country rollout, engineering team scaling) rather than a runway-extension necessity."**
 
 ### Phase 3: Compound — Three Revenue Streams Grow Together
 
@@ -89,11 +90,11 @@ As the business matures, three compounding effects drive growth beyond what any 
 
 1. **SEO compounds.** Content published in Year 1 keeps ranking and driving traffic in Year 3+. The library of pension-related content grows with each country added, each corridor opened, each language launched. Organic traffic in Year 3 is typically 3-5x Year 1 for consistent content producers.
 
-2. **Capital under referral compounds.** Users who invest through product referrals in Year 1 are still generating 0.03% commission in Year 5. Their capital has grown through additional contributions and market returns. Each new cohort of investors adds to the base while existing capital compounds. By Year 5, €425M in capital under referral generates ~€127K/yr in pure-margin revenue that requires zero ongoing acquisition spend.
+2. **Capital under referral compounds.** Users who invest through product referrals in Year 1 are still generating 0.03% commission in Year 5. Their capital has grown through additional contributions and market returns. Each new cohort of investors adds to the base while existing capital compounds. By Year 5, €1.14B in capital under referral generates ~€341K/yr in pure-margin revenue that requires zero ongoing acquisition spend.
 
 3. **Addressable market expands.** Each new country engine opens new bilateral pension corridors with all already-supported countries, multiplying all three revenue streams simultaneously. The greedy TAM-maximizing rollout (see Section 5) means each engine added unlocks the largest possible marginal market — for example, adding Germany after Spain unlocks ~432K corridor TAM in a single engine. By Year 5, all 29 engines (EU27 + UK + CH) are live and the addressable market is ~12M people.
 
-These three effects mean the business becomes more valuable over time even with flat user acquisition rates. A 5-year-old Prevista with €425M+ in referred capital, 29 country engines, and hundreds of ranking SEO pages has a fundamentally different value profile than a Year 1 startup — and much of that value was created by compounding, not by additional spend.
+These three effects mean the business becomes more valuable over time even with flat user acquisition rates. A 5-year-old Prevista with €1.14B+ in referred capital, 29 country engines, and hundreds of ranking SEO pages has a fundamentally different value profile than a Year 1 startup — and much of that value was created by compounding, not by additional spend.
 
 ---
 
@@ -195,7 +196,7 @@ Baseline organic-only projection for Luxembourg. This is the starting point befo
 
 **Benchmark sources:** Calculator email capture 20-40% (financial tool industry avg). Email-to-signup 10-20% (HubSpot SaaS benchmarks). Freemium paid conversion 2-5% overall, 8-15% for high-intent financial tools where the free tier surfaces a problem (Boldin estimated at 3-5%, but their free tier doesn't create urgency the way Prevista's gap detection does). Reach % is the least benchmarkable — 4-7% in a 140K niche market with zero competitors and active community channels is defensible.
 
-**Confirmed pricing: €14.90/month / €149/year (17% annual discount).**
+**Confirmed pricing: €4.99/month / €49/year (18% annual discount).** Repositioned from €14.90/€149 — accessible-tool pricing for volume thesis.
 
 ### The Bigger Picture — Beyond Luxembourg
 
@@ -312,12 +313,12 @@ Prevista monetises through two complementary streams:
 
 | Stream | Model | Applies To | Timing |
 |---|---|---|---|
-| **Subscriptions** | €14.90/mo / €149/yr | Paid users (Pro tier) | From launch |
+| **Subscriptions** | €4.99/mo / €49/yr | Paid users (Pro tier) | From launch |
 | **Lead generation** | 0.03% annual trailing commission on referred capital | All users (free + paid) | From launch |
 
 ### 6.2 Acquisition Channels
 
-The revenue model depends on three acquisition channels with different economics and scaling characteristics. The organic channel is the bootstrap engine; paid and partnerships are where investment capital creates acceleration.
+The revenue model depends on two seed-stage acquisition channels (paid reserved for Series A) with different economics and scaling characteristics. The organic channel is the bootstrap engine; paid and partnerships are where investment capital creates acceleration.
 
 **Channel 1: Organic (SEO + Community)**
 
@@ -360,10 +361,10 @@ B2B relationships that create bulk user acquisition.
 
 | Variable | Value | Source |
 |---|---|---|
-| Monthly subscription | €14.90 | Confirmed pricing |
+| Monthly subscription | €4.99 | Confirmed pricing — accessible-tool repositioning |
 | Expected monthly churn | 3% (base) / 2.5% (upside) | Recurly 2025 finance category median: 3.7% — multi-year pension context justifies sitting slightly below median |
 | Average subscriber lifetime | 33 months (base) / 40 months (upside) | 1/churn rate |
-| **Subscription LTV** | **€492 (base) / €596 (upside)** | Monthly price × lifetime |
+| **Subscription LTV** | **€165 (base) / €200 (upside)** | Monthly price × lifetime |
 
 **Lead gen LTV (per platform user, not just subscribers):**
 
@@ -373,37 +374,39 @@ B2B relationships that create bulk user acquisition.
 | % who click product offer | 25% | High-intent; they're actively viewing their gap |
 | % who invest via referral | 15% | Qualified, high-intent financial product conversion |
 | Effective lead gen conversion | 3% of all platform users | 80% × 25% × 15% |
-| Avg capital invested | €50,000 | Target demo 45-65, LU income levels |
-| Annual commission per investor | €15 | 0.03% × €50,000 |
+| Avg capital invested | €125,000 | Initial placement + early contributions; rollover-pathway clients (vested CH pillar 2 cash-out, FR PER consolidation) defend the higher figure |
+| Annual commission per investor (Y1) | €37.50 | 0.03% × €125,000 |
+| Capital annual growth | 9% | ~5% market returns + ~4% ongoing top-ups by users actively closing their gap |
 | Capital retention (avg holding period) | 10+ years | Pension/retirement products are long-duration |
-| **Lead gen LTV per investor** | **€150+** | €15/yr × 10+ years |
-| **Lead gen LTV per platform user** | **€4.50+** | 3% conversion × €150 |
+| **Lead gen LTV per investor** | **€570+** | Σ (capital_y × 0.03%) over 10y at 9% compound |
+| **Lead gen LTV per platform user** | **€17+** | 3% conversion × €570 |
 
 **Combined user economics (base scenario):**
 
 | User Type | Subscription LTV | Lead Gen LTV | **Total LTV** |
 |---|---|---|---|
-| Free user (never subscribes) | €0 | €4.50 | **€4.50** |
-| Paid subscriber (doesn't invest) | €492 | €4.50 | **€497** |
-| Paid subscriber who invests | €492 | €150+ | **€642+** |
+| Free user (never subscribes) | €0 | €17 | **€17** |
+| Paid subscriber (doesn't invest) | €165 | €17 | **€182** |
+| Paid subscriber who invests | €165 | €570+ | **€735+** |
 
 **Per-signup LTV (blended across all signup outcomes):**
 
-A signup is one of three things: a free user (88%, never converts), a paid subscriber who doesn't invest, or a paid subscriber who also invests. Blended expected value per signup = `12% × €492 + 100% × €4.50 = €63.54`.
+A signup is one of three things: a free user (88%, never converts), a paid subscriber who doesn't invest, or a paid subscriber who also invests. Blended expected value per signup = `12% × €165 + 100% × €17 = €36.80`.
 
 **Per-signup CAC (paid channel):** **€40 (base) / €30 (upside)**.
 
-This translates to a per-signup LTV:CAC ratio of **1.6× at base parameters** — approaching but not yet at the conventional SaaS 3× target. The honest framing for investors:
+This translates to a per-signup LTV:CAC ratio of **0.92× at base parameters if paid acquisition were running** — which is precisely why the seed-stage plan runs zero paid acquisition. The honest framing for investors:
 
-> "Paid acquisition is approaching healthy unit economics on a per-signup basis. Critically, paid is only ~10% of total acquisition in the model — organic SEO + distribution partnerships drive the majority. The blended channel mix has healthier economics than this paid-only ratio implies, and CPC optimization post-launch is expected to push the paid ratio toward 2.5-3×."
+> "Paid acquisition is loss-making per channel at €4.99/mo accessible pricing, so the seed-stage plan deliberately does not run paid. Growth is 100% organic SEO + distribution partnerships — both effectively zero-CAC. Lead-gen LTV (€17/signup) compounds across all users without acquisition cost. Paid acquisition is held in reserve as a Series A lever once post-launch evidence validates conversion economics."
 
-**Per-paying-subscriber math** (the more conservative cut):
-- Effective per-sub CAC = €40 / 12% = **€333**
-- Sub LTV = **€492**
-- Per-sub ratio = **1.48×** (subscription revenue alone covers acquisition with margin to spare)
-- Add lead-gen contribution and the picture improves further
+**Per-paying-subscriber math** (paid scenario, retained for reference):
+- Effective per-sub CAC if paid were on = €40 / 12% = **€333**
+- Sub LTV = **€165**
+- Per-sub ratio = **0.49×** (loss-making — confirms why paid is zero in the plan)
 
-**Key insight for investors:** Even free users have revenue potential through lead gen. Every user acquired, whether they pay for Pro or not, has a positive expected value (€4.50). This subsidises the effective CAC for the paying-subscriber cohort.
+**Actual seed-stage acquisition economics:** Organic and partnership signups have effectively zero per-signup cash CAC (founder time absorbed; partnerships are revenue-share only, no upfront). Every signup is therefore LTV-positive immediately on subscription revenue alone, plus the €17/signup lead-gen contribution.
+
+**Key insight for investors:** Even free users have revenue potential through lead gen. Every user acquired, whether they pay for Pro or not, has a positive expected value (€17). This subsidises the effective CAC for the paying-subscriber cohort.
 
 ### 6.4 Lead Generation — Detailed Model
 
@@ -425,12 +428,12 @@ This is a standard financial services affiliate model (comparable to Hargreaves 
 | Users with a retirement gap | 70% | 80% | 90% | Inherent to multi-country career profiles |
 | Click through to product offer | 15% | 25% | 35% | High-intent context (viewing their gap) |
 | Actually invest via referral | 10% | 15% | 20% | Qualified lead conversion benchmarks |
-| Avg capital invested | €30,000 | €50,000 | €80,000 | Target demo: 45-65, LU income levels, bridging a real gap |
-| Revenue per investor/yr | €9 | €15 | €24 | 0.03% of invested capital |
+| Avg capital invested | €75,000 | €125,000 | €200,000 | Initial placement + early contributions; rollover-pathway clients defend higher figures |
+| Revenue per investor/yr (Y1) | €22.50 | €37.50 | €60 | 0.03% of invested capital |
 
 ### 6.5 Five-Year Revenue Projections
 
-The projections below model three acquisition channels ramping over time, with country expansion (Section 5) progressively unlocking pension corridors and increasing the addressable market. Numbers come directly from the financial model in `generate-financial-projections.js`.
+The projections below model two seed-stage acquisition channels (paid reserved for Series A) ramping over time, with country expansion (Section 5) progressively unlocking pension corridors and increasing the addressable market. Numbers come directly from the financial model in `generate-financial-projections.js`.
 
 **Key drivers by year:**
 
@@ -447,43 +450,44 @@ The projections below model three acquisition channels ramping over time, with c
 
 | | Year 1 | Year 2 | Year 3 | Year 4 | Year 5 |
 |---|---|---|---|---|---|
-| Paying subscribers (end of year) | 486 | 3,792 | 9,922 | 15,955 | **21,221** |
-| Subscription ARR | €82K | €633K | €1,656K | €2,663K | **€3,541K** |
-| Lead gen annual revenue | €2K | €16K | €47K | €85K | **€127K** |
-| **Total ARR** | **€84K** | **€649K** | **€1,703K** | **€2,748K** | **€3,668K** |
-| Capital under referral (cumulative) | €6.6M | €54.9M | €157.4M | €283.6M | **€425M** |
-| YoY growth | — | 7.72× | 2.62× | 1.61× | 1.34× |
+| Paying subscribers (end of year) | 404 | 3,370 | 9,052 | 14,629 | **19,437** |
+| Subscription ARR | €23K | €187K | €503K | €812K | **€1,079K** |
+| Lead gen annual revenue | €4K | €37K | €111K | €204K | **€312K** |
+| **Total ARR** | **€27K** | **€224K** | **€613K** | **€1,017K** | **€1,391K** |
+| Capital under referral (cumulative) | €13.9M | €124.1M | €369.3M | €681.3M | **€1.04B** |
+| YoY growth | — | 8.34× | 2.73× | 1.66× | 1.37× |
 
 **Combined revenue — Upside scenario** (higher conversion rates, lower churn, faster partnership ramp, more aggressive paid acquisition):
 
 | | Year 1 | Year 2 | Year 3 | Year 4 | Year 5 |
 |---|---|---|---|---|---|
-| Paying subscribers | — | — | — | — | 42,128 |
-| **Total ARR** | — | — | — | — | **€7,221K** |
+| Paying subscribers | — | — | — | — | 44,393 |
+| **Total ARR** | — | — | — | — | **€2,912K** |
 
 **Profitability (base scenario):**
 
-- Monthly break-even: **Month 16** (operating revenue exceeds operating costs)
-- Cumulative break-even: **Month 20** (recovers all prior losses including paid acquisition — fully within seed runway, with months of buffer)
-- Year 5 cumulative net income: **+€4.08M**
-- Y5 paying subscriber penetration: 21,221 / 12M addressable = **0.18%** — conservative for a 5-year-old SaaS in a niche market with no direct competitor
+- Monthly break-even: **Month 12** (operating revenue exceeds operating costs)
+- Cumulative break-even: **Month 18** (founder capital absorbs the ~€10K trough at M11; cumulative cashflow positive from M19)
+- Year 5 cumulative net income: **+€853K**
+- Y5 paying subscriber penetration: 19,437 / 12M addressable = **0.16%** — conservative for a 5-year-old SaaS in a niche market with no direct competitor
 
-### 6.6 What Investment Capital Unlocks
+### 6.6 What External Capital Would Unlock (Optional Acceleration)
 
-The bootstrap scenario without paid acquisition or accelerated content reaches ~€6K ARR in Year 1, then plateaus quickly. With investment:
+The bootstrap plan reaches Y5 ARR €1.39M and €853K cumulative net without external capital. External capital is opportunistic acceleration, not a survival requirement. If/when raised on attractive terms, marginal use of funds:
 
-| Investment Use | Amount | Impact |
+| Acceleration lever | Indicative cost | Impact (vs. bootstrap baseline) |
 |---|---|---|
-| Paid acquisition (Month 7-60 ramp) | €180K | ~4,500 additional signups at €40 blended CAC → ~540 paid users at 12% conversion → ~€96K additional subscription ARR over 5 years + compounding lead gen |
-| Content/SEO acceleration (Month 7-18) | €50K | Multi-language SEO content per corridor — compounds annually as the dominant channel |
-| **Total seed requirement** | **€230K** | |
+| Turn on paid acquisition | ~€180K over 5yr | Additional signup volume; only deployed if post-launch CAC + conversion data validate paid economics (currently loss-making at €4.99/mo + 12% conv) |
+| Compress 29-engine rollout | ~€50K (early eng/content hire) | Pull TAM unlock forward by 6-12 months — deeper corridor activation earlier |
+| Accelerate content/SEO production | ~€50K | Multi-language professional content beyond AI-leveraged baseline; compounds as dominant channel |
+| Series A bridge / scale capital | €500K-3M | Engineering team, paid acquisition at scale, formal pension provider partnerships |
 
-**Not in the seed (covered by co-founder equity):**
+**What stays in founder equity even with external capital:**
 - Country pension engines (29 of them) — built by technical co-founder over 5 years as part of normal product work
 - BD/distribution partnerships — owned by BD co-founder full-time from day 1
 - Co-founder salaries (until Series A)
 
-**ROI on acquisition spend:** At €40 blended CAC (base scenario), each signup has expected blended LTV of ~€63.54 (12% × €492 sub LTV + €4.50 lead gen LTV per signup), producing a per-signup LTV:CAC ratio of **~1.6×**. The paid channel is approaching healthy unit economics on its own, and crucially, the model only relies on paid acquisition for ~10% of total signups across the 5-year horizon — organic SEO and distribution partnerships drive the majority of growth, so the *blended* channel economics are healthier than the paid-only ratio implies.
+**Why the bootstrap path is the *default*, not a fallback:** at €4.99/mo accessible pricing, paid acquisition LTV:CAC is 0.49× (loss-making per paying sub) — burning capital on a channel that doesn't pay back at current parameters. The bootstrap path locks in capital efficiency: every signup is organic-LTV-positive immediately on subscription revenue alone, plus €17/signup lead-gen contribution. External capital is held in reserve for the moment when post-launch data either validates paid economics (turn it on) or proves they don't clear (continue scaling on organic + partnerships).
 
 ### 6.7 Lead Gen Compounding — The Long-Term Play
 
@@ -493,21 +497,21 @@ At 0.03%, lead gen starts as a small share of revenue. But unlike subscriptions 
 
 | Year | Total Capital Under Referral | Annual Lead Gen Revenue | Lead Gen % of Total ARR |
 |---|---|---|---|
-| Year 1 | €6.6M | €2K | 2% |
-| Year 2 | €54.9M | €16K | 3% |
-| Year 3 | €157.4M | €47K | 3% |
-| Year 4 | €283.6M | €85K | 3% |
-| Year 5 | **€425M** | **€127K** | **3%** |
+| Year 1 | €16.6M | €5K | 6% |
+| Year 2 | €139.8M | €42K | 6% |
+| Year 3 | €406.5M | €122K | 7% |
+| Year 4 | €745.4M | €224K | 8% |
+| Year 5 | **€1.14B** | **€341K** | **9%** |
 
 **Year 5 onwards (extrapolated, no new acquisition):**
 
-The capital base alone — even if user acquisition stopped completely at Year 5 — would continue to compound at ~5%/year (additional contributions + market returns), generating a growing lead-gen revenue stream from existing users for decades.
+The capital base alone — even if user acquisition stopped completely at Year 5 — would continue to compound at ~9%/year (additional contributions + market returns), generating a growing lead-gen revenue stream from existing users for decades.
 
 | Years post-Y5 | Capital Under Referral | Annual Lead Gen Revenue | Notes |
 |---|---|---|---|
-| Y7 | ~€470M | ~€140K | Continued compounding |
-| Y10 | ~€545M | ~€165K | At minimum, no new investors |
-| Y15 (with new acquisition) | €950M+ | €285K+ | Realistic continued growth |
+| Y7 | ~€1.35B | ~€405K | Continued compounding |
+| Y10 | ~€1.75B | ~€525K | At minimum, no new investors |
+| Y15 (with new acquisition) | €3.5B+ | €1.05M+ | Realistic continued growth |
 
 Lead gen is **not the headline revenue stream** — subscriptions dominate at every year of the projection. But it's a structurally durable, asset-based revenue base that grows by compounding rather than by acquisition spend, creating long-term enterprise value that pure subscription SaaS doesn't.
 
@@ -515,13 +519,13 @@ Lead gen is **not the headline revenue stream** — subscriptions dominate at ev
 
 1. **Two revenue streams derisk the business.** Subscriptions provide predictable recurring revenue. Lead gen provides compounding long-term value. Neither stream needs to succeed alone.
 
-2. **The free tier generates revenue, not just leads.** Every free user who sees their retirement gap and clicks a product offer has lead gen value (~€4.50 LTV). This means the effective CAC for the platform is lower than it appears — the free tier subsidises its own acquisition cost.
+2. **The free tier generates revenue, not just leads.** Every free user who sees their retirement gap and clicks a product offer has lead gen value (~€17 LTV). This means the effective CAC for the platform is lower than it appears — the free tier subsidises its own acquisition cost.
 
 3. **Investment accelerates an already-positive engine.** The organic baseline is modest but validates unit economics. Paid acquisition, content acceleration, and partnership development are how a seed round turns a working funnel into a growth business.
 
 4. **Country expansion is a revenue multiplier on both streams.** Each new country engine adds subscription revenue (larger addressable market) and lead gen revenue (more users seeing gaps + access to that country's financial product partners).
 
-5. **The business becomes more valuable over time.** Unlike pure SaaS where revenue = subscriptions, Prevista's capital under referral grows cumulatively. A 5-year-old Prevista with €425M in referred capital generates ~€127K/yr in pure-margin lead gen revenue that doesn't require any new user acquisition. This is an asset that compounds.
+5. **The business becomes more valuable over time.** Unlike pure SaaS where revenue = subscriptions, Prevista's capital under referral grows cumulatively. A 5-year-old Prevista with €1.14B in referred capital generates ~€341K/yr in pure-margin lead gen revenue that doesn't require any new user acquisition. This is an asset that compounds.
 
 ---
 
@@ -540,7 +544,7 @@ Why this market is defensible once established:
 ## 8. Decided
 
 - **Portugal:** Included at launch (Tier 1). Engine needs building but community size (~100K) justifies the effort.
-- **Pricing:** €14.90/month / €149/year. Confirmed.
+- **Pricing:** €4.99/month / €49/year. Confirmed — accessible-tool repositioning from €14.90.
 - **Languages:** English at launch, with FR and DE support planned. Each language roughly doubles the SEO surface for that community. PT localisation to be evaluated based on demand signals.
 
 ## 9. Open Questions
