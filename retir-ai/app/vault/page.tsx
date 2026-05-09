@@ -55,7 +55,7 @@ function VaultContent() {
       <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
         <Topbar
           title="Document Vault"
-          subtitle="Upload · AI extraction · verification tracking"
+          subtitle="Secure storage · AI extraction · verification tracking"
           actions={
             <>
               <StageToggle />

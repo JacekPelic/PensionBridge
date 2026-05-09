@@ -48,14 +48,9 @@ const features = [
   {
     icon: '💬',
     title: 'Personalised AI Advisor',
-    description: 'Get advice that references your actual career data — gap analysis, country-specific product expertise, tax optimisation, and live help when the self-service routes don\u2019t work for you.',
-    highlights: [
-      'Data-aware gap & correction advice',
-      '"Stuck?" workarounds for any unreachable document',
-      'Country products: PER, 3a, RCP, Pr\u00e9voyance, Freiz\u00fcgigkeit',
-      'Tax residency comparison & gap-closing strategies',
-    ],
-    hook: 'Your Luxembourg RCP hasn\u2019t been located yet — often +€500\u20132,500/mo',
+    description: 'Get advice that references your actual career data — gap analysis, Swiss pension tracking, tax optimisation, and income strategies tailored to your situation.',
+    highlights: ['Data-aware gap & correction advice', 'Swiss pension location guidance', 'Tax residency comparison', 'Income gap-closing strategies'],
+    hook: 'Your Swiss workplace pension (~€210K) needs to be located',
     href: '/',
     color: 'var(--gold)',
   },
@@ -69,7 +64,7 @@ export default function ProPage() {
       <Sidebar />
       <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
         <Topbar
-          title="Prevista Pro"
+          title="RetirAI Pro"
           subtitle="Everything you need to act on your pension picture"
         />
         <div className="flex-1 p-7 animate-fade-in">
@@ -86,7 +81,7 @@ export default function ProPage() {
               style={{ background: 'radial-gradient(ellipse at center top, rgba(201,168,76,0.08), transparent 60%)' }} />
             <div className="relative">
               <div className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--gold)' }}>
-                Prevista Pro
+                RetirAI Pro
               </div>
               <div className="text-[28px] font-bold mb-2" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}>
                 See your situation. <span style={{ color: 'var(--gold-light)' }}>Now act on it.</span>
@@ -188,10 +183,9 @@ export default function ProPage() {
                   {[
                     { feature: 'Dashboard & KPIs', free: true, pro: true },
                     { feature: 'Career timeline', free: true, pro: true },
-                    { feature: 'Your pension picture & sharpness', free: true, pro: true },
                     { feature: 'Payout estimation (all pillars)', free: true, pro: true },
                     { feature: 'Document uploads & AI extraction', free: true, pro: true },
-                    { feature: 'Guided pillar tour & self-service guides', free: true, pro: true },
+                    { feature: 'Completeness tracking', free: true, pro: true },
                     { feature: 'Basic chat (rules & documents)', free: true, pro: true },
                     { feature: 'Tax & residency simulation', free: false, pro: true },
                     { feature: 'Capital vs annuity modeller', free: false, pro: true },
@@ -199,7 +193,6 @@ export default function ProPage() {
                     { feature: 'Correction workflows', free: false, pro: true },
                     { feature: 'Legislative radar & impact analysis', free: false, pro: true },
                     { feature: 'Family claim guides & sharing', free: false, pro: true },
-                    { feature: '"Stuck? Ask your advisor" escalation', free: false, pro: true },
                     { feature: 'Personalised AI advisor', free: false, pro: true },
                     { feature: 'Dossier export (PDF)', free: false, pro: true },
                   ].map((row) => (

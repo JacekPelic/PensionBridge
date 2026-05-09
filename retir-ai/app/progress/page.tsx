@@ -2,13 +2,9 @@
 
 import { Sidebar } from '@/shared/layout/Sidebar';
 import { Topbar } from '@/shared/layout/Topbar';
-import { TmiHero } from '@/modules/pension/components/dashboard/TmiHero';
-import { KpiCards } from '@/modules/pension/components/dashboard/KpiCards';
-import { RetirementGap } from '@/modules/pension/components/dashboard/RetirementGap';
-import { PensionPicture } from '@/modules/pension/components/dashboard/PensionPicture';
 import { ChatWidget } from '@/shared/chat/ChatWidget';
-import { OnboardingWizard } from '@/modules/identity/components/onboarding/OnboardingWizard';
-import { CompletionNudge } from '@/modules/completeness/components/CompletionNudge';
+import { CompletenessHero } from '@/modules/completeness/components/CompletenessHero';
+import { PensionPicture } from '@/modules/pension/components/dashboard/PensionPicture';
 import { DataStageProvider, useDataStage } from '@/modules/identity/DataStageProvider';
 import { UserDataProvider } from '@/modules/identity/UserDataProvider';
 import { Button } from '@/shared/ui/Button';
@@ -28,7 +24,6 @@ function StageToggle() {
         fontFamily: 'var(--font-sans)',
       }}
     >
-      {/* Toggle track */}
       <div
         className="relative w-8 h-[18px] rounded-full transition-all"
         style={{ background: isAfter ? 'var(--green)' : 'var(--navy-4)' }}
@@ -46,44 +41,38 @@ function StageToggle() {
   );
 }
 
-function DashboardContent() {
+function ProgressContent() {
   const { stage } = useDataStage();
-  const complete = stage === 'after';
 
   return (
     <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
         <Topbar
-          title="Dashboard"
-          subtitle="Last synced: today at 09:41 CET"
+          title="Complete Your Picture"
+          subtitle="Upload documents, enter data manually, and track your progress"
           actions={
             <>
               <StageToggle />
-              <Button variant="ghost">{'\u21BB'} Refresh</Button>
-              <Button variant="primary">+ Add Period</Button>
+              <Button variant="primary">+ Upload Document</Button>
             </>
           }
         />
         <div className="flex-1 p-7 animate-fade-in" key={stage}>
-          <TmiHero />
-          <CompletionNudge />
-          <KpiCards />
-          <RetirementGap />
-          {complete && <PensionPicture />}
+          <CompletenessHero />
+          <PensionPicture />
         </div>
       </div>
       <ChatWidget />
-      <OnboardingWizard />
     </div>
   );
 }
 
-export default function DashboardPage() {
+export default function ProgressPage() {
   return (
     <UserDataProvider>
       <DataStageProvider>
-        <DashboardContent />
+        <ProgressContent />
       </DataStageProvider>
     </UserDataProvider>
   );

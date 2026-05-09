@@ -216,8 +216,8 @@ export function RetirementGap() {
       <div className="flex items-start gap-2.5 p-3 px-4 rounded-[10px]" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
         <span className="text-sm shrink-0 mt-px">ℹ️</span>
         <div className="text-[11.5px] leading-relaxed" style={{ color: 'var(--text-dim)' }}>
-          <strong style={{ color: 'var(--text-muted)' }}>How this works:</strong> Prevista partners with regulated financial providers to show you products matched to your situation.
-          If you subscribe, we receive a referral fee — this keeps the platform free for core pension tracking. Projections assume 5% annual return and are illustrative only.
+          <strong style={{ color: 'var(--text-muted)' }}>How this works:</strong> RetirAI partners with regulated financial providers to show you products matched to your situation.
+          If you subscribe, we receive a referral fee — this keeps the platform free for core pension tracking. We never sell your data. Projections assume 5% annual return and are illustrative only.
         </div>
       </div>
     </Card>

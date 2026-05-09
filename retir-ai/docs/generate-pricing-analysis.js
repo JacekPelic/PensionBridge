@@ -3,7 +3,7 @@ const path = require("path");
 
 async function generate() {
   const wb = new ExcelJS.Workbook();
-  wb.creator = "Prevista Pricing Analysis";
+  wb.creator = "RetirAI Pricing Analysis";
   wb.created = new Date();
 
   // ─── Color palette ───
@@ -103,7 +103,7 @@ async function generate() {
   addTitle(ws1, 1, "Competitive Pricing Benchmarks", 8);
   addNote(ws1, 2, "All prices normalized to EUR/month. USD converted at 1 USD = 0.92 EUR (April 2026). AUM fees annualized on example portfolio.", 8);
 
-  const compHeaders = ["Competitor", "Monthly (EUR)", "Annual (EUR)", "EUR/mo equiv.", "Market", "Countries", "Problem Complexity", "Key Differentiator vs Prevista"];
+  const compHeaders = ["Competitor", "Monthly (EUR)", "Annual (EUR)", "EUR/mo equiv.", "Market", "Countries", "Problem Complexity", "Key Differentiator vs RetirAI"];
   ws1.getRow(4).values = compHeaders;
   styleHeader(ws1, 4, 8);
 
@@ -132,9 +132,9 @@ async function generate() {
   });
   styleDataRows(ws1, 5, row - 1, 8);
 
-  // Highlight Prevista row
+  // Highlight RetirAI row
   row += 1;
-  ws1.getRow(row).values = ["Prevista Pro (Recommended)", 14.90, 149.00, 12.42, "EU expats", "3+ (FR/CH/LU)", "Multi-country, multi-pillar", "Only self-service multi-country pension platform"];
+  ws1.getRow(row).values = ["RetirAI Pro (Recommended)", 14.90, 149.00, 12.42, "EU expats", "3+ (FR/CH/LU)", "Multi-country, multi-pillar", "Only self-service multi-country pension platform"];
   for (let c = 1; c <= 8; c++) {
     const cell = ws1.getRow(row).getCell(c);
     cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: LIGHT_GREEN } };
@@ -152,12 +152,12 @@ async function generate() {
   row++;
   const stats = [
     ["Metric", "Value", "Implication"],
-    ["Median (US single-country tools)", "€9.89", "Floor — Prevista solves a harder problem"],
+    ["Median (US single-country tools)", "€9.89", "Floor — RetirAI solves a harder problem"],
     ["Mean (US single-country tools)", "€10.60", "US market clusters around €10-11/mo"],
-    ["Maximum (non-AUM individual)", "€19.09", "Kubera; global/HNI positioning similar to Prevista"],
+    ["Maximum (non-AUM individual)", "€19.09", "Kubera; global/HNI positioning similar to RetirAI"],
     ["PensionBee equivalent (AUM on €100K)", "€48.33", "Validates high WTP for pension management"],
-    ["Human advisor range", "€250-833/mo", "Prevista at €14.90 is 94-98% cheaper"],
-    ["Prevista recommended", "€14.90", "35-50% premium over US median; justified by complexity"],
+    ["Human advisor range", "€250-833/mo", "RetirAI at €14.90 is 94-98% cheaper"],
+    ["RetirAI recommended", "€14.90", "35-50% premium over US median; justified by complexity"],
   ];
   ws1.getRow(row).values = stats[0];
   styleSubHeader(ws1, row, 3);
@@ -181,7 +181,7 @@ async function generate() {
   ws2.columns = [{ width: 36 }, { width: 18 }, { width: 18 }, { width: 18 }, { width: 40 }];
 
   addTitle(ws2, 1, "Value-Based Price Justification", 5);
-  addNote(ws2, 2, "Quantifying the monetary value Prevista delivers to users to establish price ceiling and ROI.", 5);
+  addNote(ws2, 2, "Quantifying the monetary value RetirAI delivers to users to establish price ceiling and ROI.", 5);
 
   ws2.getRow(4).values = ["Value Source", "Monthly Value (EUR)", "Annual Value (EUR)", "Confidence", "Notes"];
   styleHeader(ws2, 4, 5);
@@ -193,7 +193,7 @@ async function generate() {
     ["Legislative alert (avoid missed deadline)", null, 2520, "Medium", "France retirement age change: €2,520/yr impact if not acted on"],
     ["Swiss capital tax optimization", null, 12000, "Medium", "Swiss tax treaty renegotiation: up to €12K capital tax impact"],
     ["Family claim protection (avoid missed claims)", null, 3700, "High", "60% of families with multi-country pensions miss at least one claim"],
-    ["Replaced advisor cost savings", null, 6500, "High", "Avg advisor: €3K-10K/yr; midpoint €6.5K; Prevista replaces ~80% of this"],
+    ["Replaced advisor cost savings", null, 6500, "High", "Avg advisor: €3K-10K/yr; midpoint €6.5K; RetirAI replaces ~80% of this"],
   ];
 
   row = 5;
@@ -253,12 +253,12 @@ async function generate() {
   row++;
   const affordability = [
     ["Avg net monthly income (Luxembourg)", "€3,540"],
-    ["Prevista at €14.90 as % of income", "0.42%"],
-    ["Prevista at €19.90 as % of income", "0.56%"],
+    ["RetirAI at €14.90 as % of income", "0.42%"],
+    ["RetirAI at €19.90 as % of income", "0.56%"],
     ["Netflix Standard (Luxembourg)", "€13.49 (0.38%)"],
     ["Spotify Premium", "€11.99 (0.34%)"],
     ["Boldin PlannerPlus", "~€11.04 (0.31%)"],
-    ["Conclusion", "At €14.90, Prevista costs same as Netflix for a tool managing €200K+ in assets"],
+    ["Conclusion", "At €14.90, RetirAI costs same as Netflix for a tool managing €200K+ in assets"],
   ];
   affordability.forEach(a => {
     ws2.getRow(row).values = [a[0], a[1]];
@@ -277,7 +277,7 @@ async function generate() {
   ws3.columns = [{ width: 28 }, { width: 16 }, { width: 14 }, { width: 14 }, { width: 14 }, { width: 14 }, { width: 14 }, { width: 40 }];
 
   addTitle(ws3, 1, "Complexity-Adjusted Price Positioning", 8);
-  addNote(ws3, 2, "Scoring competitors on feature depth to derive a fair complexity-adjusted price for Prevista.", 8);
+  addNote(ws3, 2, "Scoring competitors on feature depth to derive a fair complexity-adjusted price for RetirAI.", 8);
 
   ws3.getRow(4).values = [
     "Product", "Price (EUR/mo)",
@@ -293,7 +293,7 @@ async function generate() {
     ["Kubera", 19.09, 1, 0, 1, 0, null, "Global tracking; no pension formulas; AI net worth"],
     ["MaxiFi", 8.36, 0, 1, 0, 0, null, "US-only; economics-based; no AI; no docs"],
     ["OnTrajectory", 6.13, 0, 0, 0, 0, null, "Basic planning; US-focused; minimal features"],
-    ["Prevista Pro", 14.90, 3, 3, 3, 3, null, "3+ countries; 6-country tax sim; AI chat+extraction; full vault"],
+    ["RetirAI Pro", 14.90, 3, 3, 3, 3, null, "3+ countries; 6-country tax sim; AI chat+extraction; full vault"],
   ];
   scoring.forEach(s => { s[6] = s[2] + s[3] + s[4] + s[5]; });
 
@@ -303,10 +303,10 @@ async function generate() {
     ws3.getRow(row).getCell(2).numFmt = currencyFmt;
     for (let c = 1; c <= 8; c++) {
       ws3.getRow(row).getCell(c).border = thinBorder;
-      ws3.getRow(row).getCell(c).font = s[0] === "Prevista Pro" ?
+      ws3.getRow(row).getCell(c).font = s[0] === "RetirAI Pro" ?
         { bold: true, size: 11, name: "Calibri", color: { argb: GREEN } } : bodyFont;
       ws3.getRow(row).getCell(c).alignment = { horizontal: c > 1 ? "center" : "left", vertical: "middle", wrapText: true };
-      if (s[0] === "Prevista Pro") {
+      if (s[0] === "RetirAI Pro") {
         ws3.getRow(row).getCell(c).fill = { type: "pattern", pattern: "solid", fgColor: { argb: LIGHT_GREEN } };
       }
     }
@@ -327,9 +327,9 @@ async function generate() {
     ws3.getRow(row).getCell(4).numFmt = currencyFmt;
     for (let c = 1; c <= 4; c++) {
       ws3.getRow(row).getCell(c).border = thinBorder;
-      ws3.getRow(row).getCell(c).font = s[0] === "Prevista Pro" ? { bold: true, size: 11, name: "Calibri", color: { argb: GREEN } } : bodyFont;
+      ws3.getRow(row).getCell(c).font = s[0] === "RetirAI Pro" ? { bold: true, size: 11, name: "Calibri", color: { argb: GREEN } } : bodyFont;
       ws3.getRow(row).getCell(c).alignment = { horizontal: c > 1 ? "center" : "left", vertical: "middle" };
-      if (s[0] === "Prevista Pro") {
+      if (s[0] === "RetirAI Pro") {
         ws3.getRow(row).getCell(c).fill = { type: "pattern", pattern: "solid", fgColor: { argb: LIGHT_GREEN } };
       }
     }
@@ -337,7 +337,7 @@ async function generate() {
   });
 
   row += 1;
-  addNote(ws3, row, "Prevista at €14.90 delivers €1.24/point vs competitors avg €5.52/point — 4.5x more value per EUR. Even at €19.90 it would be €1.66/point (3.3x more value).", 8);
+  addNote(ws3, row, "RetirAI at €14.90 delivers €1.24/point vs competitors avg €5.52/point — 4.5x more value per EUR. Even at €19.90 it would be €1.66/point (3.3x more value).", 8);
 
   // ════════════════════════════════════════════════════════════════════
   // SHEET 4: SCENARIO MODELING
@@ -436,7 +436,7 @@ async function generate() {
   const ws5 = wb.addWorksheet("5. RECOMMENDATION", { properties: { tabColor: { argb: GREEN } } });
   ws5.columns = [{ width: 36 }, { width: 20 }, { width: 20 }, { width: 50 }];
 
-  addTitle(ws5, 1, "Prevista Pro — Recommended Pricing", 4);
+  addTitle(ws5, 1, "RetirAI Pro — Recommended Pricing", 4);
   ws5.getRow(2).height = 8;
 
   // Main pricing box
@@ -466,7 +466,7 @@ async function generate() {
     ["Value-to-Price Ratio", "8x minimum ROI", 5, "Even the minimum documented value (€120/mo gap recovery) delivers 8x return. At €19.90 it's 6x — still good, but €14.90 makes the ROI argument bulletproof."],
     ["Psychological Pricing", "€14.90 vs €19.90", 4, "€14.90 sits below the €15 threshold. €19.90 sits just below €20 but 'feels like €20'. The €5 gap in perception is larger than the €5 gap in price."],
     ["Revenue Ceiling", "Room to grow", 5, "Launch at €14.90, prove value, then introduce premium tiers (€24.90 with expert access) or raise to €19.90 after building trust. You can't easily lower prices."],
-    ["Brand Stage", "Pre-brand, needs traction", 4, "Prevista has no brand equity yet. A lower entry price reduces friction and builds the user base needed for word-of-mouth. Raise prices once the brand commands it."],
+    ["Brand Stage", "Pre-brand, needs traction", 4, "RetirAI has no brand equity yet. A lower entry price reduces friction and builds the user base needed for word-of-mouth. Raise prices once the brand commands it."],
   ];
 
   factors.forEach(f => {
@@ -491,7 +491,7 @@ async function generate() {
   row++;
   const whyNot12 = [
     ["Wrong anchor", "Benchmarks against US single-country tools that solve a fundamentally simpler problem"],
-    ["Undervalues complexity", "Prevista handles 3+ countries, 3+ languages, multiple pillar systems — this is not a '€12 tool'"],
+    ["Undervalues complexity", "RetirAI handles 3+ countries, 3+ languages, multiple pillar systems — this is not a '€12 tool'"],
     ["Signals basic", "At €12, users might perceive it as 'another planning calculator', not a serious pension management platform"],
     ["Less revenue headroom", "Hard to justify future price increases from €12; €14.90 provides a stable base"],
   ];
@@ -589,7 +589,7 @@ async function generate() {
   });
 
   // ─── Save ───
-  const outPath = path.join(__dirname, "Prevista-Pricing-Analysis.xlsx");
+  const outPath = path.join(__dirname, "RetirAI-Pricing-Analysis.xlsx");
   await wb.xlsx.writeFile(outPath);
   console.log("Written to:", outPath);
 }

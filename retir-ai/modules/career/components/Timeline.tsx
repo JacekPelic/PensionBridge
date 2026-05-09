@@ -3,13 +3,11 @@
 import { Card } from '@/shared/ui/Card';
 import { Pill } from '@/shared/ui/Pill';
 
-// Figures aligned with Mats' picture (modules/identity/mock-picture.ts):
-// LU 6y €85k→€95k · CH 5y CHF 95k→125k · FR 10y €38k→€62k (split across two employers).
 const timelineItems = [
   {
     dotColor: 'var(--amber)', pill: { variant: 'amber' as const, label: '🇱🇺 Luxembourg' },
     title: 'Employed · Luxembourg', date: 'Apr 2020 – Present',
-    salary: '€85,000 → €95,000/yr',
+    salary: '€78,000 → €92,000/yr',
     body: 'State pension contributions estimated from salary and dates. ~6.0 insurance years.',
     status: 'employed' as const,
   },
@@ -23,7 +21,7 @@ const timelineItems = [
   {
     dotColor: 'var(--blue)', pill: { variant: 'blue' as const, label: '🇨🇭 Switzerland' },
     title: 'Employed · Switzerland', date: 'Sep 2014 – Dec 2019',
-    salary: 'CHF 95,000 → CHF 125,000/yr',
+    salary: 'CHF 110,000 → CHF 135,000/yr',
     body: 'State pension contributions estimated from salary and dates. ~5.3 insurance years.',
     status: 'employed' as const,
   },
@@ -37,14 +35,14 @@ const timelineItems = [
   {
     dotColor: 'var(--green)', pill: { variant: 'green' as const, label: '🇫🇷 France' },
     title: 'Employed · France', date: 'Jun 2008 – Jul 2013',
-    salary: '€48,000 → €62,000/yr',
+    salary: '€42,000 → €55,000/yr',
     body: 'State pension contributions estimated from salary and dates. ~5.1 insurance years.',
     status: 'employed' as const,
   },
   {
     dotColor: 'var(--green)', pill: { variant: 'green' as const, label: '🇫🇷 France' },
     title: 'Employed · France', date: 'Sep 2003 – May 2008',
-    salary: '€38,000 → €48,000/yr',
+    salary: '€32,000 → €38,000/yr',
     body: 'State pension contributions estimated from salary and dates. ~4.7 insurance years.',
     status: 'employed' as const,
   },

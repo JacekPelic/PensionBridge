@@ -1,12 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { detectIntent, getResponse } from './chatEngine';
 import { useTier } from '@/shared/TierProvider';
-import { useChat } from './ChatProvider';
-import { usePicture } from '@/modules/identity/PictureProvider';
 import type { ChatMessage } from '@/shared/types';
-import type { PartialPicture } from '@/modules/identity/picture-types';
 
 function formatMarkdown(text: string): string {
   return text
@@ -15,63 +12,14 @@ function formatMarkdown(text: string): string {
     .replace(/\n/g, '<br>');
 }
 
-/**
- * Welcome message adapts to the user's state so brand-new users don't see
- * Mats's personalised briefing as if it were theirs. Three states:
- *  - mock demo  → the fully-loaded "3 things" briefing
- *  - user mode with a populated picture → a greeting by first name
- *  - user mode with an empty picture → a teaching onboarding prompt
- */
-function welcomeFor(mode: 'mock' | 'user', picture: PartialPicture): ChatMessage {
-  if (mode === 'mock') {
-    return {
-      role: 'bot',
-      text: `Hello Mats! I'm your Prevista advisor. I've analysed your career across France, Switzerland, and Luxembourg.\n\n**3 things need your attention:**\n1. Your **Luxembourg employer pension (RCP)** hasn't been located yet — typically the second-largest slice for LU residents\n2. You have **2 contribution gaps** and a **freelance year** with unclear attribution\n3. Retiring at **64** carries a risk of permanent French pension penalty\n\nYour projected income is **€1,660/month below your goal**.`,
-      suggestions: [
-        'What is my LU RCP?',
-        'Explain my gaps',
-        'Is retiring at 64 safe?',
-        'What documents am I missing?',
-      ],
-    };
-  }
-
-  const hasOpening = picture.residenceCountry != null && picture.age != null;
-  if (!hasOpening) {
-    return {
-      role: 'bot',
-      text: `Welcome to Prevista. I'm your pension advisor, and I'll get more useful as you fill in your picture.\n\nStart by answering the first few questions on the **Your picture** page — it takes about 2 minutes. Once I know where you live, your age, and your career countries, I can flag gaps, model retirement scenarios, and help you find forgotten pensions.`,
-      suggestions: [
-        'How does Prevista work?',
-        'What countries are supported?',
-        'Why do you need my age?',
-      ],
-    };
-  }
-
-  const name = picture.firstName ?? 'there';
-  const worked = picture.countriesWorked ?? [];
-  const countries = picture.residenceCountry ? [picture.residenceCountry, ...worked] : worked;
-  const countryLine =
-    countries.length > 0
-      ? `I can see your career across ${countries.length} ${countries.length === 1 ? 'country' : 'countries'}.`
-      : 'I can help once you\u2019ve added where you\u2019ve worked.';
-  return {
-    role: 'bot',
-    text: `Hi ${name} — I'm your Prevista advisor. ${countryLine}\n\nAsk me anything about your pension picture, or tap a suggestion to start.`,
-    suggestions: [
-      'Explain my pension gaps',
-      'What documents should I upload?',
-      'Is retiring at 64 safe?',
-    ],
-  };
-}
+const WELCOME_MESSAGE: ChatMessage = {
+  role: 'bot',
+  text: `Hello Mats! I'm your RetirAI advisor. I've analysed your career across France, Switzerland, and Luxembourg.\n\n**3 things need your attention:**\n1. Your **Swiss workplace pension (~€210K)** hasn't been located\n2. You have **2 contribution gaps** and a **freelance year** with unclear attribution\n3. Retiring at **64** carries a risk of permanent French pension penalty\n\nYour projected income is **€1,660/month below your goal**.`,
+  suggestions: ['Where is my Swiss pension?', 'Explain my gaps', 'Is retiring at 64 safe?', 'What documents am I missing?'],
+};
 
 export function ChatWidget() {
   const { isPro } = useTier();
-  const { registerHandler } = useChat();
-  const { mode, picture } = usePicture();
-  const welcomeMessage = useMemo(() => welcomeFor(mode, picture), [mode, picture]);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -88,11 +36,11 @@ export function ChatWidget() {
       const next = !prev;
       if (next) {
         setBadgeVisible(false);
-        if (messages.length === 0) setMessages([welcomeMessage]);
+        if (messages.length === 0) setMessages([WELCOME_MESSAGE]);
       }
       return next;
     });
-  }, [messages.length, welcomeMessage]);
+  }, [messages.length]);
 
   const sendMessage = useCallback((text: string) => {
     if (!text.trim() || isTyping) return;
@@ -108,22 +56,7 @@ export function ChatWidget() {
       setMessages((prev) => [...prev, botMsg]);
       setIsTyping(false);
     }, 800 + Math.random() * 1200);
-  }, [isPro, isTyping]);
-
-  // Register an external-open handler. External CTAs call ChatProvider's
-  // `openWithSeed`, which invokes this handler directly (event-handler
-  // context, not effect body) — so setState calls below are fine.
-  useEffect(() => {
-    const handleSeed = (seed: string) => {
-      setBadgeVisible(false);
-      setIsOpen(true);
-      setMessages((prev) => (prev.length === 0 ? [welcomeMessage] : prev));
-      // Defer slightly so the panel has rendered before the seeded
-      // user message appears.
-      setTimeout(() => sendMessage(seed), 120);
-    };
-    return registerHandler(handleSeed);
-  }, [registerHandler, sendMessage, welcomeMessage]);
+  }, [isTyping]);
 
   return (
     <>

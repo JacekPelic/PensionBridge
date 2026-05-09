@@ -76,7 +76,7 @@ export interface ProductOffer {
 }
 
 export type SourceType = 'state' | 'workplace' | 'personal' | 'general';
-export type DocCategory = 'career' | 'pension' | 'correspondence';
+export type DocCategory = 'career' | 'pension' | 'identity' | 'tax' | 'correspondence';
 
 export interface PensionDocument {
   id: string;
@@ -90,8 +90,6 @@ export interface PensionDocument {
   icon: string;
   category?: DocCategory;
   sourceType?: SourceType;
-  /** Not required to complete the picture — only surfaced when relevant. */
-  optional?: boolean;
   accuracyBoost?: number;
   fileUrl?: string;
   fileType?: string;

@@ -10,7 +10,7 @@ const navItems = [
     section: 'Overview',
     items: [
       { label: 'Dashboard', icon: '⬡', href: '/' },
-      { label: 'Your picture', icon: '✦', href: '/picture' },
+      { label: 'Complete Your Picture', icon: '✦', href: '/progress' },
     ],
   },
   {
@@ -50,26 +50,22 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--border)' }}>
-        <Link
-          href="/"
-          aria-label="Prevista home"
-          className="flex items-center gap-2.5 no-underline cursor-pointer transition-opacity duration-200 hover:opacity-80"
-        >
+        <div className="flex items-center gap-2.5">
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-base"
             style={{ background: 'var(--gold)', fontFamily: 'var(--font-playfair)', color: 'var(--navy)' }}
           >
-            P
+            R
           </div>
           <div>
             <div className="text-base font-semibold" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}>
-              Prevista
+              RetirAI
             </div>
-            <div className="text-[10px] italic tracking-wide" style={{ color: 'var(--text-dim)', fontFamily: 'var(--font-playfair)' }}>
-              your future, foreseen
+            <div className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-dim)' }}>
+              AI-Powered Multi-Country Pension
             </div>
           </div>
-        </Link>
+        </div>
       </div>
 
       {/* Nav */}
@@ -181,7 +177,7 @@ export function Sidebar() {
       {/* Profile */}
       <div className="p-4" style={{ borderTop: '1px solid var(--border)' }}>
         <Link
-          href="/"
+          href="/onboarding"
           className="flex items-center gap-2.5 p-2.5 rounded-[10px] cursor-pointer no-underline transition-all duration-200 hover:opacity-80"
           style={{ background: 'var(--navy-3)' }}
         >

@@ -118,19 +118,6 @@ export function DocumentCard({ doc }: Props) {
               {sourceTypeLabel[doc.sourceType].label}
             </span>
           )}
-          {doc.optional && (
-            <span
-              className="text-[9px] font-medium px-1.5 py-[1px] rounded-full uppercase tracking-wide"
-              style={{
-                color: 'var(--text-dim)',
-                border: '1px solid var(--border)',
-                background: 'var(--navy-3)',
-              }}
-              title={doc.notes ?? 'Optional \u2014 only needed in specific cases.'}
-            >
-              Optional
-            </span>
-          )}
         </div>
         <div className="text-[11px]" style={{ color: 'var(--text-dim)' }}>{doc.flag} {doc.source}</div>
       </div>

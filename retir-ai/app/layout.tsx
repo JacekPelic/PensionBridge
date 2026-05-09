@@ -22,7 +22,7 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Prevista — your future, foreseen",
+  title: "RetirAI – AI-Powered Multi-Country Pension",
   description: "Track, optimize, and protect your retirement income across multiple countries",
 };
 

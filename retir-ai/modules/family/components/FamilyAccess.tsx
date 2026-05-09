@@ -535,7 +535,7 @@ export function FamilyAccess() {
           <Card className="mb-5">
             <div className="text-[15px] font-semibold mb-1.5" style={{ color: 'var(--text)' }}>What Trusted Access includes</div>
             <div className="text-[12.5px] mb-4" style={{ color: 'var(--text-muted)' }}>
-              Share your pension data with family and trusted professionals, with scoped permissions.
+              Share your pension data with family and trusted professionals — securely, with scoped permissions.
             </div>
             <div className="grid grid-cols-2 gap-3 mb-4">
               {[

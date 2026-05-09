@@ -1,4 +1,4 @@
-# Prevista Pricing Research — Competitive Landscape & Positioning
+# RetirAI Pricing Research — Competitive Landscape & Positioning
 
 *Research date: April 2026*
 *Target market: Luxembourg-based expats with multi-country careers (FR/CH/LU)*
@@ -7,7 +7,7 @@
 
 ## 1. The Competitive Landscape
 
-Prevista occupies a unique niche — there is **no direct competitor** offering a self-service, multi-country pension planning platform for European expats. The competitive landscape is fragmented across four categories:
+RetirAI occupies a unique niche — there is **no direct competitor** offering a self-service, multi-country pension planning platform for European expats. The competitive landscape is fragmented across four categories:
 
 ### Category A: DIY Retirement Planning Software (US-focused)
 
@@ -34,7 +34,7 @@ These are the closest product analogues but serve a fundamentally simpler proble
 - **Market**: US only, investment-focused, not pension-specific
 - **Source**: [Empower Retirement Planner](https://www.empower.com/tools/retirement-planner)
 
-**Key takeaway**: The US market has established a **$10-15/mo price point** for sophisticated retirement planning tools. However, these solve a single-country problem. Prevista solves a multi-country problem that is orders of magnitude more complex.
+**Key takeaway**: The US market has established a **$10-15/mo price point** for sophisticated retirement planning tools. However, these solve a single-country problem. RetirAI solves a multi-country problem that is orders of magnitude more complex.
 
 ---
 
@@ -56,7 +56,7 @@ These platforms consolidate scattered UK pensions into one pot. They're relevant
 
 ### Category C: Multi-Country Pension Discovery Services
 
-These are the closest to Prevista's cross-border positioning but offer different services.
+These are the closest to RetirAI's cross-border positioning but offer different services.
 
 #### PensionHunter (launched April 2026)
 - **Price**: $99/search (single country) or $199/search (all 11 countries)
@@ -81,13 +81,13 @@ These are the closest to Prevista's cross-border positioning but offer different
 - **UK Pensions Dashboard**: In development, not yet live for consumers.
 - **France (info-retraite.fr)**: Free, shows French pension entitlements only.
 
-**Key takeaway**: Government/EU solutions are free but **single-country, read-only, and years from full deployment**. PensionHunter charges $99-199 per search plus 15% success fee for a one-time service. Prevista offers ongoing, multi-country, actionable planning — a fundamentally different value proposition.
+**Key takeaway**: Government/EU solutions are free but **single-country, read-only, and years from full deployment**. PensionHunter charges $99-199 per search plus 15% success fee for a one-time service. RetirAI offers ongoing, multi-country, actionable planning — a fundamentally different value proposition.
 
 ---
 
 ### Category D: Expat Financial Advisory Firms
 
-These are the human-service alternatives that Prevista's target users would otherwise use.
+These are the human-service alternatives that RetirAI's target users would otherwise use.
 
 #### Blevins Franks
 - **Price**: Not published, bespoke per client
@@ -110,13 +110,13 @@ These are the human-service alternatives that Prevista's target users would othe
 - **Pension transfer review**: €2,000-5,000 one-off
 - **Ongoing planning**: €3,000-10,000/yr for multi-country situations
 
-**Key takeaway**: Professional cross-border pension advice costs **€3,000-10,000+/yr**. Prevista automates a significant portion of what these advisors do (consolidation, tax simulation, document tracking, gap detection). Even at €240/yr (€19.90/mo), it's **92-97% cheaper** than human advice.
+**Key takeaway**: Professional cross-border pension advice costs **€3,000-10,000+/yr**. RetirAI automates a significant portion of what these advisors do (consolidation, tax simulation, document tracking, gap detection). Even at €240/yr (€19.90/mo), it's **92-97% cheaper** than human advice.
 
 ---
 
 ## 2. Competitive Positioning Matrix
 
-| Feature | Prevista | Boldin | ProjectionLab | PensionBee | ETS | PensionHunter | Advisors |
+| Feature | RetirAI | Boldin | ProjectionLab | PensionBee | ETS | PensionHunter | Advisors |
 |---|---|---|---|---|---|---|---|
 | Multi-country support | FR/CH/LU | US only | US only | UK only | BE/FR (limited) | 11 countries | Yes |
 | Country-specific pension formulas | Yes | US SS only | US SS only | N/A | No calc | No calc | Yes |
@@ -137,7 +137,7 @@ These are the human-service alternatives that Prevista's target users would othe
 ### Why €9.90/mo is too low
 
 1. **Signals "not serious"** in the Luxembourg market. Average net income is €3,540/mo — €9.90 is what people pay for a streaming app, not a financial planning tool managing €200K+ in pension assets.
-2. **Below US single-country tools**. Boldin charges $12/mo for US-only planning. Prevista solves a harder problem across 3+ countries.
+2. **Below US single-country tools**. Boldin charges $12/mo for US-only planning. RetirAI solves a harder problem across 3+ countries.
 3. **Leaves money on the table**. The value delivered (€120/mo gap recovery, €356/mo tax optimisation, family protection across €3.7B in unclaimed pensions) vastly exceeds €9.90.
 
 ### Why €19.90/mo is the right entry point
@@ -154,11 +154,11 @@ These are the human-service alternatives that Prevista's target users would othe
 - **Spotify Premium**: €11.99/mo — entertainment
 - **Boldin PlannerPlus**: ~€12/mo — US retirement planning
 - **ProjectionLab Premium**: ~€11/mo — US retirement planning
-- **Prevista Pro (proposed)**: €19.90/mo — multi-country pension planning
+- **RetirAI Pro (proposed)**: €19.90/mo — multi-country pension planning
 - **PensionBee (on €100K pot)**: ~€48/mo — UK pension management
 - **Financial advisor (annual)**: €250-833/mo — human advice
 
-Prevista at €19.90/mo sits correctly between DIY tools and professional advice — reflecting that it automates what advisors charge thousands for, while being more sophisticated than single-country calculators.
+RetirAI at €19.90/mo sits correctly between DIY tools and professional advice — reflecting that it automates what advisors charge thousands for, while being more sophisticated than single-country calculators.
 
 ---
 
@@ -166,7 +166,7 @@ Prevista at €19.90/mo sits correctly between DIY tools and professional advice
 
 | | Monthly | Annual | Savings |
 |---|---|---|---|
-| **Prevista Pro** | **€19.90/mo** | **€199/yr** | **17%** |
+| **RetirAI Pro** | **€19.90/mo** | **€199/yr** | **17%** |
 
 ### Future pricing considerations
 - **Expert add-on**: €49-99 per consultation for human advisor escalation (from chat/radar alerts)
