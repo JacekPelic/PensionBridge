@@ -1,4 +1,4 @@
-# RetirAI Demo Script — 5-Minute Screen Recording
+# Prevista Demo Script — 5-Minute Screen Recording
 
 **Persona:** Mats Karlsson, 45, Swedish-born, currently living and working in Luxembourg.
 Career across 3 countries (France, Switzerland, Luxembourg) over 20+ years. Wants to retire at 64 with €5,500/month.
@@ -13,7 +13,7 @@ Career across 3 countries (France, Switzerland, Luxembourg) over 20+ years. Want
 >
 > Like millions of professionals with international experience, Mats has built up pension entitlements in multiple countries — each with its own rules, institutions, and language. The problem? Nobody gives him a unified view of what that actually means for his retirement.
 >
-> Let's see what happens when Mats opens RetirAI for the first time."
+> Let's see what happens when Mats opens Prevista for the first time."
 
 **On screen:** Load the app — the onboarding wizard appears full-screen.
 
@@ -23,7 +23,7 @@ Career across 3 countries (France, Switzerland, Luxembourg) over 20+ years. Want
 
 ### Step 1: Profile (0:20 – 0:35)
 
-> "RetirAI starts by collecting the basics: name, date of birth, country of residence, and target retirement age. These aren't just profile fields — each one determines which pension rules apply. Your birth year sets the French trimestre requirement. Your gender affects the Swiss AVS retirement age. Your residence country determines your tax regime."
+> "Prevista starts by collecting the basics: name, date of birth, country of residence, and target retirement age. These aren't just profile fields — each one determines which pension rules apply. Your birth year sets the French trimestre requirement. Your gender affects the Swiss AVS retirement age. Your residence country determines your tax regime."
 
 **On screen:** The form is pre-filled with Mats Karlsson, born 15 March 1981, Male, Luxembourg, age 64. **Click Continue.**
 
@@ -33,7 +33,7 @@ Career across 3 countries (France, Switzerland, Luxembourg) over 20+ years. Want
 
 **Click "Upload CV". The parsing animation runs for ~2 seconds.**
 
-> "RetirAI extracted four employment periods across three countries — Luxembourg from 2020 to present, Switzerland from 2014 to 2019, and two French periods going back to 2003. Countries, dates, and employment type — all detected automatically.
+> "Prevista extracted four employment periods across three countries — Luxembourg from 2020 to present, Switzerland from 2014 to 2019, and two French periods going back to 2003. Countries, dates, and employment type — all detected automatically.
 >
 > Salary data can't be extracted from a CV, so each period shows 'Add salary' in amber. In production, Mats would click each period to enter his salary. For now, let's use the sample data to keep things moving."
 
@@ -41,7 +41,7 @@ Career across 3 countries (France, Switzerland, Luxembourg) over 20+ years. Want
 
 ### Step 3: Pillar 1 Estimate (0:55 – 1:10)
 
-> "And here it is — Mats's first pension estimate, calculated in seconds. RetirAI applied the actual pension formulas: French CNAV rules with the SAM and trimestre calculations, Swiss AVS scale tables, Luxembourg CNAP flat-rate and proportional components.
+> "And here it is — Mats's first pension estimate, calculated in seconds. Prevista applied the actual pension formulas: French CNAV rules with the SAM and trimestre calculations, Swiss AVS scale tables, Luxembourg CNAP flat-rate and proportional components.
 >
 > The result: Mats's combined Pillar 1 — state pension — comes to approximately €2,500 a month across three countries."
 
@@ -81,7 +81,7 @@ Career across 3 countries (France, Switzerland, Luxembourg) over 20+ years. Want
 
 > "The estimation page breaks down exactly where each euro comes from. By country — France at €1,500, Switzerland at €1,360, Luxembourg at €980. By pillar — Pillar 1 at €2,520, Pillar 2 at €1,320.
 >
-> But here's what makes RetirAI unique."
+> But here's what makes Prevista unique."
 
 **Click the Switzerland accordion in "By fund & institution".**
 
@@ -115,7 +115,7 @@ Career across 3 countries (France, Switzerland, Luxembourg) over 20+ years. Want
 
 **Navigate to Legislative Radar.**
 
-> "RetirAI doesn't just calculate — it monitors. The Legislative Radar tracks pension laws and tax reforms across every country where Mats has built up entitlements. Six active alerts, three high priority.
+> "Prevista doesn't just calculate — it monitors. The Legislative Radar tracks pension laws and tax reforms across every country where Mats has built up entitlements. Six active alerts, three high priority.
 >
 > This one: France is considering raising the retirement age from 64 to 65. If it passes, Mats's planned retirement from France shifts by a year.
 >
@@ -137,7 +137,7 @@ Career across 3 countries (France, Switzerland, Luxembourg) over 20+ years. Want
 
 **Expand the Switzerland claim instructions.**
 
-> "RetirAI builds real, actionable claim guides: 6 steps, 7 documents, three specific contacts for Switzerland alone — SVA Zürich, UBS Pension Fund, and the Stiftung Auffangeinrichtung for dormant assets. Plus warnings the family needs to know, like the fact that unmarried partners may have no legal claim to Pillar 2.
+> "Prevista builds real, actionable claim guides: 6 steps, 7 documents, three specific contacts for Switzerland alone — SVA Zürich, UBS Pension Fund, and the Stiftung Auffangeinrichtung for dormant assets. Plus warnings the family needs to know, like the fact that unmarried partners may have no legal claim to Pillar 2.
 >
 > Anna, Mats's wife, already received the France instructions. Swiss and Luxembourg are one click away."
 
@@ -155,7 +155,7 @@ Career across 3 countries (France, Switzerland, Luxembourg) over 20+ years. Want
 
 **Click "Have an expert fix this for me".**
 
-> "The chatbot lists all consulting services — from document retrieval at €99 to a full retirement strategy at €899 — with a direct link to the Services page. This is how RetirAI turns data into action."
+> "The chatbot lists all consulting services — from document retrieval at €99 to a full retirement strategy at €899 — with a direct link to the Services page. This is how Prevista turns data into action."
 
 **Click the "View Expert Services" card in the chat, navigating to Expert Consulting.**
 
@@ -171,7 +171,7 @@ Career across 3 countries (France, Switzerland, Luxembourg) over 20+ years. Want
 
 **Navigate back to Dashboard. Toggle to "Documents uploaded".**
 
-> "From a blank slate to a complete retirement picture in under five minutes. RetirAI takes the most complex financial challenge facing internationally mobile professionals — pension entitlements scattered across countries, languages, and institutions — and makes it clear, actionable, and protected.
+> "From a blank slate to a complete retirement picture in under five minutes. Prevista takes the most complex financial challenge facing internationally mobile professionals — pension entitlements scattered across countries, languages, and institutions — and makes it clear, actionable, and protected.
 >
 > From onboarding to estimates. From gaps to corrections. From data to expert strategy.
 >

@@ -7,6 +7,7 @@ import type { Country } from '@/shared/types';
 import { simulateResidence, RESIDENCE_META } from '@/modules/tax';
 import type { ResidenceCountry } from '@/modules/tax';
 import { useUserData } from '@/modules/identity/UserDataProvider';
+import { useDataStage } from '@/modules/identity/DataStageProvider';
 
 type Status = 'verified' | 'estimated' | 'unconfirmed' | 'self-reported' | 'not_tracked';
 type ViewMode = 'net' | 'gross';
@@ -43,57 +44,70 @@ const statusStyle: Record<Status, { color: string; bg: string; label: string }> 
   not_tracked:   { color: 'var(--red)', bg: 'var(--red-dim)', label: 'Not tracked' },
 };
 
+// Figures aligned with the canonical picture (modules/identity/mock-picture.ts):
+// FR Agirc-Arrco €420/mo, CH BVG €860/mo (from picture.pillar2Plans).
 const fundData: CountryFunds[] = [
   {
     country: 'France',
     flag: '🇫🇷',
-    total: 1500,
+    total: 1640,
     funds: [
       { institution: 'CNAV (Caisse Nationale d\'Assurance Vieillesse)', pillar: 'P1', monthlyPayout: 1220, period: 'Sep 2003 – Jul 2013', years: 10.9, status: 'verified', sourceCountry: 'FR', notes: 'Régime général · based on best 25 years SAM' },
-      { institution: 'AGIRC-ARRCO', pillar: 'P2', monthlyPayout: 280, period: 'Sep 2003 – Jul 2013', years: 10.9, status: 'verified', sourceCountry: 'FR', notes: 'Compulsory complementary · points-based system' },
+      { institution: 'AGIRC-ARRCO', pillar: 'P2', monthlyPayout: 420, period: 'Sep 2003 – Jul 2013', years: 10.9, status: 'verified', sourceCountry: 'FR', notes: 'Compulsory complementary · points-based system' },
       { institution: 'Private savings (PER / Assurance-vie)', pillar: 'P3', monthlyPayout: 0, period: '—', years: 0, status: 'not_tracked', sourceCountry: 'FR', notes: 'No personal savings detected — upload or add manually' },
     ],
   },
   {
     country: 'Switzerland',
     flag: '🇨🇭',
-    total: 1360,
+    total: 1180,
     funds: [
       { institution: 'AVS/AHV (Federal Old Age Insurance)', pillar: 'P1', monthlyPayout: 320, period: 'Sep 2014 – Dec 2019', years: 5.3, status: 'verified', sourceCountry: 'CH', notes: 'Partial pension · 5.3 of 44 contribution years' },
-      { institution: 'UBS Pension Fund (BVG/LPP)', pillar: 'P2', monthlyPayout: 1040, period: 'Sep 2014 – Dec 2019', years: 5.3, status: 'verified', sourceCountry: 'CH', capitalOption: 210000, notes: 'Occupational pension · capital or annuity option available' },
+      { institution: 'UBS Pension Fund (BVG/LPP)', pillar: 'P2', monthlyPayout: 860, period: 'Sep 2014 – Dec 2019', years: 5.3, status: 'verified', sourceCountry: 'CH', capitalOption: 210000, notes: 'Occupational pension · capital or annuity option available' },
       { institution: 'Personal savings 3a (tax-privileged)', pillar: 'P3', monthlyPayout: 0, period: '—', years: 0, status: 'not_tracked', sourceCountry: 'CH', notes: 'No personal savings account detected — common for cross-border workers' },
     ],
   },
   {
     country: 'Luxembourg',
     flag: '🇱🇺',
-    total: 980,
+    total: 1020,
     funds: [
-      { institution: 'CNAP (Caisse Nationale d\'Assurance Pension)', pillar: 'P1', monthlyPayout: 980, period: 'Apr 2020 – present', years: 6.0, status: 'estimated', sourceCountry: 'LU', notes: 'Flat-rate + proportional formula · EU totalisation applies' },
+      { institution: 'CNAP (Caisse Nationale d\'Assurance Pension)', pillar: 'P1', monthlyPayout: 1020, period: 'Apr 2020 – present', years: 6.0, status: 'estimated', sourceCountry: 'LU', notes: 'Flat-rate + proportional formula · EU totalisation applies' },
       { institution: 'Employer pension scheme (unknown provider)', pillar: 'P2', monthlyPayout: 280, period: 'Apr 2020 – present', years: 6.0, status: 'unconfirmed', sourceCountry: 'LU', notes: 'Estimated from typical employer scheme — upload pension fund statement to verify' },
       { institution: 'Foyer Prévoyance-vieillesse (Art. 111bis)', pillar: 'P3', monthlyPayout: 220, period: '2021 – present', years: 5.0, status: 'self-reported', sourceCountry: 'LU', notes: 'Tax-advantaged private pension · up to €3,200/yr deductible' },
     ],
   },
 ];
 
+/** Statuses that contribute to the "verified" headline total — match dashboard. */
+const VERIFIED_STATUSES: Status[] = ['verified', 'estimated'];
+
 export function IncomeBreakdown({ onNetComputed }: Props) {
   const { userData } = useUserData();
+  const { stage } = useDataStage();
+  const verified = stage === 'after';
   const residenceCountry = (userData.residenceCountry ?? 'LU') as ResidenceCountry;
   const [expanded, setExpanded] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('net');
 
-  // Build pension sources from fund data for tax calculation
+  // Build pension sources from fund data for tax calculation.
+  // Stage='before' → only Pillar 1 (matches dashboard's pre-upload story)
+  // Stage='after'  → verified + estimated entries (sum = BASE_TMI = €3,840)
   const taxResult = useMemo(() => {
     const sources = fundData
       .flatMap((c) => c.funds)
-      .filter((f) => f.monthlyPayout > 0)
+      .filter((f) => {
+        if (f.monthlyPayout <= 0) return false;
+        if (!verified) return f.pillar === 'P1';
+        return VERIFIED_STATUSES.includes(f.status);
+      })
       .map((f) => ({
         sourceCountry: f.sourceCountry,
         label: f.institution,
         grossMonthly: f.monthlyPayout,
       }));
     return simulateResidence(sources, residenceCountry);
-  }, [residenceCountry]);
+  }, [residenceCountry, verified]);
 
   // Notify parent of net total
   useEffect(() => {
@@ -200,8 +214,8 @@ export function IncomeBreakdown({ onNetComputed }: Props) {
         <div>
           <div className="text-[11px] font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--text-dim)' }}>By country</div>
           {[
-            { flag: '🇫🇷', label: 'France', grossAmount: 1500, color: '#3ecf8e' },
-            { flag: '🇨🇭', label: 'Switzerland', grossAmount: 1360, color: 'var(--blue)' },
+            { flag: '🇫🇷', label: 'France', grossAmount: 1640, color: '#3ecf8e' },
+            { flag: '🇨🇭', label: 'Switzerland', grossAmount: 1180, color: 'var(--blue)' },
             { flag: '🇱🇺', label: 'Luxembourg', grossAmount: 980, color: 'var(--amber)', note: '+~€500 unconf.' },
           ].map((row) => {
             const amount = isNet ? (countryNetTotals[row.label] ?? row.grossAmount) : row.grossAmount;
@@ -227,7 +241,7 @@ export function IncomeBreakdown({ onNetComputed }: Props) {
           <div className="text-[11px] font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--text-dim)' }}>By source type</div>
           {[
             { label: 'State (Pillar 1)', pillar: 'P1', grossAmount: 2520, color: 'var(--gold)' },
-            { label: 'Workplace (Pillar 2)', pillar: 'P2', grossAmount: 1320, color: 'var(--blue)', note: '+~€280 unconf.' },
+            { label: 'Workplace (Pillar 2)', pillar: 'P2', grossAmount: 1280, color: 'var(--blue)', note: '+~€280 unconf.' },
             { label: 'Personal (Pillar 3+)', pillar: 'P3', grossAmount: 220, color: 'var(--amber)', prefix: '~', noteText: 'unconfirmed' },
           ].map((row) => {
             const amount = isNet ? (pillarNetTotals[row.pillar] ?? row.grossAmount) : row.grossAmount;
@@ -461,7 +475,7 @@ export function IncomeBreakdown({ onNetComputed }: Props) {
                 €{(isNet ? pillarNetTotals.P1 : 2520).toLocaleString()}
               </td>
               <td className="px-3 py-2.5 text-right font-bold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--gold-light)' }}>
-                €{(isNet ? pillarNetTotals.P2 : 1320).toLocaleString()}
+                €{(isNet ? pillarNetTotals.P2 : 1280).toLocaleString()}
               </td>
               <td className="px-3 py-2.5 text-right font-bold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--amber)' }}>
                 ~€{(isNet ? pillarNetTotals.P3 : 220).toLocaleString()}

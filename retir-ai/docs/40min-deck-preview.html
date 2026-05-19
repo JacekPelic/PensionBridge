@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prevista — 40-min pitch deck</title>
+<style>
+  :root[data-theme="light"]{
+    --bg:#FAF8F3; --surface:#FFFFFF; --text:#0A1F3D; --text-muted:#54647A;
+    --accent:#B89968; --accent-soft:#E8DCC4;
+    --border:rgba(10,31,61,.12); --border-strong:rgba(10,31,61,.22);
+    --good:#2F6F47; --warn:#B8773A; --neutral:#6B7280; --highlight:rgba(184,153,104,.15);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0A1F3D; --surface:#142844; --text:#FAF8F3; --text-muted:#A8B4C4;
+    --accent:#D4B280; --accent-soft:#3A3120;
+    --border:rgba(250,248,243,.14); --border-strong:rgba(250,248,243,.28);
+    --good:#7FB496; --warn:#E0B070; --neutral:#9AA3B1; --highlight:rgba(212,178,128,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Inter",sans-serif;
+    font-feature-settings:"kern","liga","tnum";font-variant-numeric:tabular-nums;
+    font-size:clamp(14px,1.05vw,18px);line-height:1.55;
+    transition:background .25s ease,color .25s ease;
+    -webkit-font-smoothing:antialiased;
+  }
+  body{overflow:hidden}
+  .serif{font-family:"Charter","Iowan Old Style","Palatino Linotype","Palatino",Georgia,serif;
+    font-feature-settings:"kern","liga","onum","tnum"}
+  code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.88em;
+    background:var(--highlight);padding:.08em .35em;border-radius:3px;
+    color:var(--text-muted)}
+
+  /* deck container */
+  .deck{position:fixed;inset:0;overflow:hidden}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;
+    padding:5.5vh 7vw 5vh;opacity:0;pointer-events:none;
+    transition:opacity .35s ease;overflow:auto}
+  .slide[data-active]{opacity:1;pointer-events:auto}
+
+  /* per-slide chrome */
+  .slide header.section{display:flex;justify-content:space-between;align-items:baseline;
+    font-size:.78em;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;
+    padding-bottom:1.2em;border-bottom:1px solid var(--border);margin-bottom:2em;
+    font-weight:500}
+  .slide header.section .agenda{}
+  .slide header.section .time{color:var(--accent);font-feature-settings:"tnum"}
+
+  /* typography */
+  h1.headline{font-family:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;
+    font-weight:400;font-size:clamp(2.4em,4.4vw,3.8em);line-height:1.1;
+    letter-spacing:-.012em;color:var(--text);margin-bottom:.8em}
+  h2.headline{font-family:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;
+    font-weight:400;font-size:clamp(1.7em,2.8vw,2.4em);line-height:1.2;
+    letter-spacing:-.005em;margin-bottom:.6em}
+  h3.label{font-size:.78em;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);
+    font-weight:600;margin-bottom:.7em}
+  .lead{font-size:1.15em;color:var(--text);max-width:54em;margin-bottom:1.4em}
+  .small{font-size:.86em;color:var(--text-muted)}
+  em{font-style:italic}
+  strong{font-weight:600;color:var(--text)}
+  .footnote{font-size:.78em;color:var(--text-muted);font-style:italic;
+    margin-top:1.6em;padding-top:1em;border-top:1px solid var(--border);max-width:62em}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;margin:1em 0}
+  th,td{text-align:left;padding:.7em .9em;border-bottom:1px solid var(--border);
+    vertical-align:top}
+  th{font-weight:600;color:var(--text-muted);font-size:.85em;
+    letter-spacing:.04em;text-transform:uppercase}
+  td.num{text-align:right;font-feature-settings:"tnum";font-variant-numeric:tabular-nums}
+  th.num{text-align:right}
+  tr.total td{font-weight:600;border-top:2px solid var(--border-strong);
+    border-bottom:none}
+  .table-tight th,.table-tight td{padding:.45em .7em;font-size:.92em}
+
+  /* blockquote / pull-quote */
+  blockquote{border-left:3px solid var(--accent);padding:.4em 0 .4em 1.2em;
+    margin:1em 0;font-style:italic;color:var(--text-muted);max-width:54em}
+  blockquote strong{color:var(--text);font-style:normal}
+
+  /* slide-1 hero */
+  .hero{flex:1;display:flex;flex-direction:column;justify-content:center;
+    align-items:flex-start;max-width:none}
+  .hero .brand{font-family:"Charter","Iowan Old Style",Georgia,serif;
+    font-size:clamp(5em,11vw,9em);font-weight:400;letter-spacing:-.02em;
+    line-height:.95;margin-bottom:.1em}
+  .hero .slogan{font-family:"Charter",Georgia,serif;font-style:italic;
+    font-size:clamp(1.6em,2.6vw,2.4em);color:var(--accent);
+    margin-bottom:1.8em;letter-spacing:-.005em}
+  .hero .audience{font-size:1.05em;color:var(--text-muted);max-width:34em}
+
+  /* slide-3-gap bar */
+  .gap-vis{margin:2em 0;padding:1.6em 1.8em;background:var(--surface);
+    border:1px solid var(--border);border-radius:2px}
+  .gap-row{display:grid;grid-template-columns:9em 1fr 8em;gap:1.4em;
+    align-items:center;margin-bottom:.6em}
+  .gap-row .label{color:var(--text-muted);font-size:.92em}
+  .gap-row .value{text-align:right;font-feature-settings:"tnum";font-weight:600}
+  .gap-bar{height:1.4em;background:var(--accent-soft);border-radius:2px;position:relative;overflow:hidden}
+  .gap-bar .fill{position:absolute;inset:0;background:var(--accent);width:var(--w,0)}
+  .gap-bar.target .fill{background:var(--text)}
+  .gap-bar.shortfall{background:none;border:1px dashed var(--text-muted)}
+  .gap-bar.shortfall .fill{background:var(--warn);opacity:.75}
+
+  /* layout helpers */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:2.4em;margin-top:1em}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.8em;margin-top:1em}
+  .stack{display:flex;flex-direction:column;gap:1.4em}
+  .block{background:var(--surface);border:1px solid var(--border);
+    padding:1.4em 1.6em;border-radius:2px}
+  .block h3.label{margin-bottom:.5em}
+  .stat{display:flex;justify-content:space-between;align-items:baseline;
+    padding:.45em 0;border-bottom:1px solid var(--border);font-size:.95em}
+  .stat:last-child{border-bottom:none}
+  .stat .k{color:var(--text-muted)}
+  .stat .v{font-weight:600;font-feature-settings:"tnum"}
+  .pullout{font-size:1.15em;color:var(--accent);font-style:italic;
+    border-left:3px solid var(--accent);padding:.6em 0 .6em 1.2em;margin:.8em 0}
+
+  /* verification glyphs */
+  .v-good{color:var(--good);font-weight:600}
+  .v-warn{color:var(--warn);font-weight:600}
+  .v-neutral{color:var(--neutral)}
+
+  /* 2x2 quadrant (slide 5A) */
+  .quadrant{display:grid;grid-template-columns:8em 1fr 1fr;
+    grid-template-rows:auto 1fr 1fr;gap:0;margin:1.4em 0;font-size:.95em;
+    border:1px solid var(--border-strong)}
+  .quadrant .cell-h{padding:.7em .9em;font-size:.78em;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--text-muted);font-weight:600;
+    background:var(--surface);border-bottom:1px solid var(--border-strong)}
+  .quadrant .cell-v{padding:.9em .8em;writing-mode:vertical-rl;
+    transform:rotate(180deg);font-size:.78em;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--text-muted);font-weight:600;
+    background:var(--surface);display:flex;align-items:center;justify-content:center;
+    border-right:1px solid var(--border-strong)}
+  .quadrant .cell-v.bottom{border-top:1px solid var(--border-strong)}
+  .quadrant .cell{padding:1.1em 1.2em;background:var(--bg);
+    border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+  .quadrant .cell:last-child,.quadrant .cell.last{border-right:none}
+  .quadrant .cell.bottom{border-bottom:none}
+  .quadrant .cell.empty{background:var(--accent-soft);position:relative}
+  .quadrant .cell.empty::after{content:"the wedge";position:absolute;
+    inset:0;display:flex;align-items:center;justify-content:center;
+    color:var(--accent);font-style:italic;font-size:1.2em}
+  .quadrant ul{list-style:none;font-size:.92em;color:var(--text-muted);line-height:1.65}
+  .quadrant ul li::before{content:"· ";color:var(--accent)}
+
+  /* phase blocks (slide 6C) */
+  .phase{padding:.9em 1.2em;border-left:3px solid var(--accent);
+    background:var(--surface);margin-bottom:.8em}
+  .phase .ph{font-size:.78em;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin-bottom:.2em}
+  .phase .name{font-weight:600;margin-bottom:.3em;font-size:1.02em}
+  .phase .engines{font-size:.88em;color:var(--text-muted);margin-bottom:.25em}
+  .phase .logic{font-size:.88em;color:var(--text-muted);margin-bottom:.4em}
+  .phase .addr{font-size:.92em;font-feature-settings:"tnum"}
+  .phase .delta{color:var(--accent);font-weight:600}
+
+  /* problem block (slide 8) */
+  .problem{background:var(--surface);border:1px solid var(--border);
+    padding:1.2em 1.5em;margin-bottom:1em;border-radius:2px}
+  .problem h4{font-size:1.05em;margin-bottom:.6em;font-weight:600}
+  .problem .row{display:grid;grid-template-columns:8em 1fr;gap:1.2em;
+    padding:.4em 0;font-size:.92em;border-bottom:1px solid var(--border)}
+  .problem .row:last-child{border-bottom:none}
+  .problem .row .lab{color:var(--accent);font-size:.78em;
+    letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+  .problem ul{list-style:none;padding-left:0}
+  .problem ul li{padding:.15em 0;color:var(--text-muted);font-size:.92em}
+  .problem ul li::before{content:"· ";color:var(--accent)}
+
+  /* slide-11 close */
+  .close-hero{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:38em}
+  .close-hero h1{font-family:"Charter",Georgia,serif;font-weight:400;
+    font-size:clamp(2.6em,4.6vw,4em);line-height:1.1;margin-bottom:.7em;
+    letter-spacing:-.01em}
+  .close-hero p{font-size:1.2em;color:var(--text-muted);margin-bottom:1em;
+    line-height:1.5}
+  .close-hero .destination{color:var(--text);font-weight:500}
+  .close-hero .slogan{font-family:"Charter",Georgia,serif;font-style:italic;
+    color:var(--accent);font-size:1.4em;margin-top:1.6em;letter-spacing:-.005em}
+  .accent-num{color:var(--accent);font-weight:700}
+
+  /* trigger chips */
+  .triggers{display:flex;gap:.6em;margin:1em 0;flex-wrap:wrap}
+  .chip{padding:.35em .9em;border:1px solid var(--border-strong);
+    border-radius:99px;font-size:.86em;color:var(--text-muted);
+    font-feature-settings:"tnum"}
+  .chip strong{color:var(--accent)}
+
+  /* speaker notes overlay */
+  .notes{position:fixed;inset:auto 0 0 0;max-height:42vh;
+    background:var(--surface);border-top:1px solid var(--border-strong);
+    padding:1.2em 7vw 1.4em;overflow-y:auto;
+    transform:translateY(100%);transition:transform .25s ease;
+    box-shadow:0 -8px 24px rgba(0,0,0,.06);z-index:50}
+  .notes.open{transform:translateY(0)}
+  .notes h4{font-size:.78em;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:.6em;font-weight:600}
+  .notes ol{padding-left:1.4em;font-size:.92em;line-height:1.55}
+  .notes ol li{margin-bottom:.5em;color:var(--text-muted)}
+  .notes ol li em{color:var(--text)}
+
+  /* UI chrome */
+  .ui{position:fixed;bottom:1.2em;right:1.6em;display:flex;gap:1.2em;
+    align-items:center;font-size:.78em;color:var(--text-muted);
+    pointer-events:none;z-index:100}
+  .ui .counter{font-feature-settings:"tnum";font-weight:600;
+    background:var(--surface);padding:.4em .8em;border:1px solid var(--border);
+    border-radius:99px;pointer-events:auto}
+  .hint{position:fixed;bottom:1.2em;left:1.6em;font-size:.74em;
+    color:var(--text-muted);letter-spacing:.04em;z-index:100;opacity:.6}
+  .hint kbd{background:var(--surface);border:1px solid var(--border);
+    padding:.05em .4em;border-radius:3px;font-family:inherit;font-size:.95em}
+
+  /* progress bar */
+  .progress{position:fixed;top:0;left:0;right:0;height:2px;background:var(--border);z-index:100}
+  .progress .bar{height:100%;background:var(--accent);width:0;transition:width .3s ease}
+
+  /* accent for "12M" callbacks */
+  .twelvemil{color:var(--accent);font-weight:700;font-feature-settings:"tnum"}
+
+  /* table emphasis row */
+  tr.emphasis td{background:var(--accent-soft);font-weight:600}
+  :root[data-theme="dark"] tr.emphasis td{background:var(--accent-soft)}
+
+  /* print */
+  @media print{
+    @page{size:landscape;margin:0}
+    body{overflow:visible}
+    .deck{position:static;height:auto}
+    .slide{position:static;page-break-after:always;break-after:page;
+      opacity:1;pointer-events:auto;height:100vh;padding:5vh 7vw}
+    .ui,.hint,.progress,.notes{display:none}
+  }
+
+  @media (max-width:780px){
+    .grid-2,.grid-3{grid-template-columns:1fr}
+    .quadrant{grid-template-columns:6em 1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="bar"></div></div>
+
+<main class="deck">
+
+<!-- ═══════════════════════════════════════ SLIDE 1 — HOOK ═══════════════════════════════════════ -->
+<section class="slide" data-slide="1" data-active>
+  <header class="section">
+    <span class="agenda">Hook + thesis</span>
+    <span class="time">2 min · slide 1 / 11</span>
+  </header>
+  <div class="hero">
+    <div class="brand serif">Prevista</div>
+    <div class="slogan">your future, foreseen.</div>
+    <div class="audience">For internationally-mobile Europeans whose pensions span borders.</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 2 — PROBLEM (MECHANICS) ═══════════════════════════ -->
+<section class="slide" data-slide="2">
+  <header class="section">
+    <span class="agenda">Problem · mechanics</span>
+    <span class="time">~3 min · slide 2 / 11</span>
+  </header>
+  <h1 class="headline serif">Nine entitlements. Three states of evidence. No total.</h1>
+  <p class="lead">Mats Karlsson, 45, LU resident. Career: France 10y → Switzerland 5y → Luxembourg 6y.</p>
+
+  <table>
+    <thead>
+      <tr><th>Country</th><th>Pillar 1 — state</th><th>Pillar 2 — workplace</th><th>Pillar 3 — personal</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>France</strong></td>
+        <td><span class="v-good">✓</span> CNAV · €1,220</td>
+        <td><span class="v-good">✓</span> AGIRC-ARRCO · €420</td>
+        <td><span class="v-neutral">◇</span> not tracked</td></tr>
+      <tr><td><strong>Switzerland</strong></td>
+        <td><span class="v-good">✓</span> AVS · €320</td>
+        <td><span class="v-good">✓</span> BVG · €860</td>
+        <td><span class="v-warn">⚠</span> 3a · self-reported</td></tr>
+      <tr><td><strong>Luxembourg</strong></td>
+        <td><span class="v-good">✓</span> CNAP · €1,020</td>
+        <td><span class="v-warn">⚠</span> Employer · €280</td>
+        <td><span class="v-warn">⚠</span> Foyer 111bis · €220</td></tr>
+      <tr class="emphasis"><td colspan="3"><strong>Total at retirement</strong></td><td class="num"><strong>?</strong></td></tr>
+    </tbody>
+  </table>
+
+  <p class="small" style="margin-top:1em">
+    <span class="v-good">✓</span> verified &nbsp;
+    <span class="v-warn">◯</span> estimated &nbsp;
+    <span class="v-warn">⚠</span> unconfirmed / self-reported &nbsp;
+    <span class="v-neutral">◇</span> not tracked
+  </p>
+
+  <p class="footnote">
+    Of the €4,340 a user could naively add up, only €3,840 is verified. We tell them which is which.
+    Source: <code>modules/pension/components/estimation/IncomeBreakdown.tsx</code>.
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 3-GAP — THE GAP ═════════════════════════════════ -->
+<section class="slide" data-slide="3">
+  <header class="section">
+    <span class="agenda">Problem · the gap</span>
+    <span class="time">~1 min · slide 3-gap / 11</span>
+  </header>
+  <h1 class="headline serif">A €498,000 question.</h1>
+
+  <div class="gap-vis">
+    <div class="gap-row">
+      <div class="label">Target</div>
+      <div class="gap-bar target"><div class="fill" style="--w:100%"></div></div>
+      <div class="value">€5,500 / mo</div>
+    </div>
+    <div class="gap-row">
+      <div class="label">Verified trajectory</div>
+      <div class="gap-bar"><div class="fill" style="--w:69.8%"></div></div>
+      <div class="value">€3,840 / mo</div>
+    </div>
+    <div class="gap-row">
+      <div class="label">Shortfall</div>
+      <div class="gap-bar shortfall"><div class="fill" style="--w:30.2%"></div></div>
+      <div class="value">€1,660 / mo</div>
+    </div>
+  </div>
+
+  <p class="lead" style="margin-top:1.6em">
+    Across a 25-year drawdown — <strong class="accent-num">≈ €498,000</strong> short of the life Mats planned.
+  </p>
+  <p class="small" style="margin-top:1.4em"><em>Mats is the median Profile A user. We'll introduce you to thirty more in the demo.</em></p>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 3 — MARKET & USER ═════════════════════════════════ -->
+<section class="slide" data-slide="4">
+  <header class="section">
+    <span class="agenda">Market &amp; user · sizing</span>
+    <span class="time">3 min · slide 3 / 11</span>
+  </header>
+  <h1 class="headline serif">From seventeen million to one.</h1>
+
+  <div class="grid-2" style="margin-top:1.2em">
+    <div>
+      <h3 class="label">Profile A</h3>
+      <p class="lead">Working life crosses two or more EU/EFTA pension systems. Median user 45-55, mid-career, €100K-€500K split across 2-3 jurisdictions.</p>
+      <p class="lead"><strong>Mats Karlsson is the median.</strong> We don't build for retirees — we build for the decade in which the gap can still be closed.</p>
+    </div>
+    <div>
+      <h3 class="label">Three honest layers</h3>
+      <table class="table-tight">
+        <tbody>
+          <tr><td>Intra-EU mobile citizens</td><td class="num"><strong class="accent-num">~17M</strong></td></tr>
+          <tr><td>Cross-border pension entitlements <span class="small">(Y5)</span></td><td class="num"><strong class="twelvemil">~12M</strong></td></tr>
+          <tr><td>Luxembourg beachhead</td><td class="num"><strong>~130-150K</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="small" style="margin-top:.6em">Sources: Eurostat · <code>financial-model.js</code> · STATEC + addressability discounts.</p>
+
+      <h3 class="label" style="margin-top:1.6em">The wedge</h3>
+      <table class="table-tight">
+        <tbody>
+          <tr><td><strong>M1</strong></td><td>Luxembourg launch · 130-150K addressable</td></tr>
+          <tr><td><strong>M13</strong></td><td>8 country engines live · Germany activates</td></tr>
+          <tr><td><strong>Y5</strong></td><td>29 country engines · EU27 + UK + CH</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="footnote">Sizing only. The compounding mechanic — how 130K reaches 12M — is on slide 6C.</p>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 4 — DEMO ═══════════════════════════════════════ -->
+<section class="slide" data-slide="5">
+  <header class="section">
+    <span class="agenda">Product demo · hybrid (recorded + live)</span>
+    <span class="time">12 min · slide 4 / 11</span>
+  </header>
+  <h1 class="headline serif">The product, in twelve minutes.</h1>
+
+  <div class="grid-3">
+    <div class="block"><h3 class="label">Land</h3><strong>Verified, not sold.</strong></div>
+    <div class="block"><h3 class="label">Land</h3><strong>See it, then act on it.</strong></div>
+    <div class="block"><h3 class="label">Land</h3><strong>Calm under complex data.</strong></div>
+  </div>
+
+  <table class="table-tight" style="margin-top:1.6em">
+    <thead><tr><th>#</th><th>Time</th><th>Surface</th><th>Beat</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>0:00–1:00</td><td>landing</td><td>What Mats sees first time — buys 12-min audience patience</td></tr>
+      <tr><td>2</td><td>1:00–3:00</td><td><code>/picture</code></td><td>Document upload + AI extraction; <strong>4 verification states</strong></td></tr>
+      <tr><td>3</td><td>3:00–5:00</td><td>dashboard</td><td>TMI hero + KPI + retirement gap — <strong>€3,840 / €5,500 / €1,660 / €498K</strong></td></tr>
+      <tr><td>4</td><td>5:00–6:30</td><td><code>/estimation</code></td><td>9-line drill-down; net-by-residence Pro tease</td></tr>
+      <tr><td>5</td><td>6:30–8:30</td><td><code>/simulation</code></td><td>3 sliders — <em>"the €4,000-of-advisor-time conversation in 3 min"</em></td></tr>
+      <tr><td>6</td><td>8:30–10:00</td><td>chat</td><td>"BVG capital or annuity?" references his data; pre-empts <em>guidance, not advice</em></td></tr>
+      <tr><td>7</td><td>10:00–11:30</td><td>RiskRadar</td><td><strong>CHF 6.7B unclaimed</strong> at Stiftung Auffangeinrichtung — PR hook</td></tr>
+      <tr><td>8</td><td>11:30–12:00</td><td>dashboard</td><td>Gap reduced. <em>"That's Prevista."</em></td></tr>
+    </tbody>
+  </table>
+
+  <p class="footnote">Deliberate cuts (held for Q&amp;A): vault, family/sharing, full Pro tax comparison, onboarding wizard.</p>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 5A — QUADRANT ═════════════════════════════════════ -->
+<section class="slide" data-slide="6">
+  <header class="section">
+    <span class="agenda">Competitive landscape · quadrant</span>
+    <span class="time">~2 min · slide 5A / 11</span>
+  </header>
+  <h1 class="headline serif">The cross-border × self-serve quadrant is empty.</h1>
+  <p class="lead">That's the wedge.</p>
+
+  <div class="quadrant">
+    <div class="cell-h"></div>
+    <div class="cell-h">Single-country</div>
+    <div class="cell-h">Cross-border</div>
+
+    <div class="cell-v">Self-serve</div>
+    <div class="cell">
+      <ul><li>PensionBee · Penfold</li><li>VIAC · finpension</li><li>frankly</li></ul>
+    </div>
+    <div class="cell empty last"></div>
+
+    <div class="cell-v bottom">Advisor-led</div>
+    <div class="cell bottom">
+      <ul><li>National pension portals</li><li>Mercer · Aon · WTW</li></ul>
+    </div>
+    <div class="cell bottom last">
+      <ul><li>AES · Spectrum</li><li>Blevins Franks · deVere</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 5B — THREATS ═══════════════════════════════════════ -->
+<section class="slide" data-slide="7">
+  <header class="section">
+    <span class="agenda">Competitive landscape · threats</span>
+    <span class="time">~3 min · slide 5B / 11</span>
+  </header>
+  <h2 class="headline serif">Four threats. Four win-conditions.</h2>
+
+  <table>
+    <thead><tr><th>Threat</th><th>Win-condition</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Doing nothing</strong></td><td>Trigger moments collapse it (move · leaving · tax · retirement · property)</td></tr>
+      <tr><td><strong>Cross-border IFAs</strong></td><td>We substitute the upstream half. Complement-then-substitute — not a head-on.</td></tr>
+      <tr><td><strong>Single-country tools</strong></td><td>Structurally mono-jurisdictional. Can't pivot without rebuilding the engine fleet.</td></tr>
+      <tr class="emphasis"><td><strong>Incumbent clone</strong> (Allianz · AXA · UBS)</td><td>Three structural reasons it doesn't happen ↓</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="label" style="margin-top:1.8em">Why the incumbent clone doesn't happen</h3>
+  <div class="grid-3">
+    <div class="block">
+      <h3 class="label" style="color:var(--text-muted)">Strongest</h3>
+      <strong>Distribution conflict.</strong>
+      <p class="small" style="margin-top:.4em">Incumbents can't credibly say <em>"verified, not sold"</em>. Their distribution depends on the opposite.</p>
+    </div>
+    <div class="block">
+      <h3 class="label" style="color:var(--text-muted)">Cost</h3>
+      <strong>Cost structure.</strong>
+      <p class="small" style="margin-top:.4em">€8K/mo founder-eng versus €200K+ FTE. They can't match the margin curve.</p>
+    </div>
+    <div class="block">
+      <h3 class="label" style="color:var(--text-muted)">Time</h3>
+      <strong>Data accumulation moat.</strong>
+      <p class="small" style="margin-top:.4em">The year-0 free-tier corpus is uncatchable. We accumulate document extractions that never become available again.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 6A — FIRST 1000 CUSTOMERS ═════════════════════════ -->
+<section class="slide" data-slide="8">
+  <header class="section">
+    <span class="agenda">GTM · first 1000 customers</span>
+    <span class="time">~1.5 min · slide 6A / 11</span>
+  </header>
+  <h2 class="headline serif">First 1000 customers. Two motions, one goal.</h2>
+  <p style="font-size:1.1em;color:var(--text-muted);margin-bottom:1.5em"><strong style="color:var(--text)">Year 1 model: 434 paid (base) → 951 paid (upside).</strong> The first thousand lands inside upside — not inside base.</p>
+
+  <div class="grid-2">
+    <div>
+      <h3 class="label">Five pains, two motions</h3>
+      <table class="table-tight">
+        <thead><tr><th>Motion</th><th>Pains served</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Content / SEO</strong><br><em>engine</em></td>
+            <td>
+              <strong>T2</strong> <em>"I left CH and never collected my BVG."</em><br>
+              <strong>T3</strong> <em>"October — pension deduction window."</em><br>
+              <strong>T5</strong> <em>"Using my 3a for property abroad."</em>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Partnership</strong><br><em>moat</em></td>
+            <td>
+              <strong>T1</strong> <em>"I'm moving in 3 months."</em><br>
+              <strong>T4</strong> <em>"I'm 58. Where do I retire?"</em>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3 class="label">Year 1 model split</h3>
+      <table class="table-tight">
+        <thead><tr><th>Motion</th><th class="num">Base</th><th class="num">Upside</th></tr></thead>
+        <tbody>
+          <tr><td>Content / SEO</td><td class="num">422</td><td class="num">906</td></tr>
+          <tr><td>Partnership</td><td class="num">12</td><td class="num">45</td></tr>
+          <tr class="total"><td><strong>Total Y1 paid</strong></td><td class="num"><strong>434</strong></td><td class="num"><strong>951</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="footnote" style="margin-top:1em"><em>Partnership signups Y2 jump 5× to 66 base / 259 upside — the named-entity work compounds, it doesn't carry Y1.</em></p>
+    </div>
+  </div>
+
+  <p class="footnote"><em>"Partnership is where our GTM work is — LuxRelo, EIB, VIAC. Year 1 doesn't bet on it. Content carries; partnership compounds. The named-entity work is for the moat, not Year 1 volume."</em></p>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 6B — SIGNAL + LAG ═══════════════════════════════ -->
+<section class="slide" data-slide="9">
+  <header class="section">
+    <span class="agenda">GTM · signal + activation lag</span>
+    <span class="time">~1.5 min · slide 6B / 11</span>
+  </header>
+  <h2 class="headline serif">Already in motion, pre-launch.</h2>
+
+  <div class="grid-2">
+    <div>
+      <h3 class="label">In motion</h3>
+      <table class="table-tight">
+        <tbody>
+          <tr><td><strong>T1</strong></td><td>LU shortlist v1 (LuxRelo / ERS / MMC); simplified 4-deliverable offer; Spuerkeess endorsement (5 of 8 firms)</td></tr>
+          <tr><td><strong>T4</strong></td><td>EIB first contact</td></tr>
+          <tr><td><strong>T2</strong></td><td>PR hook ready</td></tr>
+          <tr><td><strong>T3</strong></td><td>Affiliate model designed (CH-deferred)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3 class="label">Activation lag</h3>
+      <table class="table-tight">
+        <tbody>
+          <tr><td><strong>T2 / T5</strong></td><td>Fast — M2-M4</td></tr>
+          <tr><td><strong>T3</strong></td><td>Q4-gated</td></tr>
+          <tr><td><strong>T1 / T4</strong></td><td>Partnerships compound — M5-M9</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 6C — CORRIDORS ═════════════════════════════════════ -->
+<section class="slide" data-slide="10">
+  <header class="section">
+    <span class="agenda">GTM · corridors mechanic</span>
+    <span class="time">~2 min · slide 6C / 11</span>
+  </header>
+  <h2 class="headline serif">Country engines compound — they don't run in parallel.</h2>
+
+  <div class="grid-2" style="gap:2.4em">
+    <div>
+      <p class="lead">When we add a new engine, two things happen at once:</p>
+      <p style="margin-bottom:.6em"><strong style="color:var(--accent);font-size:1.3em">⊕</strong> &nbsp; <strong>Additive</strong> — new residents become addressable.</p>
+      <p style="margin-bottom:1em"><strong style="color:var(--accent);font-size:1.3em">⊗</strong> &nbsp; <strong>Compounding</strong> — every prior user with history in that country gets a completed picture.</p>
+      <p class="small">Expansion is greedy under engineering capacity (one engine every 2-3 months). DE is held to M13 deliberately — its arrival concentrates the unlock into a single 12-month wave instead of dribbling it across Y1.</p>
+
+      <table class="table-tight" style="margin-top:1.4em">
+        <thead><tr><th>Milestone</th><th class="num">Engines</th><th class="num">Addressable</th><th class="num">Δ</th></tr></thead>
+        <tbody>
+          <tr><td>M1 Beachhead</td><td class="num">3</td><td class="num">ramping</td><td class="num">—</td></tr>
+          <tr><td>M12 End Y1</td><td class="num">7</td><td class="num">~1.4M</td><td class="num">+1.4M</td></tr>
+          <tr class="emphasis"><td>M24 End Y2</td><td class="num">13</td><td class="num">~7.3M</td><td class="num"><strong>+5.9M</strong></td></tr>
+          <tr><td>M36 End Y3</td><td class="num">19</td><td class="num">~10.5M</td><td class="num">+3.2M</td></tr>
+          <tr><td>M60 Y5 full</td><td class="num">29</td><td class="num"><strong class="twelvemil">~12.0M</strong></td><td class="num">+1.5M</td></tr>
+        </tbody>
+      </table>
+      <p class="small" style="margin-top:.7em">Y5 paid subs: <strong>19,437</strong> &nbsp;·&nbsp; corridor penetration: <strong>0.16%</strong></p>
+    </div>
+
+    <div>
+      <h3 class="label">Four phases</h3>
+      <div class="phase">
+        <div class="ph">Phase 1 · M1-M12</div>
+        <div class="name">Beachhead + Latin Europe + UK reach</div>
+        <div class="engines">LU · FR · CH (M1) → PT · ES · UK · IT (Y1 quarterly)</div>
+        <div class="addr">end Y1 · ~1.4M</div>
+      </div>
+      <div class="phase">
+        <div class="ph">Phase 2 · M13-M24</div>
+        <div class="name">German-Polish wave + Eastern enlargement</div>
+        <div class="engines">DE (M13) · PL · BE · NL · RO · AT</div>
+        <div class="addr">end Y2 · ~7.3M &nbsp;<span class="delta">▲ 5.4×</span></div>
+      </div>
+      <div class="phase">
+        <div class="ph">Phase 3 · M25-M36</div>
+        <div class="name">Deepening existing pictures</div>
+        <div class="engines">HU · GR · HR · IE · BG · CZ</div>
+        <div class="addr">end Y3 · ~10.5M &nbsp;<span class="delta">▲ 1.4×</span></div>
+      </div>
+      <div class="phase">
+        <div class="ph">Phase 4-5 · M37-M60</div>
+        <div class="name">Nordic + long tail</div>
+        <div class="engines">SK · SE · DK · FI · LT · LV · SI · CY · EE · MT</div>
+        <div class="addr">end Y5 · ~12.0M &nbsp;<span class="delta">▲ 1.1×</span></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote">Addressable = sum of bilateral pension diasporas × 0.55, ramped 6 months after both engines live. A 3-country user appears in 3 corridors — counts engagement opportunities, not unique persons. Source: <code>docs/financial-model.js</code> <code>computeAddressable(m)</code>.</p>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 7 — BUSINESS MODEL ═════════════════════════════════ -->
+<section class="slide" data-slide="11">
+  <header class="section">
+    <span class="agenda">Business model</span>
+    <span class="time">3 min · slide 7 / 11</span>
+  </header>
+  <h2 class="headline serif">Two streams. One pays the operation. The other compounds.</h2>
+  <p class="lead">86% gross margin · M18 cumulative break-even · zero paid acquisition · zero outside capital.</p>
+
+  <div class="grid-2">
+    <div class="block">
+      <h3 class="label">Stream 1 — subscription <span style="color:var(--text-muted)">· the operation</span></h3>
+      <div class="stat"><span class="k">Price</span><span class="v">€4.99/mo · €49/yr</span></div>
+      <div class="stat"><span class="k">Variable cost / paid user</span><span class="v">€0.70/mo</span></div>
+      <div class="stat"><span class="k">Gross margin</span><span class="v" style="color:var(--accent)">86%</span></div>
+      <div class="stat"><span class="k">Steady-state churn</span><span class="v">2.1%/mo</span></div>
+      <div class="stat"><span class="k">Long-run LTV (blended)</span><span class="v">~€189</span></div>
+      <div class="stat"><span class="k">Y5 paid subs</span><span class="v">19,437</span></div>
+      <div class="stat"><span class="k">Y5 sub ARR</span><span class="v">€1.08M</span></div>
+      <p class="small" style="margin-top:1em;font-style:italic;color:var(--text-muted)">Paid acquisition is zero in both base and upside. At €4.99 with 12% conversion, paid LTV:CAC does not clear. Paid is reserved as a Series A lever.</p>
+    </div>
+    <div class="block">
+      <h3 class="label">Stream 2 — lead-gen <span style="color:var(--text-muted)">· the asset</span></h3>
+      <div class="stat"><span class="k">Signup → referred investor</span><span class="v">3.0%</span></div>
+      <div class="stat"><span class="k">Avg capital / investor</span><span class="v">€125,000</span></div>
+      <div class="stat"><span class="k">Take rate</span><span class="v" style="color:var(--accent)">0.03% / yr</span></div>
+      <div class="stat"><span class="k">Y5 cumulative investors</span><span class="v">7,147</span></div>
+      <div class="stat"><span class="k">Y5 lead-gen ARR</span><span class="v">€312K</span></div>
+      <div class="stat"><span class="k">% of total revenue</span><span class="v">Y3 18% · Y5 22% · rising</span></div>
+      <p class="pullout">This stream is an asset, not a flow. The capital base compounds at 9% a year. It gets harder to lose every month.</p>
+    </div>
+  </div>
+
+  <table style="max-width:50em;margin-top:1.6em">
+    <thead><tr><th>Combined Y5</th><th class="num">Base</th><th class="num">Upside (overlay)</th></tr></thead>
+    <tbody>
+      <tr><td>Total ARR</td><td class="num"><strong>€1.39M</strong></td><td class="num">€2.91M</td></tr>
+      <tr><td>Cumulative net</td><td class="num">€853K</td><td class="num">—</td></tr>
+      <tr><td>Cumulative break-even</td><td class="num"><strong style="color:var(--accent)">M18</strong></td><td class="num">M13</td></tr>
+    </tbody>
+  </table>
+
+  <p class="footnote">Lead-gen revenue = annual fee on cumulative referred capital. Prevista routes; partner platforms (Spuerkeess · VIAC · banks) custody. Take is paid as referral fee, not management fee.</p>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 8 — HARD PROBLEMS ═════════════════════════════════ -->
+<section class="slide" data-slide="12">
+  <header class="section">
+    <span class="agenda">Hard problems we navigated</span>
+    <span class="time">2 min · slide 8 / 11</span>
+  </header>
+  <h2 class="headline serif">Three decisions that came close to going the other way.</h2>
+
+  <div class="problem">
+    <h4>1 · Pricing model — freemium with monetised free users</h4>
+    <div class="row">
+      <div class="lab">Considered</div>
+      <ul>
+        <li>Pure paid (no free tier) — €4.99/mo from day one</li>
+        <li>Per-document pricing</li>
+        <li>Premium-only with advisor — €499/yr</li>
+        <li>Freemium with profitable free tier</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="lab">Pressure-tested</div>
+      <div>Each non-freemium variant strangles Stream 2. Lead-gen needs the biggest possible signup base — the 3% conversion compounds on cumulative signups, paying or not.</div>
+    </div>
+    <div class="row">
+      <div class="lab">Decided</div>
+      <div>Freemium. Free-user AI cost ~€0.04/mo; their share of Stream 2 dominates that. <em>The free tier is a feature of the lead-gen business, not a marketing cost.</em></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <h4>2 · Germany at M13, not M1</h4>
+    <div class="row">
+      <div class="lab">Considered</div>
+      <div>Greedy TAM-maximising ordering puts DE at M1 (largest single-country corridor unlock).</div>
+    </div>
+    <div class="row">
+      <div class="lab">Pressure-tested</div>
+      <div>Engineering capacity. DE adds Riester / Rürup / bAV complexity at thinnest bandwidth. Worse — DE at M1 dribbles the unlock across Y1.</div>
+    </div>
+    <div class="row">
+      <div class="lab">Decided</div>
+      <div>Hold DE to M13. Concentrates the unlock into a single Y2 wave with PL/BE/NL/RO/AT. <strong>Addressable: 1.4M → 7.3M in twelve months.</strong></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <h4>3 · One-time paid services killed</h4>
+    <div class="row">
+      <div class="lab">Considered</div>
+      <div>Power of attorney drafting · pension pay-gap analysis · jurisdictional consolidation. Mid-three-figures per engagement. Real demand.</div>
+    </div>
+    <div class="row">
+      <div class="lab">Pressure-tested</div>
+      <div>Human-time-intensive, jurisdiction-specific. Margin per hour caps the business at consulting-firm size; splits founder attention from the platform.</div>
+    </div>
+    <div class="row">
+      <div class="lab">Decided</div>
+      <div>No paid services. Where users need it, <strong>we route to partners</strong> — the referral fee is Stream 2.</div>
+    </div>
+  </div>
+
+  <table style="max-width:62em;margin-top:1.4em">
+    <thead><tr><th>Pivot</th><th>What it protects</th></tr></thead>
+    <tbody>
+      <tr><td>Pricing → Freemium</td><td><strong style="color:var(--accent)">Stream 2 user base</strong> (free users still convert at 3%)</td></tr>
+      <tr><td>DE held to M13</td><td>Phase-2 unlock wave (slide 6C "5×")</td></tr>
+      <tr><td>Manual services killed</td><td><strong style="color:var(--accent)">Stream 2 architecture</strong> — routing, not delivering</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 9 — UNKNOWNS ═══════════════════════════════════════ -->
+<section class="slide" data-slide="13">
+  <header class="section">
+    <span class="agenda">What we don't know yet</span>
+    <span class="time">1 min · slide 9 / 11</span>
+  </header>
+  <h2 class="headline serif">Three things we don't know yet.</h2>
+
+  <div class="stack" style="max-width:62em">
+    <div class="block">
+      <h3 class="label">Question 1</h3>
+      <p class="lead" style="margin-bottom:.5em"><strong>Will paid conversion hold at 12%?</strong></p>
+      <p class="small">Stream 1's load-bearing assumption. At 8% conversion, Y5 ARR drops ~33%.</p>
+      <p class="small" style="margin-top:.5em"><strong style="color:var(--accent)">Resolution · M6-M9.</strong> Luxembourg's first cohort post-launch is the truth.</p>
+    </div>
+
+    <div class="block">
+      <h3 class="label">Question 2</h3>
+      <p class="lead" style="margin-bottom:.5em"><strong>Does 3% of signups actually convert to a referred investment with €125K avg capital?</strong></p>
+      <p class="small">Stream 2's load-bearing assumption. Three sub-rates compounded (80% × 25% × 15%) — never measured for this exact funnel.</p>
+      <p class="small" style="margin-top:.5em"><strong style="color:var(--accent)">Resolution · M9-M15.</strong> Capital under referral starts compounding when the first partner integration routes real flow.</p>
+    </div>
+
+    <div class="block">
+      <h3 class="label">Question 3</h3>
+      <p class="lead" style="margin-bottom:.5em"><strong>Does <em>"guidance, not advice"</em> hold across seven regulators by Y2?</strong></p>
+      <p class="small">GDPR is solved. The investment-advice perimeter is not. CSSF · AMF · FINMA · BaFin · CNMV · CMVM · FCA each have different perimeters. A single classification of <em>"investment advice"</em> pauses that engine.</p>
+      <p class="small" style="margin-top:.5em"><strong style="color:var(--accent)">Resolution · per engine, at engine launch.</strong> First regulatory contact happens before each country goes live.</p>
+    </div>
+  </div>
+
+  <p class="footnote" style="font-size:.95em;color:var(--text);font-style:italic">
+    These resolve in the first eighteen months. What we learn changes the trajectory — for better or worse. Which brings us to what we're asking for.
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 10 — THE 3-PART ASK ═══════════════════════════════ -->
+<section class="slide" data-slide="14">
+  <header class="section">
+    <span class="agenda">The ask</span>
+    <span class="time">3 min · slide 10 / 11</span>
+  </header>
+  <h2 class="headline serif">Three asks. None for money.</h2>
+
+  <div class="problem" style="border-left:3px solid var(--accent)">
+    <h4>1 · A warm intro</h4>
+    <p class="small" style="margin-bottom:.8em"><em>We've identified the partners. We've drafted the partnerships. We need an email subject line that gets us into the room.</em></p>
+    <table class="table-tight">
+      <tbody>
+        <tr><td><strong>T1 · Relocation, LU</strong></td><td>LuxRelo (Stéphane Compain) · ERS (Sylvie Schmit) · MMC (Imène Arfaoui-Marzouk)</td><td class="small">via AMCHAM Lux</td></tr>
+        <tr class="emphasis"><td><strong>T3 · Tax calendar, CH</strong></td><td>VIAC founders (Daniel Peter · Christian Mathis)</td><td class="small">Q4 deadline. First email mid-May. Slip = wait 12 months.</td></tr>
+        <tr><td><strong>T4 · EU institutions</strong></td><td>EIB College of Staff Representatives, LU HQ</td><td class="small">Halo → Commission · ECJ · Court of Auditors</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="problem" style="border-left:3px solid var(--accent)">
+    <h4>2 · A user. Or three referrals.</h4>
+    <p>If you're <strong>Profile A</strong> — multi-country pension history, ten to twenty years from retirement — be in the first cohort. If not, name three who are.</p>
+    <p class="small" style="margin-top:.6em">The first thirty users we onboard become design partners. Their data shapes the engines we build next.</p>
+    <p class="small" style="margin-top:.6em;font-style:italic">This is the M6-M9 cohort that resolves Question 1 from the previous slide.</p>
+  </div>
+
+  <div class="problem" style="border-left:3px solid var(--accent)">
+    <h4>3 · A first call when we raise</h4>
+    <p><em>We're not raising now.</em> The €10K cash trough at M11 absorbs on founder capital. Cumulative break-even at M18.</p>
+    <p style="margin-top:.6em">When we do raise — for paid-acquisition scaling, post-validation — first call to this room. <strong>Pre-positioned cap table. No commitment. No timeline.</strong></p>
+  </div>
+
+  <p class="footnote" style="font-size:1em;color:var(--text);font-style:italic;text-align:center">
+    Three asks. The first two require action this week. The third you can say yes to today and act on later.
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════ SLIDE 11 — CLOSE ═══════════════════════════════════════ -->
+<section class="slide" data-slide="15">
+  <header class="section">
+    <span class="agenda">Close</span>
+    <span class="time">30 sec · slide 11 / 11</span>
+  </header>
+  <div class="close-hero">
+    <h1 class="serif">Mats has the picture.</h1>
+    <p>The verified projection. Three simulation moves. A choice he can defend with evidence.</p>
+    <p class="destination">Thirty more like him in the first month. <span class="twelvemil">Twelve million</span> across Europe by year five.</p>
+    <div class="slogan">Prevista — your future, foreseen.</div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════ UI CHROME ═══════════════════════════════════════ -->
+<div class="ui">
+  <div class="counter"><span id="cur">1</span> / <span id="tot">15</span></div>
+</div>
+<div class="hint">
+  <kbd>←</kbd> <kbd>→</kbd> nav · <kbd>T</kbd> theme · <kbd>F</kbd> fullscreen · <kbd>P</kbd> print
+</div>
+
+<script>
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let idx = 0;
+
+  document.getElementById('tot').textContent = total;
+
+  function show(i){
+    i = Math.max(0, Math.min(total-1, i));
+    slides[idx].removeAttribute('data-active');
+    idx = i;
+    slides[idx].setAttribute('data-active', '');
+    document.getElementById('cur').textContent = idx+1;
+    document.querySelector('.progress .bar').style.width = ((idx+1)/total*100)+'%';
+    location.hash = '#'+(idx+1);
+  }
+
+  function next(){ show(idx+1) }
+  function prev(){ show(idx-1) }
+
+  document.addEventListener('keydown', e=>{
+    if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    switch(e.key){
+      case 'ArrowRight': case ' ': case 'PageDown': case 'j':
+        e.preventDefault(); next(); break;
+      case 'ArrowLeft': case 'PageUp': case 'k':
+        e.preventDefault(); prev(); break;
+      case 'Home': e.preventDefault(); show(0); break;
+      case 'End': e.preventDefault(); show(total-1); break;
+      case 't': case 'T': case 'd': case 'D':
+        const cur = document.documentElement.dataset.theme;
+        document.documentElement.dataset.theme = cur === 'dark' ? 'light' : 'dark';
+        try{ localStorage.setItem('prevista-theme', document.documentElement.dataset.theme) }catch(e){}
+        break;
+      case 'f': case 'F':
+        if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+        else document.exitFullscreen?.();
+        break;
+      case 'p': case 'P':
+        window.print(); break;
+    }
+  });
+
+  // restore theme
+  try{
+    const saved = localStorage.getItem('prevista-theme');
+    if(saved) document.documentElement.dataset.theme = saved;
+  }catch(e){}
+
+  // hash navigation
+  if(location.hash){
+    const n = parseInt(location.hash.slice(1));
+    if(!isNaN(n)) show(n-1);
+  }
+
+  // click navigation: left third = prev, right two-thirds = next
+  document.addEventListener('click', e=>{
+    if(e.target.closest('a,button,input,kbd,.ui,.hint')) return;
+    if(e.clientX < window.innerWidth/3) prev(); else next();
+  });
+
+  // initialize progress
+  document.querySelector('.progress .bar').style.width = (1/total*100)+'%';
+})();
+</script>
+
+</body>
+</html>

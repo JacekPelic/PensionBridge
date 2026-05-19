@@ -7,34 +7,48 @@ import { useDataStage } from '@/modules/identity/DataStageProvider';
 import { useUserData } from '@/modules/identity/UserDataProvider';
 import { calculateTax } from '@/modules/tax';
 import type { ResidenceCountry } from '@/modules/tax';
+import { BASE_TMI } from '@/modules/pension/constants';
 
 export function RetirementGap() {
   const { stage } = useDataStage();
-  const { userData } = useUserData();
+  const { userData, isFromOnboarding } = useUserData();
   const complete = stage === 'after';
+  // Only show Mats-specific gap dates / closing amounts when we're actually
+  // in the canned demo (mock mode). Real onboarded users get neutral copy.
+  const showMatsSpecifics = !isFromOnboarding;
 
   // ─── Shared values ────────────────────────────────────────────────
-  const grossProjected = complete ? 3840 : userData.pillar1Total;
+  // BASE_TMI is the canonical verified-net monthly projection — already after tax.
+  // The hard-coded gap-source cards below (€960 + €580 + €120 = €1,660) assume
+  // projected = BASE_TMI directly. The pre-verification path is still gross →
+  // applies LU tax → reports the implied net + effective rate.
   const residenceCountry = (userData.residenceCountry ?? 'LU') as ResidenceCountry;
-  const { netAnnual, effectiveRate } = calculateTax(grossProjected * 12, residenceCountry);
-  const projected = Math.round(netAnnual / 12);
+  let projected: number;
+  let effectiveRate: number;
+  if (complete) {
+    projected = BASE_TMI;
+    effectiveRate = 0;
+  } else {
+    const { netAnnual, effectiveRate: rate } = calculateTax(
+      userData.pillar1Total * 12,
+      residenceCountry,
+    );
+    projected = Math.round(netAnnual / 12);
+    effectiveRate = rate;
+  }
   const goal = userData.monthlyIncomeGoal;
   const gap = goal - projected;
   const barWidth = Math.round((projected / goal) * 100);
 
   return (
     <Card className="mb-5 relative overflow-hidden">
-      {/* Subtle glow */}
-      <div className="absolute top-0 right-0 w-[220px] h-[220px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle at top right,rgba(212,175,55,0.06),transparent 70%)' }} />
-
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap mb-[22px]">
         <div>
           <div className="text-[15px] font-semibold mb-[3px]" style={{ color: 'var(--text)' }}>Retirement Income Gap</div>
           <div className="text-xs" style={{ color: 'var(--text-dim)' }}>
             {complete
-              ? `Your verified net projection vs your goal · ${Math.round(effectiveRate * 100)}% effective tax`
+              ? `Your verified net projection vs your goal`
               : `Your projected net state pension vs your goal · ${Math.round(effectiveRate * 100)}% effective tax`}
           </div>
           {!complete && (
@@ -59,7 +73,7 @@ export function RetirementGap() {
         </div>
         <div className="relative h-12 rounded-[10px] overflow-hidden mb-2.5" style={{ background: 'var(--navy-3)' }}>
           <div className="absolute top-0 left-0 h-full rounded-l-[10px] flex items-center pl-3.5"
-            style={{ width: `${barWidth}%`, background: 'linear-gradient(90deg,#3ecf8e,#2ba87a)' }}>
+            style={{ width: `${barWidth}%`, background: 'var(--green)' }}>
             <span className="text-lg font-bold text-white" style={{ fontFamily: 'var(--font-playfair)' }}>€{projected.toLocaleString()}</span>
             <span className="text-[11px] ml-1.5" style={{ color: 'rgba(255,255,255,0.7)' }}>/mo</span>
           </div>
@@ -87,7 +101,7 @@ export function RetirementGap() {
         </div>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2.5">
-            <div className="w-2.5 h-2.5 rounded-sm" style={{ background: 'linear-gradient(90deg,#3ecf8e,#2ba87a)' }} />
+            <div className="w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--green)' }} />
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
               {complete ? 'Net projected' : 'State pension net'} <strong style={{ color: 'var(--text)' }}>€{projected.toLocaleString()}/mo</strong>
             </span>
@@ -126,11 +140,18 @@ export function RetirementGap() {
           </>
         ) : (
           <>
-            {[
-              { label: 'Workplace & Personal', amount: '?', color: 'var(--amber)', desc: 'Upload pension statements to reveal your occupational & private savings' },
-              { label: 'Transition gap', amount: '−€120', color: 'var(--red)', desc: '3 months between Switzerland and Luxembourg (Jan–Mar 2020)' },
-              { label: 'Missing period', amount: '?', color: 'var(--amber)', desc: '14 months with no data (Aug 2013 – Aug 2014). Add employment to improve estimate' },
-            ].map((src) => (
+            {(showMatsSpecifics
+              ? [
+                  { label: 'Workplace & Personal', amount: '?', color: 'var(--amber)', desc: 'Upload pension statements to reveal your occupational & private savings' },
+                  { label: 'Transition gap', amount: '−€120', color: 'var(--red)', desc: '3 months between Switzerland and Luxembourg (Jan–Mar 2020)' },
+                  { label: 'Missing period', amount: '?', color: 'var(--amber)', desc: '14 months with no data (Aug 2013 – Aug 2014). Add employment to improve estimate' },
+                ]
+              : [
+                  { label: 'Workplace & Personal', amount: '?', color: 'var(--amber)', desc: 'Upload pension statements to reveal your occupational & private savings' },
+                  { label: 'Career history', amount: '?', color: 'var(--amber)', desc: 'Add your employment timeline to surface contribution gaps and missing periods' },
+                  { label: 'Personal savings', amount: '?', color: 'var(--amber)', desc: 'Tell us about IRA / 3a / PER / private savings to complete the picture' },
+                ]
+            ).map((src) => (
               <div key={src.label} className="rounded-[10px] p-[13px]" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
                 <div className="text-[11px] uppercase tracking-wide mb-1.5" style={{ color: 'var(--text-dim)' }}>{src.label}</div>
                 <div className="text-xl font-bold mb-[3px]" style={{ fontFamily: 'var(--font-playfair)', color: src.color }}>{src.amount}</div>
@@ -158,11 +179,15 @@ export function RetirementGap() {
         <div className="flex items-center justify-between mb-2.5">
           <span className="text-xs font-semibold" style={{ color: 'var(--text)' }}>If you act on all three</span>
           <span className="text-xs font-semibold" style={{ color: 'var(--green)' }}>
-            {complete ? 'Gap closes to −€310/mo' : '+€1,350/mo toward your goal'}
+            {complete
+              ? 'Gap closes to −€310/mo'
+              : showMatsSpecifics
+                ? '+€1,350/mo toward your goal'
+                : 'Could substantially close your gap'}
           </span>
         </div>
         <div className="relative h-6 rounded-md overflow-hidden" style={{ background: 'var(--navy-4)' }}>
-          <div className="absolute top-0 left-0 h-full rounded-l-md" style={{ width: `${barWidth}%`, background: 'linear-gradient(90deg,#3ecf8e,#2ba87a)' }} />
+          <div className="absolute top-0 left-0 h-full rounded-l-md" style={{ width: `${barWidth}%`, background: 'var(--green)' }} />
           <div className="absolute top-0 h-full" style={{
             left: `${barWidth}%`, width: '24.5%',
             background: 'repeating-linear-gradient(135deg,rgba(62,207,142,0.25),rgba(62,207,142,0.25) 4px,rgba(62,207,142,0.12) 4px,rgba(62,207,142,0.12) 8px)',
@@ -183,7 +208,9 @@ export function RetirementGap() {
         </div>
         <div className="flex justify-between mt-1.5">
           <span className="text-[11px]" style={{ color: 'var(--text-dim)' }}>€{projected.toLocaleString()} current</span>
-          <span className="text-[11px]" style={{ color: 'var(--green)' }}>+€1,350 from products</span>
+          {showMatsSpecifics && (
+            <span className="text-[11px]" style={{ color: 'var(--green)' }}>+€1,350 from products</span>
+          )}
           {!complete && <span className="text-[11px]" style={{ color: 'var(--amber)' }}>Workplace & Personal unknown</span>}
           <span className="text-[11px]" style={{ color: 'var(--text-dim)' }}>€{goal.toLocaleString()} goal</span>
         </div>
@@ -193,7 +220,7 @@ export function RetirementGap() {
       {complete && (
         <div className="rounded-[10px] p-3.5 px-[18px] mb-4 flex items-center gap-3.5 flex-wrap"
           style={{ background: 'var(--blue-dim)', border: '1px solid rgba(96,165,250,0.25)' }}>
-          <div className="text-lg shrink-0">🏦</div>
+          <div className="text-lg shrink-0" style={{ color: 'var(--blue)', fontFamily: 'var(--font-playfair)', fontWeight: 600 }}>▣</div>
           <div className="flex-1 min-w-[200px]">
             <div className="text-[13px] font-semibold mb-[3px]" style={{ color: 'var(--text)' }}>
               You also have <span style={{ color: 'var(--blue)' }}>€210,000</span> in Swiss workplace pension capital
@@ -216,8 +243,8 @@ export function RetirementGap() {
       <div className="flex items-start gap-2.5 p-3 px-4 rounded-[10px]" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
         <span className="text-sm shrink-0 mt-px">ℹ️</span>
         <div className="text-[11.5px] leading-relaxed" style={{ color: 'var(--text-dim)' }}>
-          <strong style={{ color: 'var(--text-muted)' }}>How this works:</strong> RetirAI partners with regulated financial providers to show you products matched to your situation.
-          If you subscribe, we receive a referral fee — this keeps the platform free for core pension tracking. We never sell your data. Projections assume 5% annual return and are illustrative only.
+          <strong style={{ color: 'var(--text-muted)' }}>How this works:</strong> Prevista shows products from regulated providers matched to your situation.
+          If you fund one, we receive a small trailing partnership fee — a fraction of a percent — which keeps core pension tracking free. Projections assume 5% annual return and are illustrative only.
         </div>
       </div>
     </Card>

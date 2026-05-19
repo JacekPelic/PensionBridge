@@ -40,7 +40,7 @@ export default function SimulationPage() {
           title="Retirement Simulation"
           subtitle="When & where — compare net income after taxes"
           actions={
-            <Button variant="ghost">📤 Export comparison</Button>
+            <Button variant="ghost">↑ Export comparison</Button>
           }
         />
         <div className="flex-1 p-7 animate-fade-in">

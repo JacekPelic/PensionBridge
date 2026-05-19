@@ -48,19 +48,10 @@ export function TmiHero() {
     <div
       className="rounded-[18px] p-8 relative overflow-hidden mb-5"
       style={{
-        background: 'linear-gradient(135deg, var(--navy-3) 0%, var(--navy-4) 100%)',
+        background: 'var(--navy-2)',
         border: '1px solid var(--gold-border)',
       }}
     >
-      {/* Glow */}
-      <div
-        className="absolute rounded-full"
-        style={{
-          top: -40, right: -40, width: 200, height: 200,
-          background: 'radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%)',
-        }}
-      />
-
       <div className="text-[11px] uppercase tracking-wider font-medium" style={{ color: 'var(--gold)' }}>
         Projected Total Monthly Income at Retirement
       </div>
@@ -106,7 +97,7 @@ export function TmiHero() {
             <Pill variant="green">✓ Switzerland Workplace: Located</Pill>
             <Pill variant="green">✓ Luxembourg: Verified</Pill>
             <Link href="/estimation">
-              <Pill variant="blue" className="cursor-pointer">🏦 €210K Capital Option</Pill>
+              <Pill variant="blue" className="cursor-pointer">€210K Capital Option</Pill>
             </Link>
           </>
         ) : (

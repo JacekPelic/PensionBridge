@@ -30,8 +30,6 @@ const categoryOptions: { value: DocCategory | 'all'; label: string }[] = [
   { value: 'all', label: 'All' },
   { value: 'career', label: '📋 Career' },
   { value: 'pension', label: '📊 Pension' },
-  { value: 'identity', label: '🪪 Identity' },
-  { value: 'tax', label: '🏦 Tax' },
   { value: 'correspondence', label: '✉️ Letters' },
 ];
 

@@ -9,6 +9,7 @@ import { SimulationCTA } from '@/modules/pension/components/estimation/Simulatio
 import { ChatWidget } from '@/shared/chat/ChatWidget';
 import { UserDataProvider } from '@/modules/identity/UserDataProvider';
 import { Button } from '@/shared/ui/Button';
+import { StageToggle } from '@/shared/ui/StageToggle';
 
 export default function EstimationPage() {
   const [target, setTarget] = useState(5500);
@@ -28,6 +29,7 @@ export default function EstimationPage() {
             subtitle="Modelled from salary & career data · ±10–15% accuracy"
             actions={
               <>
+                <StageToggle />
                 <Button variant="ghost">↑ Upload Statement</Button>
                 <Button variant="primary">↻ Recalculate</Button>
               </>

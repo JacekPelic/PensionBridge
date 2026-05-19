@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prevista — Slide 4 demo script</title>
+<style>
+  :root[data-theme="light"]{
+    --bg:#FAF8F3; --surface:#FFFFFF; --text:#0A1F3D; --text-muted:#54647A; --text-dim:#8693A6;
+    --accent:#B89968; --accent-soft:#E8DCC4; --accent-bg:rgba(184,153,104,.08);
+    --border:rgba(10,31,61,.12); --border-strong:rgba(10,31,61,.22);
+    --ok:#2F6F47; --warn:#B8773A; --quote-bg:rgba(10,31,61,.03);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0A1F3D; --surface:#142844; --text:#FAF8F3; --text-muted:#A8B4C4; --text-dim:#7A8699;
+    --accent:#D4B280; --accent-soft:#3A3120; --accent-bg:rgba(212,178,128,.10);
+    --border:rgba(250,248,243,.14); --border-strong:rgba(250,248,243,.28);
+    --ok:#7FB496; --warn:#E0B070; --quote-bg:rgba(250,248,243,.04);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Inter",sans-serif;
+    font-feature-settings:"kern","liga","tnum";font-variant-numeric:tabular-nums;
+    font-size:16px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    transition:background .25s ease,color .25s ease;
+  }
+  .serif{font-family:"Charter","Iowan Old Style","Palatino Linotype","Palatino",Georgia,serif;
+    font-feature-settings:"kern","liga","onum","tnum"}
+  .container{max-width:840px;margin:0 auto;padding:64px 32px 96px}
+
+  /* doc header */
+  .doc-header{padding-bottom:32px;margin-bottom:40px;border-bottom:1px solid var(--border)}
+  h1.doc-title{
+    font-family:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;
+    font-weight:400;font-size:2.6em;line-height:1.1;letter-spacing:-.01em;
+    color:var(--text);margin-bottom:.2em
+  }
+  .doc-subtitle{
+    font-size:1.05em;color:var(--text-muted);margin-bottom:1.4em
+  }
+  .doc-meta{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:14px;font-size:.88em
+  }
+  .doc-meta dt{color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;
+    font-size:.78em;font-weight:600;margin-bottom:2px}
+  .doc-meta dd{color:var(--text)}
+
+  /* theme toggle */
+  .theme-toggle{
+    position:fixed;top:18px;right:18px;
+    background:var(--surface);border:1px solid var(--border);
+    color:var(--text-muted);padding:6px 12px;border-radius:999px;
+    font-size:.82em;cursor:pointer;letter-spacing:.04em;
+    font-family:inherit;transition:all .2s ease;
+  }
+  .theme-toggle:hover{color:var(--accent);border-color:var(--accent)}
+
+  /* section */
+  section.preflight, section.beat, section.summary{
+    margin-bottom:40px
+  }
+
+  /* preflight */
+  .preflight h2{
+    font-family:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;
+    font-weight:400;font-size:1.5em;line-height:1.2;
+    color:var(--text);margin-bottom:.6em
+  }
+  .preflight ul{list-style:none;padding-left:0}
+  .preflight li{
+    padding:8px 0 8px 28px;position:relative;font-size:.94em;color:var(--text-muted);
+    border-bottom:1px solid var(--border)
+  }
+  .preflight li:last-child{border-bottom:none}
+  .preflight li::before{
+    content:"☐";position:absolute;left:6px;top:7px;
+    color:var(--text-dim);font-size:1em
+  }
+  .preflight li code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.88em;
+    background:var(--accent-bg);padding:1px 6px;border-radius:3px;color:var(--text)}
+
+  /* beat block */
+  .beat-header{
+    display:flex;align-items:baseline;gap:18px;
+    padding-bottom:12px;margin-bottom:20px;
+    border-bottom:1px solid var(--border)
+  }
+  .beat-num{
+    font-family:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;
+    font-size:2em;color:var(--accent);font-weight:400;line-height:1
+  }
+  .beat-title{
+    font-family:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;
+    font-weight:400;font-size:1.4em;color:var(--text);line-height:1.2;flex:1
+  }
+  .beat-time{
+    font-size:.86em;color:var(--text-dim);font-feature-settings:"tnum";
+    letter-spacing:.04em;text-transform:uppercase;font-weight:500
+  }
+  .beat-block-label{
+    font-size:.74em;color:var(--text-dim);text-transform:uppercase;
+    letter-spacing:.1em;font-weight:600;margin:18px 0 8px
+  }
+  .actions ol{padding-left:22px;color:var(--text-muted);font-size:.94em}
+  .actions ol li{margin-bottom:6px;line-height:1.5}
+  .actions ol li code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.88em;
+    background:var(--accent-bg);padding:1px 5px;border-radius:3px;color:var(--text)}
+  .actions ol li strong{color:var(--text);font-weight:600}
+
+  blockquote.talk{
+    background:var(--quote-bg);border-left:3px solid var(--accent);
+    padding:18px 22px;margin:0;
+    font-size:.96em;line-height:1.7;color:var(--text);
+    border-radius:0 6px 6px 0
+  }
+  blockquote.talk p{margin-bottom:.8em}
+  blockquote.talk p:last-child{margin-bottom:0}
+  blockquote.talk em{font-style:italic;color:var(--text-dim);font-size:.92em}
+  blockquote.talk strong{font-weight:600}
+
+  /* summary table */
+  .summary h2{
+    font-family:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;
+    font-weight:400;font-size:1.5em;color:var(--text);margin-bottom:.6em
+  }
+  table{width:100%;border-collapse:collapse;font-size:.92em}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-weight:600;color:var(--text-muted);font-size:.82em;
+    letter-spacing:.04em;text-transform:uppercase}
+  td.num{text-align:right;font-feature-settings:"tnum"}
+  th.num{text-align:right}
+  tr.total td{font-weight:600;border-top:2px solid var(--border-strong);border-bottom:none;color:var(--text)}
+
+  /* footer */
+  footer.doc-footer{
+    margin-top:64px;padding-top:24px;border-top:1px solid var(--border);
+    font-size:.82em;color:var(--text-dim);text-align:center
+  }
+
+  /* print */
+  @media print{
+    .theme-toggle{display:none}
+    body{background:#fff;color:#000;font-size:11pt}
+    .container{max-width:none;padding:0 12mm}
+    section.beat{page-break-inside:avoid}
+    blockquote.talk{background:#f4f1ea;border-left-color:#B89968}
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'">Theme</button>
+
+<div class="container">
+
+<header class="doc-header">
+  <h1 class="doc-title">Slide 4 — Product demo</h1>
+  <div class="doc-subtitle">Live screen recording with founder voiceover · companion to the 40-min angel/operator deck</div>
+  <dl class="doc-meta">
+    <div><dt>Persona</dt><dd>Mats Karlsson · 45 · LU resident · FR 10y → CH 5y → LU 6y · goal €5,500/mo at 64</dd></div>
+    <div><dt>Format</dt><dd>Single continuous take · founder narrates live · sidebar-as-spine</dd></div>
+    <div><dt>Runtime</dt><dd>~9:35 (10-min ceiling)</dd></div>
+    <div><dt>Brand register</dt><dd>Calm · authoritative · precise · private-bank restraint</dd></div>
+  </dl>
+</header>
+
+<section class="preflight">
+  <h2 class="serif">Pre-flight</h2>
+  <ul>
+    <li>Reseed <code>MOCK_PICTURE</code> — clear <code>localStorage.prevista-picture</code> (or click <strong>View demo</strong> in topbar) so the just-finished-onboarding state loads cold</li>
+    <li>StageToggle starts at <strong>Initial estimates</strong> — clear <code>localStorage.prevista-data-stage</code></li>
+    <li>Tier starts at <strong>Free</strong> (default) — flip to Pro mid-Beat 6 or Beat 8 as scripted</li>
+    <li>Theme: <strong>dark</strong> (institutional)</li>
+    <li>Browser at 1440×900+, 100% zoom, retina display</li>
+    <li>Sidebar visible (collapsed only if it competes with the cold open)</li>
+    <li>Cursor visible and slightly enlarged — viewers must trust this is real</li>
+    <li>Cmd+Shift+5 → Options → Microphone <strong>ON</strong> (or <strong>OFF</strong> if recording VO separately)</li>
+    <li>Numbers in talk track marked <em>(read whatever the screen shows)</em> — read the actual rendered figure during recording</li>
+  </ul>
+</section>
+
+<!-- BEAT 1 -->
+<section class="beat">
+  <div class="beat-header">
+    <span class="beat-num">1</span>
+    <span class="beat-title">Onboarding — three minutes from cold to picture</span>
+    <span class="beat-time">~1:15</span>
+  </div>
+
+  <blockquote class="talk">
+    <p><em>(splash holding)</em> This is what Mats sees the first time he opens Prevista. No tutorial, no marketing video. One sentence and one button.</p>
+    <p><em>(clicking through Q1 + Q2)</em> He tells us where he lives, how old he is.</p>
+    <p><em>(Q3 + Q4)</em> Which other countries he's worked in — France ten years, then Switzerland, now Luxembourg — and roughly how long in each.</p>
+    <p><em>(Q5)</em> Salaries. Rough bands, in the local currency. Not exact figures — he's typing what he can remember, not pulling out old payslips.</p>
+    <p><em>(Q6 + Q7)</em> When does he want to retire — sixty-four. What monthly income would feel comfortable — five-thousand-five-hundred.</p>
+    <p><em>(landing on completion)</em> Seven questions. Three minutes. No documents to dig out, no logins to anyone else's portal, no bank credentials.</p>
+    <p>Notice what we didn't ask for. We didn't ask him to log into the French CNAV portal. We didn't ask him for his Swiss AHV number. We don't need any of that to give him his first picture.</p>
+    <p><em>(clicking "Enter your dashboard")</em> And the picture is already loading.</p>
+  </blockquote>
+</section>
+
+<!-- BEAT 2 -->
+<section class="beat">
+  <div class="beat-header">
+    <span class="beat-num">2</span>
+    <span class="beat-title">Dashboard glance — transit beat</span>
+    <span class="beat-time">~0:20</span>
+  </div>
+
+  <blockquote class="talk">
+    <p><em>(dashboard composing)</em> This is the dashboard he lands on. The headline view — KPIs at the top, the gap centre-frame. But there's not much to look at yet. Most of the picture is shaded — we don't have his workplace pensions or his savings yet.</p>
+    <p><em>(clicking sidebar)</em> That's because we've only just started. Let's go fill it in.</p>
+  </blockquote>
+</section>
+
+<!-- BEAT 3 -->
+<section class="beat">
+  <div class="beat-header">
+    <span class="beat-num">3</span>
+    <span class="beat-title"><code>/picture</code> — brief landing, then start the tour</span>
+    <span class="beat-time">~0:25</span>
+  </div>
+
+  <blockquote class="talk">
+    <p><em>(picture composing)</em> This is the picture. Three pillars — state, workplace, personal. Only one's filled in: state pensions, estimated from his career.</p>
+    <p><em>(panning down to tour CTA)</em> The picture is incomplete. Below it, the product offers him a guided tour — ten minutes that walks through everything else. Workplace plans, personal savings, documents that turn estimates into verified figures.</p>
+    <p><em>(clicking Start the tour)</em> Let's run it.</p>
+  </blockquote>
+</section>
+
+<!-- BEAT 4 -->
+<section class="beat">
+  <div class="beat-header">
+    <span class="beat-num">4</span>
+    <span class="beat-title">The tour — three ways through, then simulate done</span>
+    <span class="beat-time">~1:30</span>
+  </div>
+
+  <blockquote class="talk">
+    <p><em>(tour opens)</em> The tour is the structured way through the rest. Three groups of asks — state pensions for each country, workplace pensions for each employer, and personal savings. The header tells him where he is.</p>
+    <p><em>(landing on first ask)</em> Each ask gives him three choices.</p>
+    <p><em>(clicking Upload document)</em> One — if he has the document, he uploads it. We extract the figures and verify them.</p>
+    <p><em>(clicking Enter manually)</em> Two — if he doesn't have the document but knows the numbers, he types them in. We tag those as self-reported, not verified, and the picture says so.</p>
+    <p><em>(clicking How to get it)</em> Three — if he doesn't have it and doesn't know where to get it, we tell him. Step by step, in his country, in his language. How long it takes, what the form is called, who to call if it doesn't arrive.</p>
+    <p><em>(exiting tour)</em> And he doesn't have to do this in one sitting. He can stop, leave, come back next weekend. The picture stays where he left it.</p>
+    <p><em>(cursor moving to the topbar toggle)</em> For the rest of the demo, let's skip the data entry — Mats sits down on a Saturday morning and works through this. To save us the time, the product has a toggle in the corner that simulates the end state.</p>
+    <p><em>(clicking the toggle)</em> Estimates becomes verified. The picture flips. Numbers update. This is the same product, the same screens, with his documents in.</p>
+    <p><em>(clicking sidebar → Dashboard)</em> From here, we're looking at what Mats sees once he's done the work.</p>
+  </blockquote>
+</section>
+
+<!-- BEAT 5 -->
+<section class="beat">
+  <div class="beat-header">
+    <span class="beat-num">5</span>
+    <span class="beat-title">Dashboard — the gap, named, and the two paths</span>
+    <span class="beat-time">~0:50</span>
+  </div>
+
+  <blockquote class="talk">
+    <p><em>(dashboard composing)</em> Same dashboard he started on — different state. The KPIs at the top are now in green. The picture is filled in.</p>
+    <p><em>(eyes on the gap)</em> And the gap is named. Mats had an ambitious goal — five and a half thousand euros a month. His verified trajectory comes in at three thousand eight hundred and forty. He's short by sixteen hundred and sixty euros a month.</p>
+    <p><em>(hovering the offer cards)</em> He has two ways to address this.</p>
+    <p>One — adjust the goal. Maybe he doesn't need quite that much. He can come back to that field anytime and dial it down.</p>
+    <p>Two — close the gap. Below the figure, the product surfaces partners who could help him do that. We don't recommend a specific product, and we don't take his order — we point him at people who can.</p>
+    <p><em>(holding briefly)</em> So he sees the gap, and he sees the two honest options. Either redefine what enough looks like, or go to work on the shortfall.</p>
+  </blockquote>
+</section>
+
+<!-- BEAT 6 -->
+<section class="beat">
+  <div class="beat-header">
+    <span class="beat-num">6</span>
+    <span class="beat-title">Legislative Radar — your picture isn't static</span>
+    <span class="beat-time">~1:00</span>
+  </div>
+
+  <blockquote class="talk">
+    <p><em>(navigating to radar, page composing)</em> The picture Mats just looked at is what we know today. But pensions aren't static. Retirement ages shift. Tax rules change. Conversion rates get cut. Across Europe the systems are under constant fiscal pressure, and the rules that decide what he'll receive are rewritten every few years.</p>
+    <p><em>(landing on the radar)</em> This is Legislative Radar. We monitor pension laws, tax reforms, and regulatory changes across every country in his career — France, Switzerland, Luxembourg, and the EU layer that coordinates them.</p>
+    <p><em>(panning over the feature tiles)</em> When something changes, we don't just notify him that <em>a</em> law changed. We compute what it means for <em>his</em> projection, in his currency. Personal impact analysis. Priority severity. Filterable by what he cares about — retirement age, tax, contributions, benefits.</p>
+    <p><em>(eyes on the upgrade prompt)</em> This is one of our paid features — and one of the bigger reasons people subscribe. The picture stays useful only if it stays current. Legislative Radar is what keeps it current.</p>
+  </blockquote>
+</section>
+
+<!-- BEAT 7 -->
+<section class="beat">
+  <div class="beat-header">
+    <span class="beat-num">7</span>
+    <span class="beat-title"><code>/vault</code> — the document layer</span>
+    <span class="beat-time">~1:15</span>
+  </div>
+
+  <blockquote class="talk">
+    <p><em>(navigating to vault, page composing)</em> The picture and the radar both rest on something more concrete — the documents themselves. This is the vault.</p>
+    <p><em>(eyes on the three status cards)</em> Every pension document Mats has touches three states. Verified, when we have it and we've parsed it. Pending, when we're waiting on it. Missing, when we don't have it yet. The counts at the top tell him at a glance where he is.</p>
+    <p><em>(panning to discrepancy alerts)</em> Two things in the vault are paid features. First — discrepancy alerts. When an uploaded document and our engine estimate disagree, we surface it.</p>
+    <p><em>(panning to Pro actions)</em> Second — Export Dossier and Trusted Access. He can pull a consolidated PDF of his full picture, signature-ready. And he can give the people he trusts — a partner, an accountant — scoped access to the parts of it they need.</p>
+    <p><em>(panning to the document list)</em> Below that, the documents themselves. Organised by country or by pillar, his choice. Every figure on the picture traces back to one of these.</p>
+    <p><em>(panning to the upload zone)</em> And one place to add more — the upload zone at the bottom. Drag any pension document in, AI extraction runs, the picture updates.</p>
+  </blockquote>
+</section>
+
+<!-- BEAT 8 -->
+<section class="beat">
+  <div class="beat-header">
+    <span class="beat-num">8</span>
+    <span class="beat-title">Chat — gaps in his French years</span>
+    <span class="beat-time">~1:15</span>
+  </div>
+
+  <blockquote class="talk">
+    <p><em>(navigating, opening chat)</em> The chat widget is always available, in the corner of every screen. It's not a generic chatbot — it knows his data. Every country, every year, every figure on his picture.</p>
+    <p><em>(welcome message visible)</em> It greets him with what it already thinks he should look at — three specific things, and four suggested questions. Let's ask one of them.</p>
+    <p><em>(clicking "Explain my gaps")</em> The chat finds two gaps in his career.</p>
+    <p><em>(response streams in, hold on the French one)</em> One — a three-month gap in 2020, between leaving Switzerland and starting in Luxembourg. Small, fixable. The Luxembourg system lets him buy that period back for about twelve hundred euros.</p>
+    <p>The second — and this is the bigger one — is in his French years. Two missing trimestres in the first half of 2008, between his two French employment periods.</p>
+    <p>Two trimestres sounds small. It isn't. In the French system, missing trimestres at retirement age can be the difference between the full rate and a permanent décote — a penalty that follows him every month for the rest of his life.</p>
+  </blockquote>
+</section>
+
+<!-- BEAT 9 -->
+<section class="beat">
+  <div class="beat-header">
+    <span class="beat-num">9</span>
+    <span class="beat-title"><code>/simulation</code> — when, where, and what's left</span>
+    <span class="beat-time">~1:00</span>
+  </div>
+
+  <blockquote class="talk">
+    <p><em>(navigating to simulation, page composes)</em> This screen has two levers.</p>
+    <p><em>(eyes on the age card)</em> When does he retire — that affects how much pension he gets. Earlier means lower; later means higher.</p>
+    <p><em>(eyes on the country card)</em> And where does he live in retirement — that affects how much tax he pays on it.</p>
+    <p><em>(panning down to the comparison)</em> The comparison underneath is the result. Same gross pension, four residence options, ranked.</p>
+    <p><em>(clicking Net income toggle)</em> Sorted by net income, one country wins.</p>
+    <p><em>(clicking Spending power toggle)</em> Sorted by spending power — adjusted for cost of living — a different country wins. The same euros buy a different basket of groceries depending on where he spends them.</p>
+    <p><em>(holding on the chart)</em> For someone whose career has crossed three jurisdictions, this is the lever most pension tools don't even let him pull. We size it for him.</p>
+  </blockquote>
+</section>
+
+<!-- BEAT 10 -->
+<section class="beat">
+  <div class="beat-header">
+    <span class="beat-num">10</span>
+    <span class="beat-title">Dashboard close — where Mats stands now</span>
+    <span class="beat-time">~0:45</span>
+  </div>
+
+  <blockquote class="talk">
+    <p><em>(clicking sidebar, page composes)</em> Back to the dashboard he started on. Same screen, fully populated.</p>
+    <p><em>(holding)</em> This is where Mats stands now. He came in with seven questions and no documents. He leaves with a picture across three countries, a gap named in his own currency, two ways to address it, and a chat that knew his data well enough to flag two trimestres he didn't know were missing.</p>
+    <p>The product keeps working when he closes the laptop. The radar watches the laws. The vault tracks his documents. The next time he opens this, the picture will be a little sharper than it is today.</p>
+    <p>That's Prevista.</p>
+  </blockquote>
+</section>
+
+<!-- SUMMARY -->
+<section class="summary">
+  <h2 class="serif">Beat summary</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Beat</th><th>Surface</th><th class="num">~time</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Onboarding</td><td>Splash → 7 questions → completion</td><td class="num">1:15</td></tr>
+      <tr><td>2</td><td>Dashboard glance</td><td><code>/</code></td><td class="num">0:20</td></tr>
+      <tr><td>3</td><td><code>/picture</code> brief</td><td><code>/picture</code> → Start the tour</td><td class="num">0:25</td></tr>
+      <tr><td>4</td><td>Tour overview + StageToggle flip</td><td>PillarTour → topbar toggle</td><td class="num">1:30</td></tr>
+      <tr><td>5</td><td>Dashboard — gap and two paths</td><td><code>/</code></td><td class="num">0:50</td></tr>
+      <tr><td>6</td><td>Legislative Radar</td><td><code>/radar</code></td><td class="num">1:00</td></tr>
+      <tr><td>7</td><td>Vault — document layer</td><td><code>/vault</code></td><td class="num">1:15</td></tr>
+      <tr><td>8</td><td>Chat — French gaps</td><td>Chat widget</td><td class="num">1:15</td></tr>
+      <tr><td>9</td><td>Simulation — when + where</td><td><code>/simulation</code></td><td class="num">1:00</td></tr>
+      <tr><td>10</td><td>Dashboard close</td><td><code>/</code></td><td class="num">0:45</td></tr>
+      <tr class="total"><td></td><td>Total</td><td></td><td class="num">~9:35</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer class="doc-footer">
+  Prevista · Slide 4 demo script · drafted 2026-05-09
+</footer>
+
+</div>
+
+</body>
+</html>

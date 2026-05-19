@@ -20,7 +20,7 @@ export function CapitalModeller({ retirementAge }: Props) {
   return (
     <Card className="mb-5" style={{ borderColor: 'rgba(96,165,250,0.25)' }}>
       <div className="flex items-center gap-2.5 mb-5">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[13px]" style={{ background: 'var(--blue-dim)' }}>🏦</div>
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[14px]" style={{ background: 'var(--blue-dim)', color: 'var(--blue)', fontFamily: 'var(--font-playfair)', fontWeight: 600 }}>▣</div>
         <div>
           <div className="text-[15px] font-semibold" style={{ color: 'var(--text)' }}>Capital at Retirement</div>
           <div className="text-xs" style={{ color: 'var(--text-dim)' }}>

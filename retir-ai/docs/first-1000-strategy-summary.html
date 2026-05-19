@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Prevista — How we reach the first 1,000 paying customers</title>
+<style>
+  :root {
+    --bg: #FAF8F3;
+    --text: #0A1F3D;
+    --text-muted: #5A6478;
+    --accent: #B89968;
+    --rule: #D8D2C4;
+    --soft: rgba(184, 153, 104, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Charter', 'Iowan Old Style', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.65;
+    padding: 4em 2em;
+  }
+  .doc { max-width: 50em; margin: 0 auto; }
+  header.doc-header {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 2.4em;
+    margin-bottom: 3em;
+  }
+  .eyebrow {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: .76em;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1em;
+  }
+  h1 {
+    font-size: 2.6em;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -.01em;
+    margin-bottom: .5em;
+  }
+  .subtitle {
+    font-size: 1.18em;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.5;
+  }
+  section { margin-bottom: 3.5em; }
+  h2 {
+    font-size: 1.55em;
+    font-weight: 600;
+    margin-bottom: 1em;
+    line-height: 1.3;
+  }
+  h2 .num {
+    color: var(--accent);
+    font-family: system-ui, sans-serif;
+    font-weight: 400;
+    font-size: .7em;
+    margin-right: .6em;
+    letter-spacing: .04em;
+    vertical-align: .12em;
+  }
+  h3 {
+    font-size: .9em;
+    font-weight: 600;
+    font-family: system-ui, -apple-system, sans-serif;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 1.8em 0 .8em;
+  }
+  p { margin-bottom: 1.1em; }
+  p.lead {
+    font-size: 1.12em;
+    color: var(--text);
+    margin-bottom: 1.4em;
+  }
+  ul, ol { margin: 0 0 1.2em 1.4em; }
+  li { margin-bottom: .5em; }
+
+  .pain-list { list-style: none; margin-left: 0; }
+  .pain-list li {
+    border-left: 2px solid var(--accent);
+    padding: .7em 0 .7em 1.3em;
+    margin-bottom: 1.2em;
+  }
+  .pain-list .quote {
+    font-style: italic;
+    font-size: 1.08em;
+    margin-bottom: .3em;
+  }
+  .pain-list .meta {
+    font-family: system-ui, sans-serif;
+    font-size: .85em;
+    color: var(--text-muted);
+  }
+
+  .phases {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.2em;
+    margin: 1.5em 0 1em;
+  }
+  .phase {
+    border: 1px solid var(--rule);
+    padding: 1.4em;
+    background: rgba(255, 255, 255, 0.4);
+  }
+  .phase .when {
+    font-family: system-ui, sans-serif;
+    font-size: .76em;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: .4em;
+  }
+  .phase .name {
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-bottom: .8em;
+  }
+  .phase .desc {
+    font-size: .94em;
+    line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 1em;
+  }
+  .phase .target {
+    font-family: system-ui, sans-serif;
+    font-size: .85em;
+    color: var(--text-muted);
+    border-top: 1px solid var(--rule);
+    padding-top: .8em;
+  }
+  .phase .target strong {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0 1.5em;
+    font-variant-numeric: tabular-nums;
+  }
+  th, td {
+    text-align: left;
+    padding: .7em .9em;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-family: system-ui, sans-serif;
+    font-size: .8em;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.total td {
+    border-top: 2px solid var(--text);
+    border-bottom: none;
+    font-weight: 600;
+    padding-top: .8em;
+  }
+  blockquote {
+    border-left: 3px solid var(--accent);
+    margin: 1.6em 0;
+    padding: .6em 1.4em;
+    color: var(--text);
+    font-style: italic;
+    font-size: 1.05em;
+    background: var(--soft);
+  }
+  .funnel {
+    border: 1px solid var(--rule);
+    background: rgba(255, 255, 255, 0.4);
+    padding: 1.4em 1.6em;
+    margin: 1.2em 0;
+  }
+  .funnel-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 1.2em;
+    padding: .55em 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .funnel-row:last-child { border-bottom: none; }
+  .funnel-row.top {
+    border-top: 2px solid var(--text);
+    font-weight: 600;
+    padding-top: .8em;
+  }
+  .funnel-row .stage { font-family: 'Charter', Georgia, serif; }
+  .funnel-row .stage .sub { display:block; font-family: system-ui, sans-serif; font-size: .82em; color: var(--text-muted); margin-top: .15em; }
+  .funnel-row .v { font-variant-numeric: tabular-nums; min-width: 5em; text-align: right; }
+  .funnel-row .v.label { font-family: system-ui, sans-serif; font-size: .75em; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+
+  .closing {
+    border: 1px solid var(--accent);
+    padding: 1.8em 2em;
+    margin: 2em 0;
+    text-align: center;
+  }
+  .closing .pillar {
+    font-style: italic;
+    font-size: 1.18em;
+    line-height: 1.5;
+  }
+  .closing .pillar strong { font-style: normal; color: var(--accent); }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 1.8em;
+    margin-top: 4em;
+    font-size: .82em;
+    color: var(--text-muted);
+    font-family: system-ui, sans-serif;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 720px) {
+    body { padding: 2em 1.2em; }
+    h1 { font-size: 2em; }
+    .phases { grid-template-columns: 1fr; }
+    .funnel-row { grid-template-columns: 1fr; gap: .2em; }
+    .funnel-row .v { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+
+<header class="doc-header">
+  <p class="eyebrow">Prevista · Go-to-market vision</p>
+  <h1>How we reach the first 1,000 paying customers.</h1>
+  <p class="subtitle">A Luxembourg beachhead. Five pains. Three sequenced phases. No outside capital.</p>
+</header>
+
+<section>
+  <h2><span class="num">01</span>Who we build for</h2>
+  <p class="lead">Internationally-mobile European professionals — aged 45 to 60, with pension entitlements split across two or three EU/EFTA jurisdictions. They have €100K–€500K of pension wealth they can't see in one place, and five to twenty years left to do something about it.</p>
+  <p>We don't build for retirees. We build for the years in which the gap can still be closed — late enough that the stakes feel real, early enough that contributions, retirement age, and residency choices still move the number.</p>
+  <p>Mats Karlsson is the median user: 45, Luxembourg resident, careers in France, Switzerland, and Luxembourg, target retirement income €5,500/month, current verified projection €3,840/month. A €498,000 shortfall over a 25-year drawdown — and twenty years to fix it.</p>
+</section>
+
+<section>
+  <h2><span class="num">02</span>The five moments they become reachable</h2>
+  <p>Profile A users don't sit in passive search mode. They become acquirable at five distinct life moments — each carrying its own pain, its own behavioural signal, and its own channel.</p>
+
+  <ul class="pain-list">
+    <li>
+      <p class="quote">"I'm moving to a new country in three months and nobody told me about pension transfer."</p>
+      <p class="meta">T1 — Cross-border move in-flight · reached through relocation agencies, employer HR, expat communities</p>
+    </li>
+    <li>
+      <p class="quote">"I'm 58. Where do I retire? When do I claim across three pension systems?"</p>
+      <p class="meta">T4 — Approaching retirement while mobile · reached through EU institutions, pre-retirement seminars, financial advisors</p>
+    </li>
+    <li>
+      <p class="quote">"I left Switzerland four years ago and never collected my workplace pension."</p>
+      <p class="meta">T2 — Leaving a country, with money left behind · reached through PR, SEO, viral mini-tools</p>
+    </li>
+    <li>
+      <p class="quote">"It's October. I have a tax-deduction window I'll lose if I don't act."</p>
+      <p class="meta">T3 — Annual contribution calendar · reached through Q4 SEO sprints, tax-advisor partnerships</p>
+    </li>
+    <li>
+      <p class="quote">"I want to use my Swiss 3a or French PER for property abroad — what are the rules?"</p>
+      <p class="meta">T5 — Cross-border property purchase · reached through notary partnerships</p>
+    </li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">03</span>Three motions to reach them</h2>
+  <p class="lead">The five pains map to three ways of reaching people. Each plays a different role — and each runs on a different rhythm.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Motion</th>
+        <th>Pains served</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Content &amp; SEO</strong></td>
+        <td>T2 leaving · T3 tax calendar · T5 property</td>
+        <td><em>The engine</em> — reaches people in self-serve mode, on a deadline, or searching for a specific answer. Carries Year 1 volume. Steady, daily.</td>
+      </tr>
+      <tr>
+        <td><strong>Partnerships</strong></td>
+        <td>T1 move · T4 retirement</td>
+        <td><em>The moat</em> — places us inside trusted institutions at the moment of pain. Compounds in Year 2 and beyond. Recurring, quarterly.</td>
+      </tr>
+      <tr>
+        <td><strong>Earned media</strong></td>
+        <td>T2 leaving (primary) · halo across all five</td>
+        <td><em>The catalyst</em> — concentrated bursts of attention from PR hooks (e.g. "CHF 6.7B unclaimed Swiss pensions"). Episodic, opportunistic.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Content is what a small team can ship alone. Partnerships need counterparties. Earned media needs a story worth telling. We design the plan around those asymmetries: content is what we control, partnerships are what we earn, earned media is what we catalyse when something genuinely newsworthy is on the table.</p>
+
+  <h3>Why these partners actually want us</h3>
+  <p>Partnerships fail when one side is doing the other a favour. Both of our launch-phase partner types have a concrete commercial or institutional reason to put us in front of their people — without us asking them to.</p>
+
+  <div class="phases" style="grid-template-columns: 1fr 1fr;">
+    <div class="phase">
+      <p class="when">Partner type · T1</p>
+      <p class="name">Relocation agencies (LU)</p>
+      <p class="desc">Their corporate clients — multinationals sending staff to Luxembourg — are increasingly asking <em>"and what about pensions?"</em> The agencies' current answer is <em>"ask a tax advisor."</em> That's a gap in their offering at exactly the moment they're competing for or renewing corporate contracts worth €100K–€1M per year.</p>
+      <p class="desc">We let them turn pension orientation into a service line they can market. They get a co-branded landing page, drop-in welcome-pack copy, a quarterly cross-border-pensions workshop, and three months of free Pro for every assignee. <strong>It costs them nothing to deliver, and it visibly strengthens their commercial story.</strong></p>
+      <p class="target"><strong>What we ask in return:</strong> a referral link in their day-1 onboarding email. No data exchange. No regulated advice. No procurement.</p>
+    </div>
+    <div class="phase">
+      <p class="when">Partner type · T4</p>
+      <p class="name">EU institutions (EIB first)</p>
+      <p class="desc">EIB staff are Profile A by definition — internationally recruited, multi-jurisdiction careers, high salaries. Cross-border pension complexity is <em>higher</em> at EIB than in the private sector: staff carry the EIB occupational scheme on top of prior national rights from France, Germany, Italy, Spain. Multi-pillar claim-timing is a real, unsolved question that the institution itself doesn't have a satisfying answer to.</p>
+      <p class="desc">The College of Staff Representatives at EIB Luxembourg has an explicit mandate to support active and retired staff. A 60-minute pre-retirement workshop on the cross-border pensions question fills a documented gap in their pre-retirement programme. <strong>No money flows. No commercial conflict.</strong> They get genuinely useful content for their people; we get a credible institutional reference.</p>
+      <p class="target"><strong>The halo:</strong> "Delivered at the EIB" opens the European Commission, the ECJ, and the Court of Auditors — all Luxembourg-anchored, all carrying the same Profile-A staff demographic.</p>
+    </div>
+  </div>
+
+  <p>Both relationships sit on the same principle: <strong>we are not asking the partner to send us their customers.</strong> We are giving the partner a better answer to a question their customers are already asking. The referral flow is a side-effect of solving their problem.</p>
+
+  <h3>How the partnership network scales with country expansion</h3>
+  <p>The country engines compound — every new engine completes the picture for prior users in that corridor. <strong>Institutional partnerships compound the same way</strong> — but only the right kind. We sort them into three tiers based on whether the relationship buys us only Luxembourg, or buys us a template that scales across the country roadmap.</p>
+
+  <div class="phases" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="phase">
+      <p class="when">Tier A · templated</p>
+      <p class="name">One relationship → many countries</p>
+      <p class="desc"><strong>AMCHAM Luxembourg</strong> — sister chambers in DE, FR, BE, NL, CH, IT, ES, AT, PT, UK. Landing AMCHAM LU as a member-benefit partner opens a templated motion across 10 of our first 13 country engines.</p>
+      <p class="desc"><strong>The Local network</strong> — English-language expat news with editions in FR, DE, CH, AT, ES, IT, SE, DK. Eight editions, almost exactly matching our M1–M36 country roadmap. One editorial relationship strategy, eight country-launch PR moments.</p>
+      <p class="desc"><strong>Embassy / consular networks</strong> — every country hosts every other EU country's consulates. Templated motion: same outreach in DE in M13 as in LU at launch.</p>
+      <p class="target"><strong>Compounding pattern:</strong> single relationship investment, payback across 5–10 countries.</p>
+    </div>
+    <div class="phase">
+      <p class="when">Tier B · corridor-anchored</p>
+      <p class="name">Compound at specific engine launches</p>
+      <p class="desc"><strong>Bilateral chambers</strong> — French-LU (FR engine live M1, full value from day one) · Portuguese-LU (PT engine M3) · German-LU (DE engine M13, value doubles when bilateral data flow opens) · Belgian-LU (BE engine M16).</p>
+      <p class="desc"><strong>EU institutions</strong> — EIB / Commission / ECJ / Court of Auditors all Luxembourg-anchored today. As corridor maturity grows, the same template extends to Brussels (Commission HQ), Strasbourg (Parliament), Frankfurt (ECB).</p>
+      <p class="target"><strong>Compounding pattern:</strong> each relationship is a paired bet with a specific corridor activation. Some pay back immediately; others are 12-month investments that compound at engine launch.</p>
+    </div>
+    <div class="phase">
+      <p class="when">Tier C · LU-only</p>
+      <p class="name">One-shot, no template</p>
+      <p class="desc"><strong>Delano · Paperjam · Luxembourg Times · RTL Today · Luxemburger Wort</strong> — local press. Useful for LU launch PR, but each country has its own English-language and local-language outlets to pitch separately.</p>
+      <p class="desc"><strong>Chambre des salariés · ADEM</strong> — LU-specific labour and employment institutions. Each country has different architecture (Betriebsrat in DE, CGT in FR, Travail.Suisse in CH); not portable.</p>
+      <p class="target"><strong>Compounding pattern:</strong> none. Pursue opportunistically, not as priority. Every hour spent here is an hour not spent on a Tier A or B relationship.</p>
+    </div>
+  </div>
+
+  <p>The strategic implication: <strong>pre-launch institutional outreach is selected for compounding alignment with the country roadmap, not for Year-1 Luxembourg ramp alone.</strong> AMCHAM and The Local Network in particular are template investments — landing them buys us the next eight engine launches at half the relationship cost.</p>
+</section>
+
+<section>
+  <h2><span class="num">04</span>Three phases, sequenced by evidence</h2>
+  <p class="lead">We don't try to launch everything at once. The plan moves in three phases — each only starts when the previous one has produced its evidence.</p>
+
+  <div class="phases">
+    <div class="phase">
+      <p class="when">Phase 0 · M−3 → M0</p>
+      <p class="name">Validate demand</p>
+      <p class="desc">A free public pension calculator goes live three months before the platform. The only call-to-action is <em>"Join the wishlist."</em> Founder labour, zero spend, organic SEO and community seeding only. The point is to prove people care enough to give us their email before the product even exists.</p>
+      <p class="target"><strong>Target:</strong> 150–450 wishlist signups by launch. Floor of 150 is the validation threshold; the upper end implies a strong PR or community amplification moment.</p>
+    </div>
+    <div class="phase">
+      <p class="when">Phase 1 · M1 → M6</p>
+      <p class="name">Launch &amp; activate</p>
+      <p class="desc">Platform goes live. The wishlist gets a "we're live" email — the warmest cohort we'll ever have. Content engine starts. First partnership pilots seeded (relocation agencies, EU institutions). Founder-funded; no external capital. The job here is to <em>measure</em> conversion, not scale it.</p>
+      <p class="target"><strong>Outcome:</strong> validated funnel rates; first paying subscribers.</p>
+    </div>
+    <div class="phase">
+      <p class="when">Phase 2 · M7 → M18</p>
+      <p class="name">Compound to break-even</p>
+      <p class="desc">Partnership channel deals start producing flow. Content compounds month-on-month. Lead-gen revenue (referred capital to partner platforms) turns on. Still no paid acquisition. Cumulative break-even at month 18 — funded entirely from revenue and founder capital.</p>
+      <p class="target"><strong>Milestone:</strong> first 1,000 paying customers, cumulative cash positive.</p>
+    </div>
+  </div>
+
+  <blockquote>Each phase only starts when the previous phase has produced its evidence. By launch we know whether anyone wants this. By month six we know whether they pay. By month eighteen we know whether the business funds itself.</blockquote>
+</section>
+
+<section>
+  <h2><span class="num">05</span>The path to a thousand — quarter by quarter</h2>
+  <p class="lead">"First 1,000 customers" means paying subscribers at €4.99/month. In the base case the model crosses 1,000 paid at <strong>month 17</strong>; in the upside case at <strong>month 13</strong>. Cumulative cash break-even lands one month later, at M18. That's the destination — but the path matters more than the line, so here's how it actually accumulates.</p>
+
+  <h3>The shape of the curve</h3>
+  <p>The first 100 paying customers take six times longer to reach than the next 900. This is not a flaw — it's the compounding signature of a content-led, partnership-seeded funnel. SEO pages need 4–6 months to index and rank. Partnerships have 5–9 month sales cycles. Once both motions are in flow, the curve steepens fast.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Quarter</th>
+        <th>Months</th>
+        <th class="num">New paid</th>
+        <th class="num">Cumulative paid</th>
+        <th>What's happening on the ground</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Q1</strong> launch</td>
+        <td>M1–M3</td>
+        <td class="num">4</td>
+        <td class="num">4</td>
+        <td>Platform live. Phase 0 wishlist activated ("we're live" email to 150–450 warm contacts). LU/FR/CH engines from day one. T2 viral mini-tool launched ("find your forgotten Swiss BVG"). Founder ships 8–12 corridor SEO pages. T1 agency conversations advance (LuxRelo first). <strong>Tier A institutional outreach kicks off in parallel:</strong> AMCHAM Luxembourg member-benefit pitch, French-LU and Portuguese-LU chamber introductions, The Local Network first editorial contact.</td>
+      </tr>
+      <tr>
+        <td><strong>Q2</strong></td>
+        <td>M4–M6</td>
+        <td class="num">50</td>
+        <td class="num">54</td>
+        <td>SEO pages start ranking; first organic traffic. T2 PR hook lands (Delano / Paperjam pickup of "CHF 6.7B unclaimed pensions" angle). First T1 pilot signs (LuxRelo or ERS). Calculator keeps capturing emails for ongoing wishlist. <strong>Tier A progresses:</strong> AMCHAM member-benefit conversation deepens, French-LU chamber co-hosted session confirmed, The Local first editorial pitch in flight.</td>
+      </tr>
+      <tr>
+        <td><strong>Q3</strong></td>
+        <td>M7–M9</td>
+        <td class="num">137</td>
+        <td class="num">191</td>
+        <td>First partnership goes live → T1 agency referral flow begins. T4 EIB workshop pilot delivered. Content compounding: 6 months of indexed pages now ranking. ERS / MMC partnership talks advance. T3 Q4 sprint preparation. <strong>Tier A institutional flow arrives:</strong> AMCHAM member-benefit listing live, French-LU chamber session held, The Local feature publishes (LU expat angle).</td>
+      </tr>
+      <tr>
+        <td><strong>Q4</strong> end Y1</td>
+        <td>M10–M12</td>
+        <td class="num">213</td>
+        <td class="num">404</td>
+        <td>T3 Q4 SEO sprint executes (Pillar 3a / Art. 111bis deadline content). Second agency live. EIB workshop attendees begin converting from 6mo free trial. End-of-Y1 model: <strong>404 paid (base) / 951 paid (upside)</strong>.</td>
+      </tr>
+      <tr>
+        <td><strong>Q5</strong></td>
+        <td>M13–M15</td>
+        <td class="num">332</td>
+        <td class="num">736</td>
+        <td>DE engine launches M13 — addressable jumps from 1.4M to ~3M. Three T1 agencies active (LuxRelo + ERS + MMC). Content moat: 12 months of indexed pages. First Commission / ECJ workshop attempt, halo from EIB. <strong>Institutional compounding moment:</strong> the German-LU chamber relationship seeded in Q1 doubles in value with DE corridor live; AmCham Germany warm-intro path activates via AMCHAM LU; The Local Germany editorial relationship now warm.</td>
+      </tr>
+      <tr class="total">
+        <td><strong>Q6</strong></td>
+        <td>M16–M18</td>
+        <td class="num">613</td>
+        <td class="num">1,349</td>
+        <td><strong>1,000 paying customers crossed at M17.</strong> Cumulative cash break-even at M18. Phase 2 country wave (PL, BE, NL, RO, AT) activates. Multiple agency partnerships compounding.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The asymmetry is structural and expected: by the time partnership flow turns on (M7) and SEO has 6 months of indexed depth (M7–M9), each new month delivers more than the previous. Quarter 6 alone produces more paid customers than Quarters 1–4 combined.</p>
+
+  <h3>The funnel underneath — paying is ~12% of signups</h3>
+  <p>A note on freemium. The 1,349 paying customers at M18 sit underneath a much larger funnel — most users never pay, and that's by design. Free users generate referral revenue (the lead-gen stream — when they consolidate pensions through one of our partner platforms, we earn a small annual fee on the referred capital), they build the data corpus that makes the engines smarter, and they tell us which countries to launch next.</p>
+
+  <div class="funnel">
+    <div class="funnel-row">
+      <div class="stage">Phase 0 · wishlist (M−3 → M0) <span class="sub">calculator users who left an email pre-launch</span></div>
+      <div class="v label">Target</div>
+      <div class="v">150–450</div>
+    </div>
+    <div class="funnel-row">
+      <div class="stage">Platform signups by M18 <span class="sub">free + paying combined, base scenario</span></div>
+      <div class="v label">Cumulative</div>
+      <div class="v">~12,400</div>
+    </div>
+    <div class="funnel-row top">
+      <div class="stage">Paying subscribers at M18 <span class="sub">first 1,000 crossed at M17 base / M13 upside</span></div>
+      <div class="v label">Base / upside</div>
+      <div class="v">1,349 / 2,985</div>
+    </div>
+  </div>
+
+  <p>One paying customer per nine signups — exactly what a healthy freemium ratio looks like for a tool of this kind. The 12,400 free-and-paying base is what makes Stream 2 (lead-gen on referred capital) viable at scale. We are not optimising for a high paid-conversion rate; we are optimising for a large, engaged top of funnel that compounds under both revenue streams.</p>
+
+  <h3>Where the 1,000 actually come from</h3>
+  <p>By the time we cross the milestone at M17, the conservative model split looks like this:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Channel</th>
+        <th>Pains served</th>
+        <th class="num">Share of first 1,000</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Content / SEO</strong> · organic search, viral mini-tools</td>
+        <td>T2 leaving · T3 tax calendar · T5 property</td>
+        <td class="num">~94%</td>
+      </tr>
+      <tr>
+        <td><strong>Partnerships</strong> · agency referrals, EU institution workshops</td>
+        <td>T1 move · T4 retirement</td>
+        <td class="num">~6%</td>
+      </tr>
+      <tr>
+        <td><strong>Paid acquisition</strong></td>
+        <td>—</td>
+        <td class="num">0%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Two things to read into this. First, partnership share is structurally small in the first 1,000 because partnership cycles are slow and the first deals only start producing flow at M7 — but that share triples by Year 3 as the agency network matures and EU-institution workshops become a recurring quarterly fixture.</p>
+
+  <p>Second, the 6% figure reflects a deliberately narrow definition: <strong>only the steady-state agency-style partnership channel is counted</strong>. Templated institutional outreach (AMCHAM, bilateral chambers) and earned-media catalysts (newspaper hits, viral PR) are absorbed into the "content" bucket via attribution, or not modelled at all. If those channels land at the rates we'd expect in Luxembourg, partnership-attributed share of the first 1,000 plausibly sits closer to 15–25% — with the rest of the lift coming through templated relationships that we'll claim back in Years 2–3 as country engines activate.</p>
+
+  <p>The honest read: <strong>the named-partnership work happening now is how we earn channel quality that compounds — not the lever that gets us to a thousand.</strong> Content carries Year 1; partnerships are the moat that makes Year 3 defensible.</p>
+</section>
+
+<section>
+  <h2><span class="num">06</span>Why this works</h2>
+
+  <h3>It's grounded in a model, not a hope</h3>
+  <p>Every number above comes from a financial model with explicit assumptions: 4% organic reach of addressable corridor in Year 1, 12% paid conversion at €4.99, 3% monthly churn declining as cohorts mature, partnership ramp from one active partner at month seven to three by month twelve. The model reaches cumulative break-even at month 18 with zero paid acquisition and zero outside capital.</p>
+
+  <h3>It respects what a small team can actually do</h3>
+  <p>Two co-founders. Content production and SEO are the only Year 1 channels that don't require counterparty velocity. Partnerships are seeded in Year 1 and compound in Year 2 — no Year 1 milestone depends on a partner signing fast. The plan is robust to two of the three motions under-performing.</p>
+
+  <h3>The named partnerships are the moat, not the engine</h3>
+  <p>LuxRelo, ERS, MMC, the EIB pre-retirement office, VIAC, Spuerkeess — the work to seed these is real and ongoing. But we don't bet Year 1 on them landing fast. They are positioned as the long-term channel quality that becomes uncatchable in Year 3, not the volume that gets us to the first thousand.</p>
+
+  <h3>Institutional partnerships compound the same way country engines do</h3>
+  <p>The country roadmap compounds: every new engine completes the picture for prior users. The institutional partnership network compounds in the same shape — but only the right kind. Tier-A relationships (AMCHAM, The Local network, embassy networks) and Tier-B relationships (bilateral chambers, EU institutions) are deliberately chosen because they template across the country roadmap. A single AMCHAM Luxembourg partnership opens warm-intro paths to ten national AmChams as those engines activate. One editorial relationship with The Local Network produces a country-launch PR moment in eight different countries. The same compounding spine that drives the country expansion also governs how the partnership network builds.</p>
+
+  <h3>Lead-gen is the asset</h3>
+  <p>Every signup, paying or not, becomes part of a referred-capital pool that compounds at roughly 9% per year. By Year 5 this stream is a fifth of total revenue. By Year 10 it's the majority. We don't manage assets — we route them, and the routing fee compounds. The freemium tier exists to fuel that compounding.</p>
+</section>
+
+<div class="closing">
+  <p class="pillar"><strong>Vision in one line:</strong><br>
+  Meet five pains in three motions, sequence each phase on evidence, choose every partnership for how it compounds with the country map — and let a freemium funnel feed a compounding asset underneath a subscription that pays the lights.</p>
+</div>
+
+<footer>
+  <p>Numbers anchored to <code>simulate('base')</code> and <code>simulate('upside')</code> in the canonical financial model. Pain-point taxonomy and channel-tier ranking from internal GTM strategy. Phase 0 wishlist mechanic adapted from prior investor-deck work; 150–450 target range reflects 3 months of founder-only Luxembourg organic reach with the public calculator. Institutional-partnership tier framework and country-expansion compounding logic synthesised from the corridor model and the partnership channel work in progress.</p>
+</footer>
+
+</div>
+</body>
+</html>

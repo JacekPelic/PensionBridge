@@ -6,17 +6,23 @@ import { useDataStage } from '@/modules/identity/DataStageProvider';
 import { useUserData } from '@/modules/identity/UserDataProvider';
 import { calculateTax } from '@/modules/tax';
 import type { ResidenceCountry } from '@/modules/tax';
+import { BASE_TMI } from '@/modules/pension/constants';
 
 export function KpiCards() {
   const { stage } = useDataStage();
-  const { userData } = useUserData();
+  const { userData, isFromOnboarding } = useUserData();
   const complete = stage === 'after';
+
+  // For real users coming out of onboarding, hide Mats-specific narrative
+  // (gap counts, expected savings amounts, Swiss lump sum) — those are part
+  // of the canned demo persona, not of a fresh user's actual data.
+  const showMatsSpecifics = !isFromOnboarding;
 
   const numCountries = userData.countriesWorked.length;
 
   // Compute net amounts
   const residenceCountry = (userData.residenceCountry ?? 'LU') as ResidenceCountry;
-  const grossProjected = complete ? 3840 : userData.pillar1Total;
+  const grossProjected = complete ? BASE_TMI : userData.pillar1Total;
   const { netAnnual } = calculateTax(grossProjected * 12, residenceCountry);
   const netProjected = Math.round(netAnnual / 12);
 
@@ -38,17 +44,35 @@ export function KpiCards() {
         <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>
           Gaps Detected
         </div>
-        <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--red)', lineHeight: 1 }}>
-          {complete ? '2' : '2'}
-        </div>
-        <div className="text-xs mt-1.5" style={{ color: 'var(--red)' }}>
-          {complete ? '1 correctable + 1 freelance unverified' : '1 transition gap + 1 missing period'}
-        </div>
-        <div className="mt-2">
-          <Link href="/career" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--gold-light)' }}>
-            View gaps →
-          </Link>
-        </div>
+        {showMatsSpecifics ? (
+          <>
+            <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--red)', lineHeight: 1 }}>
+              2
+            </div>
+            <div className="text-xs mt-1.5" style={{ color: 'var(--red)' }}>
+              {complete ? '1 correctable + 1 freelance unverified' : '1 transition gap + 1 missing period'}
+            </div>
+            <div className="mt-2">
+              <Link href="/career" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--gold-light)' }}>
+                View gaps →
+              </Link>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 28, fontWeight: 700, color: 'var(--text-dim)', lineHeight: 1 }}>
+              Pending
+            </div>
+            <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
+              Upload pension documents to analyze gaps
+            </div>
+            <div className="mt-2">
+              <Link href="/career" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--gold-light)' }}>
+                Add documents →
+              </Link>
+            </div>
+          </>
+        )}
       </Card>
 
       {complete ? (
@@ -74,9 +98,11 @@ export function KpiCards() {
           <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 28, fontWeight: 700, color: 'var(--text-dim)', lineHeight: 1 }}>
             Not tracked
           </div>
-          <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>Could add €1,000+/mo</div>
+          <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
+            {showMatsSpecifics ? 'Could add €1,000+/mo' : 'Add workplace pensions and personal savings'}
+          </div>
           <div className="mt-2">
-            <Link href="/progress" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--amber)' }}>
+            <Link href="/picture" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--amber)' }}>
               Complete your picture &rarr;
             </Link>
           </div>

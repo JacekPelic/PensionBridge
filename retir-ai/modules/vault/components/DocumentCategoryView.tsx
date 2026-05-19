@@ -5,14 +5,12 @@ import { DocumentGrid } from './DocumentGrid';
 import type { PensionDocument, DocCategory } from '@/shared/types';
 
 const categoryMeta: Record<DocCategory, { icon: string; label: string; description: string }> = {
-  career: { icon: '📋', label: 'Career History', description: 'Career extracts, employment certificates, work contracts' },
-  pension: { icon: '📊', label: 'Pension Statements', description: 'Fund statements, projections, benefit estimates' },
-  identity: { icon: '🪪', label: 'Identity & Civil Status', description: 'ID documents, birth & marriage certificates' },
-  tax: { icon: '🏦', label: 'Tax & Financial', description: 'Tax residence, double-taxation forms, returns' },
+  career: { icon: '📋', label: 'Career History', description: 'Career extracts plus optional employment certificates for gap corrections' },
+  pension: { icon: '📊', label: 'Pension Statements', description: 'State, workplace and personal pension statements' },
   correspondence: { icon: '✉️', label: 'Correspondence', description: 'Letters, claim forms, correction requests' },
 };
 
-const categoryOrder: DocCategory[] = ['career', 'pension', 'identity', 'tax', 'correspondence'];
+const categoryOrder: DocCategory[] = ['career', 'pension', 'correspondence'];
 
 interface Props {
   documents: PensionDocument[];

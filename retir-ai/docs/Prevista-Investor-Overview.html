@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prevista — Financial Overview</title>
+<style>
+  :root {
+    --navy: #1B2A4A;
+    --navy-deep: #0F1A30;
+    --gold: #B8860B;
+    --gold-soft: #D4A832;
+    --cream: #FAF7F0;
+    --paper: #FFFFFF;
+    --ink: #2A2A2A;
+    --ink-soft: #4A4A4A;
+    --muted: #6E6A60;
+    --rule: #D8D2C2;
+    --tint: #F4F0E5;
+    --positive: #2D6A4F;
+    --negative: #9B2226;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "kern", "liga";
+  }
+  main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 64px 56px 80px;
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+  header.doc {
+    margin-bottom: 56px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    margin: 0 0 14px;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 42px;
+    margin: 0 0 10px;
+    line-height: 1.1;
+    color: var(--navy);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0;
+    font-style: italic;
+  }
+  h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 26px;
+    color: var(--navy);
+    margin: 64px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gold);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    color: var(--navy);
+    margin: 32px 0 10px;
+    font-weight: 600;
+  }
+  p { margin: 0 0 14px; max-width: 70ch; }
+  p.lead {
+    font-size: 17px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    max-width: 68ch;
+  }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 28px 0 8px;
+  }
+  .metric {
+    border: 1px solid var(--rule);
+    border-top: 2px solid var(--gold);
+    padding: 20px 22px 18px;
+    background: var(--paper);
+  }
+  .metric .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+  .metric .value {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    font-variant-numeric: tabular-nums;
+    color: var(--navy);
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .metric .note {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 8px 0 0;
+    line-height: 1.4;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 22px 0 8px;
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+  }
+  th {
+    text-align: right;
+    font-weight: 600;
+    color: var(--navy);
+    padding: 11px 12px 10px;
+    border-bottom: 1.5px solid var(--navy);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--paper);
+  }
+  th:first-child, td:first-child {
+    text-align: left;
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-soft);
+  }
+  tr:last-child td { border-bottom: none; }
+  tbody tr.section-head td {
+    color: var(--navy);
+    font-weight: 600;
+    background: var(--tint);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding-top: 12px;
+    padding-bottom: 10px;
+  }
+  tbody tr.total td {
+    font-weight: 600;
+    color: var(--navy);
+    border-top: 1px solid var(--navy);
+    border-bottom: 1.5px solid var(--navy);
+    background: var(--tint);
+  }
+  tbody tr.indent td:first-child {
+    padding-left: 28px;
+  }
+  td.pos { color: var(--positive); font-weight: 600; }
+  td.neg { color: var(--negative); font-weight: 600; }
+  .scenarios {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 24px 0;
+  }
+  .scenario {
+    border: 1px solid var(--rule);
+    padding: 22px 24px 24px;
+    background: var(--paper);
+  }
+  .scenario.upside {
+    border-top: 2px solid var(--gold);
+  }
+  .scenario.base {
+    border-top: 2px solid var(--navy);
+  }
+  .scenario h4 {
+    margin: 0 0 16px;
+    font-family: Georgia, serif;
+    color: var(--navy);
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .scenario dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    row-gap: 8px;
+    column-gap: 18px;
+    font-size: 14px;
+  }
+  .scenario dt { color: var(--muted); }
+  .scenario dd {
+    margin: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .pull {
+    border-left: 2px solid var(--gold);
+    padding: 4px 0 4px 18px;
+    margin: 22px 0;
+    color: var(--ink-soft);
+    font-style: italic;
+    font-size: 16px;
+  }
+  ul { margin: 8px 0 16px; padding-left: 22px; max-width: 70ch; }
+  li { margin: 5px 0; color: var(--ink-soft); }
+  .footnote {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 6px 0 0;
+    line-height: 1.45;
+    font-style: italic;
+  }
+  footer.doc {
+    margin-top: 72px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  @media (max-width: 720px) {
+    main { padding: 40px 24px 60px; }
+    h1 { font-size: 32px; }
+    h2 { font-size: 22px; }
+    .scenarios { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: white; }
+    main { box-shadow: none; max-width: 100%; padding: 32px 24px; }
+    h2 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header class="doc">
+    <p class="eyebrow">Prevista · Financial Overview</p>
+    <h1>Pension clarity for Europe's mobile professionals</h1>
+    <p class="subtitle">5-year projection · base &amp; upside scenarios · pure bootstrap · 2026-05-09</p>
+  </header>
+
+  <section>
+    <h2>At a glance</h2>
+    <p class="lead">Two revenue streams (subscriptions + lead generation) compounding across 29 country pension engines, reaching €1.39M ARR in the base scenario and €2.91M in the upside. Reaches cumulative break-even in month 28 (base) on roughly €60-70K of founder capital — no external funding required.</p>
+    <div class="metric-grid">
+      <div class="metric">
+        <p class="label">Year 5 ARR · Base</p>
+        <p class="value">€1.39M</p>
+        <p class="note">19,437 paying subscribers · 29 countries live</p>
+      </div>
+      <div class="metric">
+        <p class="label">Year 5 ARR · Upside</p>
+        <p class="value">€2.91M</p>
+        <p class="note">44,393 paying subscribers · 168% CAGR Y1→Y5</p>
+      </div>
+      <div class="metric">
+        <p class="label">Cumulative break-even</p>
+        <p class="value">M28 <span style="font-size:18px; color:var(--muted); font-weight:400;">/ M20</span></p>
+        <p class="note">Base / upside · monthly BE M18 / M14</p>
+      </div>
+      <div class="metric">
+        <p class="label">Total founder capital</p>
+        <p class="value">~€60-70K</p>
+        <p class="note">Trough −€52K at M17 (base) · pure bootstrap</p>
+      </div>
+      <div class="metric">
+        <p class="label">Addressable market</p>
+        <p class="value">12M+</p>
+        <p class="note">Bilateral pension corridors across 29 countries (EU27 + UK + CH)</p>
+      </div>
+      <div class="metric">
+        <p class="label">Y5 capital under referral</p>
+        <p class="value">€1.04B</p>
+        <p class="note">Compounding asset base behind the lead-gen revenue stream</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Business model</h2>
+    <p>Prevista unifies fragmented pension data across state, workplace, and personal pillars for internationally-mobile professionals — careers spanning 3+ EU jurisdictions. Two revenue streams compound on the same user base:</p>
+    <h3>Stream 1 · Subscriptions</h3>
+    <p>€4.99/month or €49/year. Annual mix matures to 40% of paid users by Y5. 12% signup→paid conversion in base, 18% in upside.</p>
+    <h3>Stream 2 · Lead generation</h3>
+    <p>0.03% annual trailing commission on aggregate referred capital — a deliberate conservative floor against published 1.0–1.5% LU/FR retail distribution rates. 3.0% of all signups become referred investors (80% gap × 25% click × 15% invest); average €125,000 placement compounds at 9%/year.</p>
+    <h3>Acquisition · seed-stage</h3>
+    <p>Two channels: organic SEO content (compounds with each new country engine) and distribution partnerships (BD-led, ramping from 1 active partner at M7 to 20 by M60 in base). Paid acquisition is held in reserve as a Series A lever — at €4.99 + 12% conversion paid LTV:CAC is 0.49×.</p>
+  </section>
+
+  <section>
+    <h2>Base vs upside scenarios</h2>
+    <p>Same underlying engine deployment schedule, founder compensation structure, and country-launch costs across both scenarios. The variables that diverge are conversion (signup→paid), organic reach, churn, and partnership velocity.</p>
+    <div class="scenarios">
+      <div class="scenario base">
+        <h4>Base scenario</h4>
+        <dl>
+          <dt>Y5 ARR</dt><dd>€1.39M</dd>
+          <dt>Y5 paying subs</dt><dd>19,437</dd>
+          <dt>Y5 cumulative net</dt><dd>€661K</dd>
+          <dt>Monthly break-even</dt><dd>M18</dd>
+          <dt>Cumulative break-even</dt><dd>M28</dd>
+          <dt>Cash trough</dt><dd>−€52K at M17</dd>
+          <dt>Conversion (signup→paid)</dt><dd>12%</dd>
+          <dt>Initial monthly churn</dt><dd>3.0%</dd>
+          <dt>Y5 FTE headcount</dt><dd>4</dd>
+        </dl>
+      </div>
+      <div class="scenario upside">
+        <h4>Upside scenario</h4>
+        <dl>
+          <dt>Y5 ARR</dt><dd>€2.91M</dd>
+          <dt>Y5 paying subs</dt><dd>44,393</dd>
+          <dt>Y5 cumulative net</dt><dd>€2.50M</dd>
+          <dt>Monthly break-even</dt><dd>M14</dd>
+          <dt>Cumulative break-even</dt><dd>M20</dd>
+          <dt>Cash trough</dt><dd>−€30K at M13</dd>
+          <dt>Conversion (signup→paid)</dt><dd>18%</dd>
+          <dt>Initial monthly churn</dt><dd>2.5%</dd>
+          <dt>Y5 FTE headcount</dt><dd>8</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Five-year P&amp;L · base scenario</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Annual figures</th>
+          <th>Year 1</th>
+          <th>Year 2</th>
+          <th>Year 3</th>
+          <th>Year 4</th>
+          <th>Year 5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="section-head"><td colspan="6">Revenue</td></tr>
+        <tr class="indent"><td>Subscription revenue</td><td>€7K</td><td>€92K</td><td>€355K</td><td>€674K</td><td>€961K</td></tr>
+        <tr class="indent"><td>Lead-gen revenue</td><td>€1K</td><td>€18K</td><td>€75K</td><td>€160K</td><td>€262K</td></tr>
+        <tr class="total"><td>Total revenue</td><td>€8K</td><td>€110K</td><td>€430K</td><td>€834K</td><td>€1.22M</td></tr>
+        <tr class="section-head"><td colspan="6">Operating costs</td></tr>
+        <tr class="indent"><td>Infrastructure</td><td>€3K</td><td>€8K</td><td>€15K</td><td>€23K</td><td>€32K</td></tr>
+        <tr class="indent"><td>AI API</td><td>€533</td><td>€7K</td><td>€29K</td><td>€57K</td><td>€86K</td></tr>
+        <tr class="indent"><td>Content &amp; SEO (global)</td><td>€2K</td><td>€6K</td><td>€14K</td><td>€28K</td><td>€43K</td></tr>
+        <tr class="indent"><td>Country launch + recurring</td><td>€13K</td><td>€19K</td><td>€26K</td><td>€33K</td><td>€37K</td></tr>
+        <tr class="indent"><td>Support</td><td>€2K</td><td>€2K</td><td>€65K</td><td>€129K</td><td>€193K</td></tr>
+        <tr class="indent"><td>Legal / compliance</td><td>€10K</td><td>€15K</td><td>€21K</td><td>€27K</td><td>€33K</td></tr>
+        <tr class="indent"><td>Founder compensation</td><td>€15K</td><td>€46K</td><td>€116K</td><td>€152K</td><td>€168K</td></tr>
+        <tr class="indent"><td>FTE salaries</td><td>€0</td><td>€0</td><td>€56K</td><td>€152K</td><td>€256K</td></tr>
+        <tr class="total"><td>Total operating costs</td><td>€46K</td><td>€104K</td><td>€343K</td><td>€602K</td><td>€849K</td></tr>
+        <tr class="section-head"><td colspan="6">Bottom line</td></tr>
+        <tr><td>Net income</td><td class="neg">−€38K</td><td class="pos">€6K</td><td class="pos">€87K</td><td class="pos">€232K</td><td class="pos">€374K</td></tr>
+        <tr class="total"><td>Cumulative net</td><td class="neg">−€38K</td><td class="neg">−€32K</td><td class="pos">€55K</td><td class="pos">€287K</td><td class="pos">€661K</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote">Founder compensation: BD draws from M8 (€3K → €5K → €7K as subMRR scales); tech defers until subMRR &gt; €25K (~M28). All loaded company cost (~25% LU indépendant social charges). FTE headcount in base: 0 → 0 → 1 → 2 → 4 by year-end.</p>
+  </section>
+
+  <section>
+    <h2>Path to break-even</h2>
+    <p>The bootstrap thesis is: founder capital absorbs the operational trough; nothing else. Founders draw salary from M8 onwards (BD) and from M28 onwards (tech) — included in the cost base above, not deferred to Series A.</p>
+    <table>
+      <thead>
+        <tr><th>&nbsp;</th><th>Base</th><th>Upside</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Monthly break-even (revenue &gt; costs)</td><td>M18</td><td>M14</td></tr>
+        <tr><td>Cumulative break-even (recovers all losses)</td><td>M28</td><td>M20</td></tr>
+        <tr><td>Deepest cash trough</td><td>−€52K at M17</td><td>−€30K at M13</td></tr>
+        <tr><td>Total founder capital required</td><td>~€60-70K</td><td>~€40-50K</td></tr>
+        <tr><td>Y5 cumulative net income</td><td class="pos">€661K</td><td class="pos">€2.50M</td></tr>
+      </tbody>
+    </table>
+    <p class="pull">Pure bootstrap survives in both scenarios. External capital is opportunistic acceleration — never a survival input.</p>
+  </section>
+
+  <section>
+    <h2>Unit economics</h2>
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>Value</th><th>Note</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Subscription price (monthly / annual)</td><td>€4.99 / €49</td><td>Annual carries ~18% effective discount</td></tr>
+        <tr><td>Mature blended ARPU (annualised)</td><td>€56</td><td>40% annual / 60% monthly mix</td></tr>
+        <tr><td>Mature monthly churn</td><td>2.10%</td><td>3.0% initial, improving with cohort tenure</td></tr>
+        <tr><td>Avg subscriber lifetime</td><td>48 months</td><td>1 / mature churn</td></tr>
+        <tr><td>LTV (subscription only)</td><td>€220</td><td>Lead-gen LTV is additive on top</td></tr>
+        <tr><td>CAC (organic, base)</td><td>€0</td><td>SEO content compounds at zero marginal cost per signup</td></tr>
+        <tr><td>CAC (paid, hypothetical)</td><td>€40</td><td>Held in reserve — paid is a Series A lever, not a bootstrap channel</td></tr>
+        <tr><td>Lead-gen referrals (% of signups)</td><td>3.0%</td><td>80% gap × 25% click × 15% invest</td></tr>
+        <tr><td>Avg capital placed per referred investor</td><td>€125,000</td><td>Initial placement; rollover-pathway clients defend higher</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Geographic expansion</h2>
+    <p>29 country engines (EU27 + UK + CH) deployed in greedy TAM-maximising order. Three live at launch (LU/FR/CH); quarterly cadence in Y1; ~2-month cadence Y2-Y5. Each new engine unlocks bilateral pension corridors with all already-supported countries — addressable market compounds.</p>
+    <table>
+      <thead>
+        <tr><th>End of</th><th>Countries live</th><th>Addressable population</th><th>Paying subs</th><th>Total ARR</th></tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>Year 1</td>
+          <td>7</td>
+          <td>1,363,000</td>
+          <td>404</td>
+          <td>€27K</td>
+        </tr>
+        <tr>
+          <td>Year 2</td>
+          <td>13</td>
+          <td>7,349,500</td>
+          <td>3,370</td>
+          <td>€224K</td>
+        </tr>
+        <tr>
+          <td>Year 3</td>
+          <td>19</td>
+          <td>10,519,167</td>
+          <td>9,052</td>
+          <td>€613K</td>
+        </tr>
+        <tr>
+          <td>Year 4</td>
+          <td>25</td>
+          <td>11,548,333</td>
+          <td>14,629</td>
+          <td>€1.02M</td>
+        </tr>
+        <tr>
+          <td>Year 5</td>
+          <td>29</td>
+          <td>11,963,333</td>
+          <td>19,437</td>
+          <td>€1.39M</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="footnote">Addressable = sum of bilateral pension corridors (diaspora populations) × 0.55 addressability factor, with a 6-month linear ramp from when both engines are live. Demo persona: Mats Karlsson, 45, Luxembourg resident, career across France (10y), Switzerland (5y), Luxembourg (6y).</p>
+  </section>
+
+  <section>
+    <h2>Founder economics &amp; bootstrap thesis</h2>
+    <p>Two co-founders, both working from day 1. Salary draws are staggered to match the operational reality of a launch: BD becomes the binding constraint earlier (post-launch distribution), tech defers because they have higher pain tolerance for low-pay phase and the patterned engine-build cadence sustains.</p>
+    <h3>BD co-founder</h3>
+    <ul>
+      <li>Full-time from M7. First paycheck M8 (€3K/month — ramen).</li>
+      <li>Step-up to €5K/month once subMRR &gt; €8K (M20 base / M16 upside).</li>
+      <li>Step-up to €7K/month once subMRR &gt; €25K (M29 base / M22 upside).</li>
+    </ul>
+    <h3>Technical co-founder</h3>
+    <ul>
+      <li>Defers salary until subMRR &gt; €25K (~M29 base / M22 upside).</li>
+      <li>Joins at €5K/month, steps up to €7K once subMRR &gt; €60K (~M45 base / M30 upside).</li>
+    </ul>
+    <h3>Total founder cost</h3>
+    <p>Y1-Y5 founder compensation totals €497K (base) / €584K (upside) — split across two people over 5 years, this lands at sub-market LU professional rates and is fully funded from operating cashflow after M28.</p>
+    <p>All figures are <strong>company cost</strong> (loaded with ~25% LU indépendant social charges). Net to founder ≈ 75% of these numbers.</p>
+  </section>
+
+  <section>
+    <h2>Key assumptions</h2>
+    <table>
+      <thead>
+        <tr><th>Lever</th><th>Base</th><th>Upside</th><th>Sensitivity</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Organic reach (Y1)</td><td>4% of addressable</td><td>6% of addressable</td><td>High</td></tr>
+        <tr><td>Organic monthly growth</td><td>8%</td><td>12%</td><td>High</td></tr>
+        <tr><td>Email capture rate</td><td>30%</td><td>35%</td><td>Medium</td></tr>
+        <tr><td>Email → signup</td><td>18%</td><td>22%</td><td>Medium</td></tr>
+        <tr><td>Signup → paid conversion</td><td>12%</td><td>18%</td><td>Critical</td></tr>
+        <tr><td>Monthly churn (initial)</td><td>3.0%</td><td>2.5%</td><td>High</td></tr>
+        <tr><td>Active partnerships by Y5</td><td>20</td><td>30</td><td>Medium</td></tr>
+        <tr><td>Signups per partner / month</td><td>8</td><td>12</td><td>Medium</td></tr>
+        <tr><td>Lead-gen trailing commission</td><td>0.03%</td><td>0.03%</td><td>Low (deliberate floor vs 1.0–1.5% market rate)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="doc">
+    <p>Generated 2026-05-09 from <code>docs/financial-model.js</code>. All figures derive directly from the canonical 60-month simulation; this document and the underlying Excel workbook (<code>Prevista-Financial-Projections.xlsx</code>) share a single source of truth.</p>
+    <p>Both scenarios assume the same engine deployment schedule, founder compensation structure, country-launch costs, and FTE schedule per scenario. Variables that diverge between scenarios are organic reach, conversion, churn, and partnership velocity.</p>
+  </footer>
+</main>
+</body>
+</html>

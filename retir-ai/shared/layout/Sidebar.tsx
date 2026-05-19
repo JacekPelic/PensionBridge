@@ -10,27 +10,27 @@ const navItems = [
     section: 'Overview',
     items: [
       { label: 'Dashboard', icon: '⬡', href: '/' },
-      { label: 'Complete Your Picture', icon: '✦', href: '/progress' },
+      { label: 'Your picture', icon: '✦', href: '/picture' },
     ],
   },
   {
     section: 'Planning',
     items: [
-      { label: 'Career Journey', icon: '🗺', href: '/career' },
-      { label: 'Payout Estimation', icon: '📊', href: '/estimation' },
-      { label: 'Retirement Simulation', icon: '🧮', href: '/simulation', pro: true },
+      { label: 'Career Journey', icon: '▦', href: '/career' },
+      { label: 'Payout Estimation', icon: '⊞', href: '/estimation' },
+      { label: 'Retirement Simulation', icon: '◈', href: '/simulation', pro: true },
     ],
   },
   {
     section: 'Protection',
     items: [
-      { label: 'Document Vault', icon: '🗄', href: '/vault' },
-      { label: 'Legislative Radar', icon: '📡', href: '/radar', badge: '6', pro: true },
+      { label: 'Document Vault', icon: '▤', href: '/vault' },
+      { label: 'Legislative Radar', icon: '◎', href: '/radar', badge: '6', pro: true },
     ],
   },
   {
     section: 'Sharing',
-    items: [{ label: 'Trusted Access', icon: '👥', href: '/family', pro: true }],
+    items: [{ label: 'Trusted Access', icon: '◐', href: '/family', pro: true }],
   },
 ];
 
@@ -50,22 +50,26 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--border)' }}>
-        <div className="flex items-center gap-2.5">
+        <Link
+          href="/"
+          aria-label="Prevista home"
+          className="flex items-center gap-2.5 no-underline cursor-pointer transition-opacity duration-200 hover:opacity-80"
+        >
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-base"
             style={{ background: 'var(--gold)', fontFamily: 'var(--font-playfair)', color: 'var(--navy)' }}
           >
-            R
+            P
           </div>
           <div>
             <div className="text-base font-semibold" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}>
-              RetirAI
+              Prevista
             </div>
-            <div className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-dim)' }}>
-              AI-Powered Multi-Country Pension
+            <div className="text-[10px] italic tracking-wide" style={{ color: 'var(--text-dim)', fontFamily: 'var(--font-playfair)' }}>
+              your future, foreseen
             </div>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Nav */}
@@ -143,7 +147,7 @@ export function Sidebar() {
                 }}
               />
             </div>
-            {isPro ? 'Pro' : 'Free tier'}
+            {isPro ? 'Pro preview' : 'Free preview'}
           </button>
           {!isPro && (
             <Link
@@ -169,21 +173,21 @@ export function Sidebar() {
             fontFamily: 'var(--font-sans)',
           }}
         >
-          <span className="text-sm">{theme === 'dark' ? '☀️' : '🌙'}</span>
-          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          <span className="text-sm" style={{ color: 'var(--text-dim)' }}>{theme === 'dark' ? '○' : '●'}</span>
+          {theme === 'dark' ? 'Light mode' : 'Dark mode'}
         </button>
       </div>
 
       {/* Profile */}
       <div className="p-4" style={{ borderTop: '1px solid var(--border)' }}>
         <Link
-          href="/onboarding"
+          href="/"
           className="flex items-center gap-2.5 p-2.5 rounded-[10px] cursor-pointer no-underline transition-all duration-200 hover:opacity-80"
           style={{ background: 'var(--navy-3)' }}
         >
           <div
             className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-[13px] font-bold shrink-0"
-            style={{ background: 'linear-gradient(135deg, var(--gold), var(--gold-light))', color: 'var(--navy)' }}
+            style={{ background: 'var(--gold)', color: 'var(--navy)' }}
           >
             MK
           </div>
