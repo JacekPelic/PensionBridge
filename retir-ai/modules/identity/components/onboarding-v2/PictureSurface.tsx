@@ -44,8 +44,6 @@ export function PictureSurface() {
 
   return (
     <div className="flex flex-col gap-5">
-      {mode === 'mock' && !tourActive && <DemoBanner onStartFresh={startFresh} />}
-
       <PicturePreview estimate={currentEstimate} />
 
       {tourActive ? (
@@ -136,42 +134,6 @@ function TourCta({
   );
 }
 
-// ─── Demo banner ────────────────────────────────────────────────────
-
-function DemoBanner({ onStartFresh }: { onStartFresh: () => void }) {
-  return (
-    <div
-      className="rounded-[12px] p-4 flex items-center gap-3"
-      style={{
-        background: 'var(--gold-dim)',
-        border: '1px solid var(--gold-border, rgba(212,165,116,0.3))',
-      }}
-    >
-      <span className="text-lg shrink-0">{'\u2605'}</span>
-      <div className="flex-1 min-w-0">
-        <div
-          className="text-[12.5px] font-semibold mb-0.5"
-          style={{ color: 'var(--gold-light)' }}
-        >
-          Viewing the demo picture
-        </div>
-        <div
-          className="text-[11px] leading-relaxed"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          Mats Karlsson — a sample multi-country career. Start fresh to build your own.
-        </div>
-      </div>
-      <Button
-        variant="outline-gold"
-        onClick={onStartFresh}
-        className="shrink-0 text-[11.5px]"
-      >
-        Start fresh
-      </Button>
-    </div>
-  );
-}
 
 // ─── Completion header ──────────────────────────────────────────────
 

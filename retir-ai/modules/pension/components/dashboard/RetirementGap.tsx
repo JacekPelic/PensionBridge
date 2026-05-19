@@ -18,10 +18,24 @@ export function RetirementGap() {
   const showMatsSpecifics = !isFromOnboarding;
 
   // ─── Shared values ────────────────────────────────────────────────
-  const grossProjected = complete ? BASE_TMI : userData.pillar1Total;
+  // BASE_TMI is the canonical verified-net monthly projection — already after tax.
+  // The hard-coded gap-source cards below (€960 + €580 + €120 = €1,660) assume
+  // projected = BASE_TMI directly. The pre-verification path is still gross →
+  // applies LU tax → reports the implied net + effective rate.
   const residenceCountry = (userData.residenceCountry ?? 'LU') as ResidenceCountry;
-  const { netAnnual, effectiveRate } = calculateTax(grossProjected * 12, residenceCountry);
-  const projected = Math.round(netAnnual / 12);
+  let projected: number;
+  let effectiveRate: number;
+  if (complete) {
+    projected = BASE_TMI;
+    effectiveRate = 0;
+  } else {
+    const { netAnnual, effectiveRate: rate } = calculateTax(
+      userData.pillar1Total * 12,
+      residenceCountry,
+    );
+    projected = Math.round(netAnnual / 12);
+    effectiveRate = rate;
+  }
   const goal = userData.monthlyIncomeGoal;
   const gap = goal - projected;
   const barWidth = Math.round((projected / goal) * 100);
@@ -34,7 +48,7 @@ export function RetirementGap() {
           <div className="text-[15px] font-semibold mb-[3px]" style={{ color: 'var(--text)' }}>Retirement Income Gap</div>
           <div className="text-xs" style={{ color: 'var(--text-dim)' }}>
             {complete
-              ? `Your verified net projection vs your goal · ${Math.round(effectiveRate * 100)}% effective tax`
+              ? `Your verified net projection vs your goal`
               : `Your projected net state pension vs your goal · ${Math.round(effectiveRate * 100)}% effective tax`}
           </div>
           {!complete && (

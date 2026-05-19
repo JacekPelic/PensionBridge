@@ -15,9 +15,7 @@ function DashboardChrome() {
 
   const hasOpening = picture.residenceCountry != null && picture.age != null;
   let subtitle: string;
-  if (mode === 'mock') {
-    subtitle = 'Demo · Mats Karlsson, 45, LU resident';
-  } else if (hasOpening) {
+  if (hasOpening) {
     subtitle = 'Based on your picture · updates as you refine details';
   } else {
     subtitle = 'Add a few details on the Your picture page to see your numbers here';

@@ -17,9 +17,7 @@ function PictureChrome() {
     : 0;
 
   let subtitle: string;
-  if (mode === 'mock') {
-    subtitle = 'Demo \u00B7 Mats Karlsson, 45, LU resident, 3 countries';
-  } else if (hasOpening) {
+  if (hasOpening) {
     subtitle = `${countryCount} ${countryCount === 1 ? 'country' : 'countries'} \u00B7 keep adding details to tighten the range`;
   } else {
     subtitle = 'A few questions to get you started \u2014 about 2 minutes';

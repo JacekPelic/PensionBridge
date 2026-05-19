@@ -23,7 +23,7 @@ export function StageToggle() {
         color: isAfter ? 'var(--green)' : 'var(--text-muted)',
         fontFamily: 'var(--font-sans)',
       }}
-      aria-label={isAfter ? 'Switch to before-upload demo state' : 'Switch to documents-verified demo state'}
+      aria-label={isAfter ? 'Switch to estimates-only view' : 'Switch to documents-verified view'}
     >
       <span
         className="relative w-8 h-[18px] rounded-full transition-all"
@@ -37,7 +37,7 @@ export function StageToggle() {
           }}
         />
       </span>
-      {isAfter ? 'Demo: documents verified' : 'Demo: before uploads'}
+      {isAfter ? 'Documents verified' : 'Initial estimates'}
     </button>
   );
 }
