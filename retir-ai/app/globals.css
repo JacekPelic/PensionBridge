@@ -1,52 +1,57 @@
 @import "tailwindcss";
 
+/* ── Warm palette (dark) — warm ink surfaces, champagne gold, teal "verified".
+   Token names are kept (--navy* = surfaces, --green = verified state) so the
+   whole app re-skins without per-component edits. ── */
 :root {
-  --navy: #0B1120;
-  --navy-2: #111827;
-  --navy-3: #1a2540;
-  --navy-4: #232f4b;
-  --navy-5: #2d3d60;
-  --gold: #C9A84C;
-  --gold-light: #e5c97a;
-  --gold-dim: rgba(201,168,76,0.15);
-  --gold-border: rgba(201,168,76,0.3);
-  --text: #e8eaf0;
-  --text-muted: #8a95b0;
-  --text-dim: #556080;
-  --green: #3ecf8e;
-  --green-dim: rgba(62,207,142,0.12);
-  --red: #ef4444;
-  --red-dim: rgba(239,68,68,0.12);
-  --amber: #f59e0b;
-  --amber-dim: rgba(245,158,11,0.12);
+  --navy: #0E1016;
+  --navy-2: #161922;
+  --navy-3: #1E222E;
+  --navy-4: #2A2F3D;
+  --navy-5: #363D4D;
+  --gold: #C9A24A;
+  --gold-light: #E3C77E;
+  --gold-dim: rgba(201,162,74,0.15);
+  --gold-border: rgba(201,162,74,0.3);
+  --text: #ECEEF3;
+  --text-muted: #9AA3B5;
+  --text-dim: #6B7488;
+  --green: #3FB6A8;
+  --green-dim: rgba(63,182,168,0.12);
+  --red: #E5544B;
+  --red-dim: rgba(229,84,75,0.12);
+  --amber: #E0A53C;
+  --amber-dim: rgba(224,165,60,0.12);
   --blue: #60a5fa;
   --blue-dim: rgba(96,165,250,0.12);
-  --border: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
   --sidebar-w: 230px;
 }
 
+/* ── Warm palette (light) — warm paper base. --text-muted darkened to
+   #3D4658 to clear WCAG AA (the old #5a6478 ≈ 3.2:1 failed). ── */
 [data-theme="light"] {
-  --navy: #f5f6fa;
+  --navy: #F7F4ED;
   --navy-2: #ffffff;
-  --navy-3: #f0f1f5;
-  --navy-4: #e5e7ed;
-  --navy-5: #d1d5de;
-  --gold: #a08530;
-  --gold-light: #7a6520;
-  --gold-dim: rgba(160,133,48,0.1);
-  --gold-border: rgba(160,133,48,0.25);
-  --text: #1a1f2e;
-  --text-muted: #5a6478;
-  --text-dim: #8a95b0;
-  --green: #1a9b5f;
-  --green-dim: rgba(26,155,95,0.1);
-  --red: #dc2626;
-  --red-dim: rgba(220,38,38,0.08);
-  --amber: #d97706;
-  --amber-dim: rgba(217,119,6,0.08);
+  --navy-3: #F1EDE3;
+  --navy-4: #E8E3D6;
+  --navy-5: #DAD3C2;
+  --gold: #9A7B28;
+  --gold-light: #7A6118;
+  --gold-dim: rgba(154,123,40,0.1);
+  --gold-border: rgba(154,123,40,0.25);
+  --text: #1B1E26;
+  --text-muted: #3D4658;
+  --text-dim: #6A7184;
+  --green: #1F8C7E;
+  --green-dim: rgba(31,140,126,0.1);
+  --red: #C23A30;
+  --red-dim: rgba(194,58,48,0.08);
+  --amber: #B5791C;
+  --amber-dim: rgba(181,121,28,0.08);
   --blue: #2563eb;
   --blue-dim: rgba(37,99,235,0.08);
-  --border: rgba(0,0,0,0.09);
+  --border: rgba(20,20,20,0.10);
 }
 
 @theme inline {
@@ -55,9 +60,10 @@
   --color-navy-3: var(--navy-3);
   --color-navy-4: var(--navy-4);
   --color-navy-5: var(--navy-5);
-  --font-playfair: 'Playfair Display', serif;
-  --font-sans: 'DM Sans', sans-serif;
-  --font-mono: 'DM Mono', monospace;
+  /* --font-playfair = display serif slot (now Source Serif 4, was Playfair) */
+  --font-playfair: 'Source Serif 4', Georgia, serif;
+  --font-sans: 'Inter Tight', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
 
 body {
@@ -72,8 +78,8 @@ body {
 ::-webkit-scrollbar-track { background: var(--navy-2); }
 ::-webkit-scrollbar-thumb { background: var(--navy-5); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
-[data-theme="light"] ::-webkit-scrollbar-track { background: #f0f1f5; }
-[data-theme="light"] ::-webkit-scrollbar-thumb { background: #c8ccd5; }
+[data-theme="light"] ::-webkit-scrollbar-track { background: #F1EDE3; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #D8D0BF; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }

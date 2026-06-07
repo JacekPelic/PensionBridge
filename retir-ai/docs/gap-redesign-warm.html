@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-palette="warm">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prevista — Gap reveal: visual language</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter+Tight:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ════════════════════════════════════════════════════════════════
+     Two palettes × two themes. Toggle to A/B the aesthetic on the
+     SAME validated layout (clarity is already decided; this is dress).
+     ════════════════════════════════════════════════════════════════ */
+
+  /* ── CURRENT palette (app/globals.css today) ── */
+  [data-palette="current"] {
+    --font-display:'Playfair Display',serif; --font-ui:'DM Sans',sans-serif; --font-num:'DM Mono',monospace;
+    --display-weight:600;
+  }
+  [data-palette="current"][data-theme="dark"] {
+    --bg:#0B1120; --surface:#111827; --surface-2:#1a2540;
+    --text:#e8eaf0; --text-muted:#8a95b0; --text-dim:#556080;
+    --accent:#C9A84C; --accent-soft:#e5c97a; --verified:#3ecf8e; --border:rgba(255,255,255,0.07);
+    --page:#070b14;
+  }
+  [data-palette="current"][data-theme="light"] {
+    --bg:#f5f6fa; --surface:#ffffff; --surface-2:#f0f1f5;
+    --text:#1a1f2e; --text-muted:#3d4658; --text-dim:#8a95b0;
+    --accent:#a08530; --accent-soft:#7a6520; --verified:#1a9b5f; --border:rgba(0,0,0,0.09);
+    --page:#e9eaf0;
+  }
+
+  /* ── WARM palette (proposed) — warm ink / warm paper, champagne gold, teal verified ── */
+  [data-palette="warm"] {
+    --font-display:'Source Serif 4',serif; --font-ui:'Inter Tight',sans-serif; --font-num:'Geist Mono',monospace;
+    --display-weight:600;
+  }
+  [data-palette="warm"][data-theme="dark"] {
+    --bg:#0E1016; --surface:#161922; --surface-2:#1E222E;
+    --text:#ECEEF3; --text-muted:#9AA3B5; --text-dim:#6B7488;
+    --accent:#C9A24A; --accent-soft:#E3C77E; --verified:#3FB6A8; --border:rgba(255,255,255,0.08);
+    --page:#08090D;
+  }
+  [data-palette="warm"][data-theme="light"] {
+    --bg:#F7F4ED; --surface:#FFFFFF; --surface-2:#F1EDE3;
+    --text:#1B1E26; --text-muted:#3D4658; --text-dim:#6A7184;
+    --accent:#9A7B28; --accent-soft:#7A6118; --verified:#1F8C7E; --border:rgba(20,20,20,0.10);
+    --page:#EBE6DA;
+  }
+
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+  body {
+    margin:0; background:var(--page); color:var(--text);
+    font-family:var(--font-ui); -webkit-font-smoothing:antialiased;
+    display:flex; flex-direction:column; align-items:center;
+    padding:28px 24px 64px; transition:background .25s, color .25s;
+  }
+  .tabnum { font-variant-numeric:tabular-nums; font-family:var(--font-num); }
+
+  /* ── toolbar ── */
+  .toolbar { display:flex; gap:18px; flex-wrap:wrap; align-items:center; justify-content:center; margin-bottom:30px; }
+  .toolgroup { display:flex; align-items:center; gap:8px; }
+  .toolgroup > .lbl { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--text-dim); font-weight:600; }
+  .seg { display:inline-flex; border:1px solid var(--border); border-radius:9px; overflow:hidden; background:var(--surface); }
+  .seg button { font-family:var(--font-ui); font-size:13px; padding:8px 14px; cursor:pointer; border:none; background:transparent; color:var(--text-muted); transition:.15s; }
+  .seg button.on { background:var(--accent); color:var(--bg); font-weight:600; }
+
+  /* ── the screen ── */
+  .frame {
+    width:100%; max-width:600px; background:var(--bg);
+    border:1px solid var(--border); border-radius:18px;
+    padding:56px 48px; transition:background .25s, border-color .25s;
+    box-shadow:0 24px 60px rgba(0,0,0,0.10);
+  }
+  [data-theme="dark"] .frame { box-shadow:0 24px 60px rgba(0,0,0,0.35); }
+
+  .eyebrow { font-size:12px; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--accent); margin-bottom:26px; }
+
+  .lead { font-family:var(--font-display); font-weight:400; font-size:23px; line-height:1.45; color:var(--text); max-width:32ch; margin-bottom:20px; }
+  .lead b { font-weight:600; }
+
+  .hero { display:flex; align-items:baseline; gap:14px; margin-bottom:8px; }
+  .hero .num { font-family:var(--font-num); font-weight:500; font-size:78px; line-height:.95; letter-spacing:-.02em; color:var(--text); }
+  .hero .unit { font-size:18px; color:var(--text-muted); }
+  .secondary { font-size:16px; color:var(--text-muted); line-height:1.5; margin-bottom:38px; min-height:1px; }
+  .secondary b { color:var(--text); font-weight:600; }
+
+  .bar-wrap { margin-bottom:36px; }
+  .bar-ends { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:12px; }
+  .bar-ends .e .k { font-size:12.5px; color:var(--text-muted); margin-bottom:4px; }
+  .bar-ends .e .val { font-family:var(--font-num); font-size:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+  .bar-ends .e.right { text-align:right; }
+  .bar { height:14px; border-radius:8px; background:var(--surface-2); position:relative; overflow:hidden; }
+  .bar .f { position:absolute; inset:0 auto 0 0; width:69.8%; background:var(--accent); border-radius:8px; }
+
+  .reassure { font-size:16.5px; color:var(--text); line-height:1.55; margin-bottom:26px; }
+  .reassure .pill { color:var(--verified); font-weight:600; }
+
+  .cta { display:inline-flex; align-items:center; gap:9px; background:var(--accent); color:var(--bg);
+    font-family:var(--font-ui); font-weight:600; font-size:16px; border:none; border-radius:11px;
+    padding:16px 28px; cursor:pointer; min-height:54px; transition:.15s; }
+  .cta:hover { background:var(--accent-soft); }
+
+  .trust { margin-top:34px; padding-top:20px; border-top:1px solid var(--border); display:flex; align-items:center; gap:9px; font-size:13.5px; color:var(--text-dim); }
+  .trust .v { width:8px; height:8px; border-radius:50%; background:var(--verified); }
+  .trust a { color:var(--text-muted); text-decoration:underline; text-underline-offset:2px; }
+
+  .caption { margin-top:26px; max-width:600px; text-align:center; font-size:12.5px; color:var(--text-dim); line-height:1.6; }
+  .caption b { color:var(--text-muted); }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <div class="toolgroup"><span class="lbl">Palette</span>
+      <span class="seg" id="segPalette"><button data-v="current">Current</button><button class="on" data-v="warm">Warm (proposed)</button></span></div>
+    <div class="toolgroup"><span class="lbl">Theme</span>
+      <span class="seg" id="segTheme"><button data-v="dark">Dark</button><button class="on" data-v="light">Light</button></span></div>
+    <div class="toolgroup"><span class="lbl">Hero</span>
+      <span class="seg" id="segHero"><button class="on" data-v="gap">Gap</button><button data-v="proj">Projection</button></span></div>
+  </div>
+
+  <div class="frame">
+    <div class="eyebrow">Your retirement income</div>
+
+    <!-- gap-as-hero -->
+    <div id="heroGap">
+      <div class="lead">You're on track for <b>€3,840</b> a month. Your goal is <b>€5,500</b>. That leaves a gap of:</div>
+      <div class="hero"><span class="num">€1,660</span><span class="unit">a month</span></div>
+      <div class="secondary">&nbsp;</div>
+    </div>
+
+    <!-- projection-as-hero -->
+    <div id="heroProj" style="display:none">
+      <div class="lead">You're on track for:</div>
+      <div class="hero"><span class="num">€3,840</span><span class="unit">a month</span></div>
+      <div class="secondary">Your goal is <b>€5,500</b> — that leaves a gap of <b>€1,660 a month</b>.</div>
+    </div>
+
+    <div class="bar-wrap">
+      <div class="bar-ends">
+        <div class="e"><div class="k">On track</div><div class="val">€3,840</div></div>
+        <div class="e right"><div class="k">Your goal</div><div class="val">€5,500</div></div>
+      </div>
+      <div class="bar"><div class="f"></div></div>
+    </div>
+
+    <div class="reassure"><span class="pill">Good news —</span> we've found three ways to close most of it.</div>
+    <button class="cta">See how to close it &nbsp;→</button>
+
+    <div class="trust"><span class="v"></span>How we know this — verified across <a href="#">3 countries</a></div>
+  </div>
+
+  <div class="caption">
+    Same validated layout, two looks. <b>Warm</b> = warm paper / warm ink, champagne gold accent, <b>teal</b> for the verified state, and Source&nbsp;Serif&nbsp;4&nbsp;+&nbsp;Inter&nbsp;Tight&nbsp;+&nbsp;Geist&nbsp;Mono (replacing the audit-flagged Playfair&nbsp;+&nbsp;DM&nbsp;Sans). Flip <b>Palette</b> to feel the aesthetic delta; the clarity is identical either way.
+  </div>
+
+<script>
+  const root = document.documentElement;
+  function wire(id, attr) {
+    const seg = document.getElementById(id);
+    seg.querySelectorAll('button').forEach(b => b.onclick = () => {
+      seg.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      if (attr) root.setAttribute(attr, b.dataset.v);
+      else {
+        const gap = b.dataset.v === 'gap';
+        document.getElementById('heroGap').style.display = gap ? '' : 'none';
+        document.getElementById('heroProj').style.display = gap ? 'none' : '';
+      }
+    });
+  }
+  wire('segPalette', 'data-palette');
+  wire('segTheme', 'data-theme');
+  wire('segHero', null);
+</script>
+</body>
+</html>
