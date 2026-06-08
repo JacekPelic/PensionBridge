@@ -96,7 +96,12 @@
       "Bash(python3 -c ' *)",
       "Bash(python3 *)",
       "WebFetch(domain:employment-social-affairs.ec.europa.eu)",
-      "WebFetch(domain:ec.europa.eu)"
+      "WebFetch(domain:ec.europa.eu)",
+      "Bash(git merge -s ours master -m 'Merge master into v2 \\(ours strategy\\) *)",
+      "Bash(git branch *)",
+      "Bash(PORT=3137 npm run dev)",
+      "Bash(echo \"dev PID $!\")",
+      "Bash(pkill -f \"next dev\")"
     ],
     "autoApprove": true
   }
