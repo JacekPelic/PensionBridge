@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/shared/ui/Button';
 import type { CountryCode, PartialPicture } from './estimate';
+import type { AskStatus } from '@/modules/identity/picture-types';
 import type { Question } from './questions';
 import { RESIDENCE_OPTIONS, QUESTIONS, countriesForYears } from './questions';
 import { countryAnchor } from './estimate';
@@ -616,7 +617,7 @@ function MultiCountryInput({
 }: {
   residence?: CountryCode;
   value?: CountryCode[];
-  askStatus?: Partial<Record<string, 'fulfilled' | 'skipped'>>;
+  askStatus?: Partial<Record<string, AskStatus>>;
   onAnswer: (patch: Partial<PartialPicture>) => void;
 }) {
   const selected = value ?? [];

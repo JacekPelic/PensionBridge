@@ -21,10 +21,25 @@ const PILLAR_LABEL: Record<Pillar, string> = {
   p3: 'Pillar 3 \u00B7 Private',
 };
 
-export function AskCard({ ask }: { ask: DataAsk }) {
-  const [expanded, setExpanded] = useState(false);
+export function AskCard({
+  ask,
+  onSaveForLater,
+  defaultExpanded = false,
+}: {
+  ask: DataAsk;
+  /**
+   * When provided (the Settling "gather" context), the expanded card closes
+   * with a calm "save this to gather later" instead of the Pro-upsell
+   * StuckFooter — the trust-breaker an anxious no-docs user hits otherwise.
+   */
+  onSaveForLater?: () => void;
+  defaultExpanded?: boolean;
+}) {
+  const [expanded, setExpanded] = useState(defaultExpanded);
+  // In the gather context, default to teaching ("How to get it") since the
+  // user likely doesn't have the document yet; otherwise keep the old default.
   const [tab, setTab] = useState<Tab>(
-    ask.uploadable ? 'upload' : 'manual',
+    onSaveForLater && ask.guide ? 'guide' : ask.uploadable ? 'upload' : 'manual',
   );
 
   const priority = PRIORITY_STYLE[ask.priority];
@@ -114,9 +129,32 @@ export function AskCard({ ask }: { ask: DataAsk }) {
             {tab === 'product' && ask.productOffer && <ProductPane ask={ask} />}
           </div>
 
-          <StuckFooter ask={ask} />
+          {onSaveForLater ? (
+            <GatherCloser onSave={onSaveForLater} />
+          ) : (
+            <StuckFooter ask={ask} />
+          )}
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Gather closer — calm alternative to the Pro-upsell StuckFooter ──
+// Shown at the end of the guide in the Settling "gather" context. No sales
+// theatre at the user's most fragile moment.
+function GatherCloser({ onSave }: { onSave: () => void }) {
+  return (
+    <div
+      className="flex items-center justify-between gap-3 p-3.5 flex-wrap"
+      style={{ borderTop: '1px solid var(--border)', background: 'var(--navy-4)' }}
+    >
+      <span className="text-[12.5px]" style={{ color: 'var(--text-muted)' }}>
+        No rush — your estimate already stands without this.
+      </span>
+      <Button variant="primary" onClick={onSave} className="text-[13px]">
+        Save this to gather later
+      </Button>
     </div>
   );
 }

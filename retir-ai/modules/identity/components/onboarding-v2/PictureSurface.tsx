@@ -5,8 +5,10 @@ import { Button } from '@/shared/ui/Button';
 import { PicturePreview } from './PicturePreview';
 import { estimate } from './estimate';
 import { usePicture } from '@/modules/identity/PictureProvider';
-import type { MaritalStatus, PartialPicture } from '@/modules/identity/picture-types';
+import type { MaritalStatus, PartialPicture, AskStatus } from '@/modules/identity/picture-types';
 import { AsksStack, deriveAsks, OnboardingCapstone, PillarTour } from '@/modules/guidance';
+import { AskCard } from '@/modules/guidance/AskCard';
+import type { DataAsk } from '@/modules/guidance/types';
 
 /**
  * The picture surface — the always-on home for ongoing sharpening of the
@@ -50,16 +52,22 @@ export function PictureSurface() {
         <PillarTour picture={picture} onUpdate={updatePicture} onExit={exitTour} />
       ) : (
         <>
+          {/* Settling Picture: the preview above is the answer; below is ONE
+              clear next step, then quiet secondary surfaces. No tour to abandon,
+              no 11-item backlog. (See docs/picture-settling-spec.md) */}
           <CompletionHeader picture={picture} />
-          {/* Primary next-step: the guided tour. Everything below is secondary. */}
-          <TourCta
-            everCompleted={tourEverCompleted}
-            pausedAt={picture.tour?.currentStepIndex ?? 0}
-            onStart={startTour}
-          />
-          <QuickEditsRow picture={picture} onUpdate={updatePicture} />
-          {/* Sharpen (add details) before act (products). */}
-          <AsksSection asks={asks} />
+          <NextBestStep asks={asks} picture={picture} onUpdate={updatePicture} />
+          <GatherTray asks={asks} picture={picture} />
+          <PreparedDoor>
+            <QuickEditsRow picture={picture} onUpdate={updatePicture} />
+            <AsksSection asks={asks} />
+            <TourCta
+              everCompleted={tourEverCompleted}
+              pausedAt={picture.tour?.currentStepIndex ?? 0}
+              onStart={startTour}
+            />
+          </PreparedDoor>
+          {/* Act (products) — after sharpen. */}
           <OnboardingCapstone picture={picture} asks={asks} />
           <FooterActions
             mode={mode}
@@ -160,6 +168,131 @@ function CompletionHeader({ picture }: { picture: PartialPicture }) {
       </div>
     </div>
   );
+}
+
+// ─── Settling: the single next-best step ───────────────────────────
+
+const HANDLED_STATUSES: AskStatus[] = ['fulfilled', 'skipped', 'saved'];
+
+function isHandled(picture: PartialPicture, ask: DataAsk): boolean {
+  const s = picture.askStatus?.[ask.id];
+  return s != null && HANDLED_STATUSES.includes(s);
+}
+
+function NextBestStep({
+  asks,
+  picture,
+  onUpdate,
+}: {
+  asks: DataAsk[];
+  picture: PartialPicture;
+  onUpdate: (patch: Partial<PartialPicture>) => void;
+}) {
+  // deriveAsks is already priority-sorted (high → low), so the first unhandled
+  // ask is the highest-leverage next step — no band-width ranking needed.
+  const ask = asks.find((a) => !isHandled(picture, a));
+
+  if (!ask) {
+    return (
+      <div
+        className="rounded-[14px] p-5"
+        style={{ background: 'var(--navy-2)', border: '1px solid var(--border)' }}
+      >
+        <div
+          className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-1"
+          style={{ color: 'var(--green)' }}
+        >
+          All caught up
+        </div>
+        <div className="text-[15px]" style={{ color: 'var(--text)' }}>
+          You&apos;ve handled everything we suggested. Your picture sharpens
+          automatically as those documents come in.
+        </div>
+      </div>
+    );
+  }
+
+  const saveForLater = () =>
+    onUpdate({ askStatus: { ...(picture.askStatus ?? {}), [ask.id]: 'saved' } });
+
+  return (
+    <div>
+      <div
+        className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-2"
+        style={{ color: 'var(--gold)' }}
+      >
+        Your next best step
+      </div>
+      <div
+        className="rounded-[15px] p-1.5"
+        style={{ background: 'var(--gold-dim)', border: '1px solid var(--gold-border)' }}
+      >
+        <AskCard key={ask.id} ask={ask} onSaveForLater={saveForLater} />
+      </div>
+      <div className="text-[12.5px] mt-2" style={{ color: 'var(--text-dim)' }}>
+        Just this one for now — everything else can wait. Your estimate already stands.
+      </div>
+    </div>
+  );
+}
+
+// ─── Settling: "Things to gather" tray ─────────────────────────────
+
+function GatherTray({ asks, picture }: { asks: DataAsk[]; picture: PartialPicture }) {
+  const saved = asks.filter((a) => picture.askStatus?.[a.id] === 'saved');
+  if (saved.length === 0) return null;
+  return (
+    <div
+      className="rounded-[12px] p-4"
+      style={{ background: 'var(--navy-2)', border: '1px dashed var(--border)' }}
+    >
+      <div
+        className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-2.5"
+        style={{ color: 'var(--text-dim)' }}
+      >
+        Things to gather ({saved.length})
+      </div>
+      <div className="flex flex-col gap-1.5">
+        {saved.map((a) => (
+          <div key={a.id} className="flex items-center justify-between gap-3 text-[13px]">
+            <span style={{ color: 'var(--text)' }}>
+              {a.icon} {a.title}
+            </span>
+            <span className="text-[12px]" style={{ color: 'var(--green)' }}>
+              {a.impact} on the way
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="text-[11.5px] mt-2.5" style={{ color: 'var(--text-dim)' }}>
+        We&apos;ll keep these here until you have them. Nothing expires.
+      </div>
+    </div>
+  );
+}
+
+// ─── Settling: prepared-user door ──────────────────────────────────
+
+function PreparedDoor({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="flex items-center justify-center gap-2 rounded-[12px] text-[13.5px] font-medium cursor-pointer transition-colors w-full"
+        style={{
+          minHeight: 48,
+          background: 'transparent',
+          border: '1px solid var(--border)',
+          color: 'var(--text-muted)',
+        }}
+      >
+        I already have my documents — show all details
+      </button>
+    );
+  }
+  return <div className="flex flex-col gap-5 animate-fade-in">{children}</div>;
 }
 
 // ─── Quick edits — 3 compact cards in a row ────────────────────────
