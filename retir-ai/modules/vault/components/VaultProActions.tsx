@@ -12,7 +12,7 @@ export function VaultProActions() {
 
   if (!isPro) {
     return (
-      <div className="grid grid-cols-2 gap-3.5 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
         {/* Export — locked */}
         <div className="rounded-xl p-4 flex items-center gap-3 relative overflow-hidden"
           style={{ background: 'var(--navy-3)', border: '1px solid var(--border)', opacity: 0.7 }}>
@@ -43,7 +43,7 @@ export function VaultProActions() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3.5 mb-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
       {/* Export — active */}
       <Card style={{ cursor: 'pointer', border: '1px solid rgba(96,165,250,0.25)' }}>
         <div className="flex items-center gap-3">

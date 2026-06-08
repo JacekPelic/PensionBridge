@@ -172,7 +172,7 @@ function SplashPanel({
       </div>
 
       <div
-        className="mt-12 grid grid-cols-3 gap-3 text-left"
+        className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left"
       >
         {[
           {

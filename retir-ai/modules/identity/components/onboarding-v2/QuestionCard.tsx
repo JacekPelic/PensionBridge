@@ -129,7 +129,7 @@ function CountrySelectInput({
   onAnswer: (patch: Partial<PartialPicture>) => void;
 }) {
   return (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
       {RESIDENCE_OPTIONS.map((opt) => {
         const selected = value === opt.code;
         return (
@@ -428,7 +428,7 @@ function SalaryPerCountryInput({
                 </span>
               )}
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <SalaryField
                 label="When you started"
                 currency={currency}
@@ -649,7 +649,7 @@ function MultiCountryInput({
       <div className="text-[12px] mb-3" style={{ color: 'var(--text-muted)' }}>
         Select all that apply. Don&apos;t worry about exact dates yet.
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {RESIDENCE_OPTIONS.filter((opt) => opt.code !== residence).map((opt) => {
           const isSelected = selected.includes(opt.code);
           return (

@@ -209,7 +209,7 @@ export function IncomeBreakdown({ onNetComputed }: Props) {
       </div>
 
       {/* Two columns */}
-      <div className="grid grid-cols-2 gap-5 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
         {/* By Country */}
         <div>
           <div className="text-[11px] font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--text-dim)' }}>By country</div>

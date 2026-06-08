@@ -16,7 +16,7 @@ export function SimulationTeaser({ results }: Props) {
       <Card className="mb-5 relative overflow-hidden">
         <div style={{ filter: 'blur(6px)', opacity: 0.5, pointerEvents: 'none' }}>
           <div className="text-[15px] font-semibold mb-4" style={{ color: 'var(--text)' }}>Tax Breakdown</div>
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
             {results.slice(0, 3).map((r) => {
               const meta = RESIDENCE_META[r.residenceCountry];
               return (

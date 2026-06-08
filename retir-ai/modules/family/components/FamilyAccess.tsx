@@ -300,14 +300,14 @@ export function FamilyAccess() {
               Billions in pensions go unclaimed every year
             </div>
             <div className="text-[13px] leading-relaxed max-w-[600px]" style={{ color: 'var(--text-muted)' }}>
-              When a pension holder passes away, their family often doesn't know which countries, funds, or institutions hold their benefits.
+              When a pension holder passes away, their family often doesn&apos;t know which countries, funds, or institutions hold their benefits.
               For multi-country careers like yours, the risk is even higher — claims must be filed separately in each jurisdiction, often in a different language, with strict deadlines.
             </div>
           </div>
         </div>
 
         {/* Stats row */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="rounded-xl p-3.5" style={{ background: 'var(--navy-4)', border: '1px solid var(--border)' }}>
             <div className="text-[22px] font-bold" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--red)' }}>€3.7B</div>
             <div className="text-[11px] leading-snug mt-1" style={{ color: 'var(--text-muted)' }}>unclaimed in France alone</div>
@@ -423,7 +423,7 @@ export function FamilyAccess() {
 
                   {isOpen && (
                     <div className="rounded-b-xl p-5" style={{ background: 'var(--navy-4)', border: '1px solid var(--gold-border)', borderTop: 'none' }}>
-                      <div className="grid grid-cols-2 gap-3 mb-5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
                         <div className="rounded-lg p-3" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
                           <div className="text-[10px] uppercase tracking-wider font-medium mb-1" style={{ color: 'var(--text-dim)' }}>Claim deadline</div>
                           <div className="text-[12px]" style={{ color: 'var(--text-muted)' }}>{c.deadline}</div>
@@ -454,7 +454,7 @@ export function FamilyAccess() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4 mb-5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
                         <div>
                           <div className="text-[12px] font-semibold mb-3 flex items-center gap-2" style={{ color: 'var(--text)' }}>
                             <span className="w-5 h-5 rounded-md flex items-center justify-center text-[10px]" style={{ background: 'var(--blue-dim)', color: 'var(--blue)' }}>📄</span>
@@ -535,7 +535,7 @@ export function FamilyAccess() {
             <div className="text-[12.5px] mb-4" style={{ color: 'var(--text-muted)' }}>
               Share your pension data with family and trusted professionals, with scoped permissions.
             </div>
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               {[
                 { icon: '👨‍👩‍👧', title: 'Family member management', desc: 'Add spouse, children, and beneficiaries with controlled access levels' },
                 { icon: '🧑‍💼', title: 'Advisor access', desc: 'Invite pension consultants and tax advisors with scoped, audited permissions' },

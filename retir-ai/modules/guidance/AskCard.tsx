@@ -239,7 +239,7 @@ function ManualPane({ ask, onDone }: { ask: DataAsk; onDone: () => void }) {
         {form.description}
       </div>
 
-      <div className="grid grid-cols-2 gap-x-3 gap-y-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-3">
         {form.fields.map((field) => (
           <div key={field.id}>
             <label

@@ -50,7 +50,7 @@ export function RiskRadar() {
             </div>
             <div className="text-[13px] leading-relaxed max-w-[640px]" style={{ color: 'var(--text-muted)' }}>
               We monitor pension laws, tax reforms, and regulatory changes across every country in your career.
-              When a government proposes or enacts a change that could affect your retirement income, you'll see it here — with a clear explanation of what it means for you personally.
+              When a government proposes or enacts a change that could affect your retirement income, you&apos;ll see it here — with a clear explanation of what it means for you personally.
             </div>
           </div>
           <div className="flex flex-col items-end gap-1 shrink-0">
@@ -70,7 +70,7 @@ export function RiskRadar() {
         /* Pro: full radar with KPIs, filters, alerts */
         <>
           {/* KPI row */}
-          <div className="grid grid-cols-4 gap-4 mb-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
             <Card>
               <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>Active Alerts</div>
               <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>{riskAlerts.length}</div>
@@ -185,7 +185,7 @@ export function RiskRadar() {
             <div className="text-[12.5px] mb-4" style={{ color: 'var(--text-muted)' }}>
               Stay ahead of changes that could silently reduce your retirement income.
             </div>
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               {[
                 { icon: '📡', title: 'Real-time monitoring', desc: 'Pension laws, tax reforms, and regulatory changes across FR, CH, LU, and EU' },
                 { icon: '💰', title: 'Personal impact analysis', desc: 'See exactly how each change affects your projected retirement income' },
