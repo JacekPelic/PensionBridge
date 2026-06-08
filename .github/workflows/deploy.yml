@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches: [master, redesign]
   workflow_dispatch:
 
 permissions:
@@ -18,29 +18,59 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # --- Production (master) -> site root ---
       - uses: actions/checkout@v4
+        with:
+          ref: master
+          path: master-src
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: retir-ai/package-lock.json
+          cache-dependency-path: master-src/retir-ai/package-lock.json
 
-      - name: Install dependencies
-        working-directory: retir-ai
+      - name: Install dependencies (master)
+        working-directory: master-src/retir-ai
         run: npm ci
 
-      - name: Build
-        working-directory: retir-ai
+      - name: Build (master)
+        working-directory: master-src/retir-ai
         run: npx next build
 
-      - name: Add 404.html for SPA routing
-        working-directory: retir-ai
-        run: cp out/index.html out/404.html
+      - name: Stage production output
+        working-directory: master-src/retir-ai
+        run: |
+          cp out/index.html out/404.html
+          mkdir -p "$GITHUB_WORKSPACE/site"
+          cp -r out/. "$GITHUB_WORKSPACE/site/"
+
+      # --- Redesign -> /redesign subpath ---
+      - uses: actions/checkout@v4
+        with:
+          ref: redesign
+          path: redesign-src
+
+      - name: Install dependencies (redesign)
+        working-directory: redesign-src/retir-ai
+        run: npm ci
+
+      - name: Build (redesign)
+        working-directory: redesign-src/retir-ai
+        env:
+          NEXT_PUBLIC_BASE_PATH: /PensionBridge/redesign
+        run: npx next build
+
+      - name: Stage redesign output
+        working-directory: redesign-src/retir-ai
+        run: |
+          cp out/index.html out/404.html
+          mkdir -p "$GITHUB_WORKSPACE/site/redesign"
+          cp -r out/. "$GITHUB_WORKSPACE/site/redesign/"
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: retir-ai/out
+          path: site
 
   deploy:
     needs: build
