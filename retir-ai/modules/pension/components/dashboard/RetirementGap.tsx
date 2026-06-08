@@ -53,6 +53,19 @@ export function RetirementGap() {
 
   const eur = (n: number) => `€${Math.abs(n).toLocaleString()}`;
 
+  // "If you act on all three" outcome. Only the demo persona (and the verified
+  // stage) get a specific numeric outcome; real onboarded users see a vague,
+  // non-fabricated reassurance instead.
+  const hasSpecificOutcome = complete || showMatsSpecifics;
+  const improvement = complete
+    ? Math.max(0, gap - 310)
+    : showMatsSpecifics
+      ? 1350
+      : Math.round(gap * 0.7);
+  const improvedProjected = Math.min(goal, projected + improvement);
+  const improvedPct = Math.max(0, Math.min(100, Math.round((improvedProjected / goal) * 100)));
+  const remainingGap = Math.max(0, goal - improvedProjected);
+
   // While the modal is open: close on Escape and lock background scroll.
   useEffect(() => {
     if (!showDetail) return;
@@ -241,6 +254,9 @@ export function RetirementGap() {
             </div>
 
           {/* Gap sources */}
+          <div className="text-[12px] uppercase font-semibold mb-3" style={{ color: 'var(--gold)', letterSpacing: '0.12em' }}>
+            {complete ? 'What’s creating it' : 'What’s still unknown'}
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-7">
             {(complete
               ? [
@@ -269,40 +285,44 @@ export function RetirementGap() {
           </div>
 
           {/* Product offers */}
+          <div className="text-[12px] uppercase font-semibold mb-3" style={{ color: 'var(--gold)', letterSpacing: '0.12em' }}>
+            Ways to close it
+          </div>
           <ProductOffers />
 
-          {/* All three summary */}
-          <div className="rounded-[10px] p-3.5 px-[18px] mb-4" style={{ background: 'var(--navy-3)', border: '1px solid var(--green-dim)' }}>
-            <div className="flex items-center justify-between mb-2.5">
-              <span className="text-xs font-semibold" style={{ color: 'var(--text)' }}>If you act on all three</span>
-              <span className="text-xs font-semibold" style={{ color: 'var(--green)' }}>
-                {complete
-                  ? 'Gap closes to −€310/mo'
-                  : showMatsSpecifics
-                    ? '+€1,350/mo toward your goal'
-                    : 'Could substantially close your gap'}
+          {/* If you act on all three — clean outcome, no hatching */}
+          <div className="rounded-[10px] p-4 px-[18px] mb-4" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
+            <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+              <span className="text-[14px] font-semibold" style={{ color: 'var(--text)' }}>If you act on all three</span>
+              <span className="text-[14px] font-semibold" style={{ color: 'var(--green)' }}>
+                {hasSpecificOutcome
+                  ? remainingGap <= 0
+                    ? 'Your gap closes entirely'
+                    : `Gap shrinks to −${eur(remainingGap)}/mo`
+                  : 'Could substantially close your gap'}
               </span>
             </div>
-            <div className="relative h-6 rounded-md overflow-hidden" style={{ background: 'var(--navy-4)' }}>
-              <div className="absolute top-0 left-0 h-full rounded-l-md" style={{ width: `${barWidth}%`, background: 'var(--green)' }} />
-              <div className="absolute top-0 h-full" style={{
-                left: `${barWidth}%`, width: '24.5%',
-                background: 'var(--green-dim)',
-                borderLeft: '1px dashed var(--green)',
-              }} />
-              <div className="absolute top-0 right-0 h-full" style={{
-                width: complete ? '5.5%' : '15%',
-                background: 'var(--red-dim)',
-                borderLeft: '1px dashed var(--red)',
-              }} />
-            </div>
-            <div className="flex justify-between mt-1.5">
-              <Figure className="text-[11px]" style={{ color: 'var(--text-dim)' }}>{eur(projected)} current</Figure>
-              {showMatsSpecifics && !complete && (
-                <span className="text-[11px]" style={{ color: 'var(--green)' }}>+€1,350 from products</span>
+            <div className="h-3.5 rounded-lg overflow-hidden relative" style={{ background: 'var(--navy-4)' }}>
+              {/* where you are now */}
+              <div className="absolute inset-y-0 left-0" style={{ width: `${barWidth}%`, background: 'var(--text-dim)' }} />
+              {/* what acting on the three products adds */}
+              {hasSpecificOutcome && (
+                <div
+                  className="absolute inset-y-0"
+                  style={{ left: `${barWidth}%`, width: `${Math.max(0, improvedPct - barWidth)}%`, background: 'var(--gold)' }}
+                />
               )}
-              <Figure className="text-[11px]" style={{ color: 'var(--text-dim)' }}>{eur(goal)} goal</Figure>
             </div>
+            <div className="flex justify-between mt-2">
+              <Figure className="text-[12px]" style={{ color: 'var(--text-dim)' }}>{eur(projected)} now</Figure>
+              <Figure className="text-[12px]" style={{ color: 'var(--text-dim)' }}>{eur(goal)} goal</Figure>
+            </div>
+            {hasSpecificOutcome && (
+              <div className="flex items-center gap-2 mt-3 text-[12.5px]">
+                <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: 'var(--gold)' }} />
+                <span style={{ color: 'var(--text-muted)' }}>Gold shows what these three products add toward your goal.</span>
+              </div>
+            )}
           </div>
 
           {/* Capital drawdown note — only in complete state */}

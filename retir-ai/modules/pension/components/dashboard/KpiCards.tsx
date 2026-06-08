@@ -8,6 +8,27 @@ import { calculateTax } from '@/modules/tax';
 import type { ResidenceCountry } from '@/modules/tax';
 import { BASE_TMI } from '@/modules/pension/constants';
 
+// Numeric KPI value — mono + tabular so the four cards align as a column of figures.
+function Stat({ children, color }: { children: React.ReactNode; color: string }) {
+  return (
+    <div style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontSize: 28, fontWeight: 600, color, lineHeight: 1 }}>
+      {children}
+    </div>
+  );
+}
+
+// Non-numeric placeholder value ("Pending", "Not tracked") — kept out of mono.
+function Placeholder({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-[22px] font-semibold" style={{ color: 'var(--text-dim)', lineHeight: 1.1 }}>
+      {children}
+    </div>
+  );
+}
+
+const labelCls = 'text-[11.5px] uppercase tracking-wider font-medium mb-2.5';
+const linkCls = 'inline-block mt-2.5 py-1 text-[13px] underline underline-offset-2 cursor-pointer';
+
 export function KpiCards() {
   const { stage } = useDataStage();
   const { userData, isFromOnboarding } = useUserData();
@@ -27,106 +48,68 @@ export function KpiCards() {
   const netProjected = Math.round(netAnnual / 12);
 
   return (
-    <div className="grid grid-cols-4 gap-4 mb-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
       <Card>
-        <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>
-          State Pension
-        </div>
-        <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: complete ? 'var(--green)' : 'var(--text)', lineHeight: 1 }}>
-          €{netProjected.toLocaleString()}
-        </div>
-        <div className="text-xs mt-1.5" style={{ color: complete ? 'var(--green)' : 'var(--text-muted)' }}>
+        <div className={labelCls} style={{ color: 'var(--text-dim)' }}>State Pension</div>
+        <Stat color={complete ? 'var(--green)' : 'var(--text)'}>€{netProjected.toLocaleString()}</Stat>
+        <div className="text-[12.5px] mt-2" style={{ color: complete ? 'var(--green)' : 'var(--text-muted)' }}>
           {complete ? `✓ verified · net · across ${numCountries} countries` : `estimated · net · across ${numCountries} countries`}
         </div>
       </Card>
 
       <Card>
-        <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>
-          Gaps Detected
-        </div>
+        <div className={labelCls} style={{ color: 'var(--text-dim)' }}>Gaps Detected</div>
         {showMatsSpecifics ? (
           <>
-            <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--red)', lineHeight: 1 }}>
-              2
-            </div>
-            <div className="text-xs mt-1.5" style={{ color: 'var(--red)' }}>
+            <Stat color="var(--red)">2</Stat>
+            <div className="text-[12.5px] mt-2" style={{ color: 'var(--red)' }}>
               {complete ? '1 correctable + 1 freelance unverified' : '1 transition gap + 1 missing period'}
             </div>
-            <div className="mt-2">
-              <Link href="/career" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--gold-light)' }}>
-                View gaps →
-              </Link>
-            </div>
+            <Link href="/career" className={linkCls} style={{ color: 'var(--gold-light)' }}>View gaps →</Link>
           </>
         ) : (
           <>
-            <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 28, fontWeight: 700, color: 'var(--text-dim)', lineHeight: 1 }}>
-              Pending
-            </div>
-            <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
+            <Placeholder>Pending</Placeholder>
+            <div className="text-[12.5px] mt-2" style={{ color: 'var(--text-muted)' }}>
               Upload pension documents to analyze gaps
             </div>
-            <div className="mt-2">
-              <Link href="/career" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--gold-light)' }}>
-                Add documents →
-              </Link>
-            </div>
+            <Link href="/career" className={linkCls} style={{ color: 'var(--gold-light)' }}>Add documents →</Link>
           </>
         )}
       </Card>
 
       {complete ? (
-        <Card style={{ border: '1px solid rgba(96,165,250,0.25)', cursor: 'pointer' }}>
-          <Link href="/estimation" className="no-underline">
-            <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--blue)' }}>
-              Retirement Capital
-            </div>
-            <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--blue)', lineHeight: 1 }}>
-              €210K
-            </div>
-            <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>Swiss workplace pension lump sum</div>
-            <div className="mt-2 text-xs underline underline-offset-2" style={{ color: 'var(--blue)' }}>
+        <Card style={{ border: '1px solid var(--blue-dim)' }}>
+          <Link href="/estimation" className="no-underline block">
+            <div className={labelCls} style={{ color: 'var(--blue)' }}>Retirement Capital</div>
+            <Stat color="var(--blue)">€210K</Stat>
+            <div className="text-[12.5px] mt-2" style={{ color: 'var(--text-muted)' }}>Swiss workplace pension lump sum</div>
+            <span className="inline-block mt-2.5 py-1 text-[13px] underline underline-offset-2" style={{ color: 'var(--blue)' }}>
               Model options →
-            </div>
+            </span>
           </Link>
         </Card>
       ) : (
-        <Card style={{ border: '1px solid rgba(217,119,6,0.25)' }}>
-          <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--amber)' }}>
-            Workplace & Personal
-          </div>
-          <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 28, fontWeight: 700, color: 'var(--text-dim)', lineHeight: 1 }}>
-            Not tracked
-          </div>
-          <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
+        <Card style={{ border: '1px solid var(--amber-dim)' }}>
+          <div className={labelCls} style={{ color: 'var(--amber)' }}>Workplace &amp; Personal</div>
+          <Placeholder>Not tracked</Placeholder>
+          <div className="text-[12.5px] mt-2" style={{ color: 'var(--text-muted)' }}>
             {showMatsSpecifics ? 'Could add €1,000+/mo' : 'Add workplace pensions and personal savings'}
           </div>
-          <div className="mt-2">
-            <Link href="/picture" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--amber)' }}>
-              Complete your picture &rarr;
-            </Link>
-          </div>
+          <Link href="/picture" className={linkCls} style={{ color: 'var(--amber)' }}>Complete your picture →</Link>
         </Card>
       )}
 
       <Card>
-        <div className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--text-dim)' }}>
-          Income Goal
-        </div>
-        <div style={{ fontFamily: 'var(--font-playfair)', fontSize: 32, fontWeight: 700, color: 'var(--gold-light)', lineHeight: 1 }}>
-          €{userData.monthlyIncomeGoal.toLocaleString()}
-        </div>
-        <div className="text-xs mt-1.5" style={{ color: userData.monthlyIncomeGoal > netProjected ? 'var(--red)' : 'var(--green)' }}>
+        <div className={labelCls} style={{ color: 'var(--text-dim)' }}>Income Goal</div>
+        <Stat color="var(--gold-light)">€{userData.monthlyIncomeGoal.toLocaleString()}</Stat>
+        <div className="text-[12.5px] mt-2" style={{ color: userData.monthlyIncomeGoal > netProjected ? 'var(--red)' : 'var(--green)' }}>
           {(() => {
             const gap = userData.monthlyIncomeGoal - netProjected;
             return gap > 0 ? `−€${gap.toLocaleString()}/mo shortfall` : 'On track';
           })()}
         </div>
-        <div className="mt-2">
-          <Link href="/estimation" className="text-xs cursor-pointer underline underline-offset-2" style={{ color: 'var(--gold-light)' }}>
-            View breakdown →
-          </Link>
-        </div>
+        <Link href="/estimation" className={linkCls} style={{ color: 'var(--gold-light)' }}>View breakdown →</Link>
       </Card>
     </div>
   );
