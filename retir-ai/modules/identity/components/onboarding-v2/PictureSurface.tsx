@@ -179,6 +179,17 @@ function isHandled(picture: PartialPicture, ask: DataAsk): boolean {
   return s != null && HANDLED_STATUSES.includes(s);
 }
 
+const COUNTRY_ADJ: Record<string, string> = {
+  CH: 'Swiss', FR: 'French', LU: 'Luxembourg', DE: 'German', BE: 'Belgian',
+  IT: 'Italian', ES: 'Spanish', PT: 'Portuguese', NL: 'Dutch',
+};
+
+const PRIO_STYLE: Record<string, { color: string; bg: string; label: string }> = {
+  high: { color: 'var(--red)', bg: 'var(--red-dim)', label: 'High priority' },
+  medium: { color: 'var(--amber)', bg: 'var(--amber-dim)', label: 'Medium' },
+  low: { color: 'var(--text-dim)', bg: 'var(--navy-4)', label: 'Low' },
+};
+
 function NextBestStep({
   asks,
   picture,
@@ -188,6 +199,7 @@ function NextBestStep({
   picture: PartialPicture;
   onUpdate: (patch: Partial<PartialPicture>) => void;
 }) {
+  const [openedId, setOpenedId] = useState<string | null>(null);
   // deriveAsks is already priority-sorted (high → low), so the first unhandled
   // ask is the highest-leverage next step — no band-width ranking needed.
   const ask = asks.find((a) => !isHandled(picture, a));
@@ -214,6 +226,10 @@ function NextBestStep({
 
   const saveForLater = () =>
     onUpdate({ askStatus: { ...(picture.askStatus ?? {}), [ask.id]: 'saved' } });
+  const opened = openedId === ask.id;
+  const adj = ask.country ? COUNTRY_ADJ[ask.country] : undefined;
+  const ctaLabel = adj ? `Tighten your ${adj} estimate` : 'Show me how';
+  const prio = PRIO_STYLE[ask.priority] ?? PRIO_STYLE.low;
 
   return (
     <div>
@@ -227,7 +243,48 @@ function NextBestStep({
         className="rounded-[15px] p-1.5"
         style={{ background: 'var(--gold-dim)', border: '1px solid var(--gold-border)' }}
       >
-        <AskCard key={ask.id} ask={ask} onSaveForLater={saveForLater} />
+        {opened ? (
+          <AskCard key={ask.id} ask={ask} defaultExpanded onSaveForLater={saveForLater} />
+        ) : (
+          <div className="rounded-[12px] p-4" style={{ background: 'var(--navy-3)' }}>
+            <div className="flex items-start gap-3 mb-3.5">
+              <div
+                className="w-9 h-9 rounded-[10px] flex items-center justify-center text-base shrink-0"
+                style={{ background: 'var(--navy-4)' }}
+              >
+                {ask.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <span
+                  className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-[2px] rounded-[4px]"
+                  style={{ background: prio.bg, color: prio.color }}
+                >
+                  {prio.label}
+                </span>
+                <div className="text-[15px] font-semibold mt-1.5" style={{ color: 'var(--text)' }}>
+                  {ask.title}
+                </div>
+                <div className="text-[13px] leading-relaxed mt-1" style={{ color: 'var(--text-muted)' }}>
+                  {ask.whyNow}
+                </div>
+                <div className="text-[13px] font-medium mt-1.5" style={{ color: 'var(--gold-light)' }}>
+                  {ask.impact}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setOpenedId(ask.id)}
+              className="inline-flex items-center gap-2 rounded-[10px] cursor-pointer transition-colors"
+              style={{
+                background: 'var(--gold)', color: 'var(--navy)', fontFamily: 'var(--font-sans)',
+                fontWeight: 600, fontSize: '15px', padding: '13px 22px', minHeight: 48, border: 'none',
+              }}
+            >
+              {ctaLabel} <span aria-hidden>→</span>
+            </button>
+          </div>
+        )}
       </div>
       <div className="text-[12.5px] mt-2" style={{ color: 'var(--text-dim)' }}>
         Just this one for now — everything else can wait. Your estimate already stands.
