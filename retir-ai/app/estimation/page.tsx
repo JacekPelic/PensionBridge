@@ -23,7 +23,7 @@ export default function EstimationPage() {
     <UserDataProvider>
       <div className="flex min-h-screen">
         <Sidebar />
-        <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
+        <div className="flex-1 flex flex-col min-w-0" style={{ marginLeft: 'var(--sidebar-w)' }}>
           <Topbar
             title="Payout Estimation"
             subtitle="Modelled from salary & career data · ±10–15% accuracy"
@@ -35,7 +35,7 @@ export default function EstimationPage() {
               </>
             }
           />
-          <div className="flex-1 p-7 animate-fade-in">
+          <div className="flex-1 p-4 sm:p-7 animate-fade-in">
             <IncomeGoalInput target={target} onTargetChange={setTarget} netProjected={netMonthly} />
             <IncomeBreakdown onNetComputed={handleNetComputed} />
             <SimulationCTA />

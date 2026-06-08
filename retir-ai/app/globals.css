@@ -61,6 +61,11 @@
   :root {
     --sidebar-w: 0px;
   }
+  /* Clearance so the fixed chat FAB (bottom-right) doesn't cover the last
+     content when scrolled to the end. */
+  body {
+    padding-bottom: 88px;
+  }
 }
 
 @theme inline {

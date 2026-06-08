@@ -13,7 +13,7 @@ export default function RadarPage() {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
+      <div className="flex-1 flex flex-col min-w-0" style={{ marginLeft: 'var(--sidebar-w)' }}>
         <Topbar
           title="Legislative Radar"
           subtitle="Monitoring pension laws, tax reforms & regulatory changes across your countries"
@@ -21,7 +21,7 @@ export default function RadarPage() {
             isPro ? <Button variant="ghost">Mark All Read</Button> : undefined
           }
         />
-        <div className="flex-1 p-7 animate-fade-in">
+        <div className="flex-1 p-4 sm:p-7 animate-fade-in">
           <RiskRadar />
         </div>
       </div>

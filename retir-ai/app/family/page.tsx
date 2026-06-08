@@ -13,7 +13,7 @@ export default function FamilyPage() {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
+      <div className="flex-1 flex flex-col min-w-0" style={{ marginLeft: 'var(--sidebar-w)' }}>
         <Topbar
           title="Trusted Access"
           subtitle="Manage who can view or contribute to your pension data"
@@ -26,7 +26,7 @@ export default function FamilyPage() {
             ) : undefined
           }
         />
-        <div className="flex-1 p-7 animate-fade-in">
+        <div className="flex-1 p-4 sm:p-7 animate-fade-in">
           <FamilyAccess />
         </div>
       </div>
