@@ -45,7 +45,7 @@ function DashboardChrome() {
 
 function DashboardBody() {
   return (
-    <div className="flex-1 p-7 animate-fade-in">
+    <div className="flex-1 p-4 sm:p-7 animate-fade-in">
       <PictureSummary />
       <RetirementGap />
       <KpiCards />

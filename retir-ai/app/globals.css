@@ -54,6 +54,15 @@
   --border: rgba(20,20,20,0.10);
 }
 
+/* Below lg (1024px) the sidebar becomes an off-canvas drawer, so the page
+   content no longer reserves room for it — every page's marginLeft collapses
+   to 0 via this one token. The drawer keeps its own fixed width in Sidebar. */
+@media (max-width: 1023px) {
+  :root {
+    --sidebar-w: 0px;
+  }
+}
+
 @theme inline {
   --color-navy: var(--navy);
   --color-navy-2: var(--navy-2);

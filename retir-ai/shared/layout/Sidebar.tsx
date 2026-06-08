@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/shared/ThemeProvider';
 import { useTier } from '@/shared/TierProvider';
+import { useSidebar } from '@/shared/layout/SidebarProvider';
 
 const navItems = [
   {
@@ -37,17 +39,35 @@ const navItems = [
 export function Sidebar() {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
-  const { tier, isPro, toggleTier } = useTier();
+  const { isPro, toggleTier } = useTier();
+  const { isOpen, close } = useSidebar();
+
+  // Close the mobile drawer whenever the route changes (incl. browser back).
+  useEffect(() => {
+    close();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return (
-    <nav
-      className="fixed top-0 left-0 bottom-0 flex flex-col z-50"
-      style={{
-        width: 'var(--sidebar-w)',
-        background: 'var(--navy-2)',
-        borderRight: '1px solid var(--border)',
-      }}
-    >
+    <>
+      {/* Mobile backdrop — only when the drawer is open, below lg */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 lg:hidden"
+          style={{ background: 'rgba(0,0,0,0.5)' }}
+          onClick={close}
+          aria-hidden
+        />
+      )}
+      <nav
+        className={`fixed top-0 left-0 bottom-0 w-[230px] flex flex-col z-50 transition-transform duration-300 lg:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        style={{
+          background: 'var(--navy-2)',
+          borderRight: '1px solid var(--border)',
+        }}
+      >
       {/* Logo */}
       <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--border)' }}>
         <Link
@@ -89,6 +109,7 @@ export function Sidebar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={close}
                   className="flex items-center gap-2.5 px-2.5 py-[9px] rounded-lg text-[13.5px] transition-all duration-200 no-underline"
                   style={{
                     color: isActive ? 'var(--gold-light)' : 'var(--text-muted)',
@@ -204,6 +225,7 @@ export function Sidebar() {
           </span>
         </Link>
       </div>
-    </nav>
+      </nav>
+    </>
   );
 }
