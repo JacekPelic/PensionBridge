@@ -51,14 +51,16 @@ export function PictureSurface() {
       ) : (
         <>
           <CompletionHeader picture={picture} />
+          {/* Primary next-step: the guided tour. Everything below is secondary. */}
           <TourCta
             everCompleted={tourEverCompleted}
             pausedAt={picture.tour?.currentStepIndex ?? 0}
             onStart={startTour}
           />
           <QuickEditsRow picture={picture} onUpdate={updatePicture} />
-          <OnboardingCapstone picture={picture} asks={asks} />
+          {/* Sharpen (add details) before act (products). */}
           <AsksSection asks={asks} />
+          <OnboardingCapstone picture={picture} asks={asks} />
           <FooterActions
             mode={mode}
             onLoadMock={loadMock}
@@ -105,7 +107,7 @@ function TourCta({
       </div>
       <div className="flex-1 min-w-[220px]">
         <div
-          className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-1"
+          className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-1"
           style={{ color: isDone ? 'var(--text-dim)' : 'var(--gold-light)' }}
         >
           {isDone ? 'Tour complete' : isResume ? 'Resume where you left off' : 'Complete your picture'}
@@ -142,7 +144,7 @@ function CompletionHeader({ picture }: { picture: PartialPicture }) {
     <div className="flex items-end justify-between gap-4 flex-wrap">
       <div>
         <div
-          className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-1"
+          className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-1"
           style={{ color: 'var(--gold-light)' }}
         >
           Opening complete
@@ -153,7 +155,7 @@ function CompletionHeader({ picture }: { picture: PartialPicture }) {
         >
           {picture.firstName ? `Nice work, ${picture.firstName}.` : 'Nice work.'}
           {' '}
-          <span style={{ color: 'var(--text-muted)' }}>Sharpen from here.</span>
+          <span style={{ color: 'var(--text-muted)' }}>Here’s your picture so far.</span>
         </h2>
       </div>
     </div>
@@ -172,7 +174,7 @@ function QuickEditsRow({
   return (
     <div>
       <div
-        className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-2"
+        className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-2"
         style={{ color: 'var(--text-dim)' }}
       >
         Quick edits
@@ -297,7 +299,7 @@ function RefinementCard({
       >
         <div className="flex-1 min-w-0">
           <div
-            className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-0.5"
+            className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-0.5"
             style={{ color: 'var(--text-dim)' }}
           >
             {label}

@@ -89,12 +89,12 @@ export function PicturePreview({ estimate, forceUnverified = false }: PicturePre
       <div className="flex items-start justify-between gap-8 flex-wrap">
         <div className="min-w-[260px]">
           <div
-            className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-2 flex items-center gap-2"
+            className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-2 flex items-center gap-2 flex-wrap"
             style={{ color: 'var(--text-dim)' }}
           >
             <span>Your monthly income at retirement</span>
             <span
-              className="text-[9.5px] font-bold px-1.5 py-[1px] rounded-[4px]"
+              className="text-[11px] font-bold px-2 py-[2px] rounded-[4px]"
               style={{
                 background: verified ? 'var(--green-dim)' : 'var(--amber-dim)',
                 color: verified ? 'var(--green)' : 'var(--amber)',
@@ -106,11 +106,11 @@ export function PicturePreview({ estimate, forceUnverified = false }: PicturePre
           </div>
           {hasData ? (
             <div
-              className="text-[36px] leading-none font-semibold tabular-nums"
-              style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}
+              className="text-[40px] leading-none font-semibold tabular-nums"
+              style={{ fontFamily: 'var(--font-mono)', color: 'var(--text)' }}
             >
               {'\u20AC'}{alignedNet.toLocaleString()}
-              <span className="text-[13px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
+              <span className="text-[14px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
                 /mo
               </span>
             </div>
