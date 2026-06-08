@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prevista — The Settling Picture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter+Tight:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ── WARM palette · two themes ──────────────────────────────── */
+  :root{
+    --font-display:'Source Serif 4',serif;
+    --font-ui:'Inter Tight',sans-serif;
+    --font-num:'Geist Mono',monospace;
+  }
+  [data-theme="dark"]{
+    --bg:#0E1016; --surface:#161922; --surface2:#1E222E;
+    --text:#ECEEF3; --muted:#9AA3B5; --dim:#6B7488;
+    --accent:#C9A24A; --accent-soft:#E3C77E; --verified:#3FB6A8;
+    --alert:#E5544B; --border:rgba(255,255,255,0.08);
+    --band:rgba(255,255,255,0.06); --band-soft:rgba(255,255,255,0.04);
+    --page:#08090D; --whisper:rgba(201,162,74,0.07);
+  }
+  [data-theme="light"]{
+    --bg:#F7F4ED; --surface:#FFFFFF; --surface2:#F1EDE3;
+    --text:#1B1E26; --muted:#3D4658; --dim:#6A7184;
+    --accent:#9A7B28; --accent-soft:#7A6118; --verified:#1F8C7E;
+    --alert:#C23A30; --border:rgba(20,20,20,0.10);
+    --band:rgba(20,20,20,0.05); --band-soft:rgba(20,20,20,0.03);
+    --page:#EBE6DA; --whisper:rgba(154,123,40,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--page); color:var(--text);
+    font-family:var(--font-ui); -webkit-font-smoothing:antialiased;
+    line-height:1.5; transition:background .3s,color .3s;
+    font-size:16px;
+  }
+  .tnum{font-family:var(--font-num); font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+  h1,h2,h3{font-family:var(--font-display); font-weight:600; margin:0;}
+
+  /* ── Top chrome: theme toggle + screen switcher ── */
+  .chrome{
+    position:sticky; top:0; z-index:40;
+    background:var(--page); border-bottom:1px solid var(--border);
+    padding:10px 16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .chrome .brand{font-family:var(--font-display); font-weight:600; font-size:17px; letter-spacing:.01em;}
+  .chrome .brand b{color:var(--accent); font-weight:600;}
+  .switcher{display:flex; gap:4px; flex-wrap:wrap; flex:1; min-width:200px;}
+  .switcher button{
+    font-family:var(--font-ui); font-size:12.5px; font-weight:500;
+    background:transparent; color:var(--muted); border:1px solid var(--border);
+    border-radius:999px; padding:6px 11px; cursor:pointer; min-height:34px;
+    transition:.15s; white-space:nowrap;
+  }
+  .switcher button:hover{color:var(--text); border-color:var(--accent);}
+  .switcher button.on{background:var(--accent); color:var(--page); border-color:var(--accent);}
+  [data-theme="dark"] .switcher button.on{color:#0E1016;}
+  .tgl{
+    background:var(--surface); color:var(--text); border:1px solid var(--border);
+    border-radius:999px; padding:7px 13px; cursor:pointer; font-size:13px;
+    font-family:var(--font-ui); min-height:36px; display:flex; align-items:center; gap:7px;
+  }
+
+  /* ── Phone-ish frame ── */
+  .stage{max-width:480px; margin:0 auto; padding:0 16px 120px;}
+  .screen{display:none; animation:fade .35s ease;}
+  .screen.show{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  .scene-note{
+    font-size:12.5px; color:var(--dim); font-style:italic;
+    border-left:2px solid var(--accent); padding:6px 0 6px 12px; margin:18px 0 0;
+    font-family:var(--font-display);
+  }
+
+  /* ── Hero answer ── */
+  .hero{padding:30px 2px 8px;}
+  .hero .kick{
+    font-size:12px; text-transform:uppercase; letter-spacing:.13em;
+    color:var(--dim); font-weight:600;
+  }
+  .hero .lead{
+    font-family:var(--font-display); font-size:24px; line-height:1.32;
+    font-weight:500; margin:12px 0 4px; letter-spacing:-.01em;
+  }
+  .hero .lead .amt{color:var(--text); font-family:var(--font-num); font-weight:500; white-space:nowrap;}
+  .hero .sub{color:var(--muted); font-size:14.5px; margin-top:10px;}
+  .hero .sharp{
+    display:inline-flex; align-items:center; gap:7px; margin-top:14px;
+    font-size:12.5px; color:var(--dim);
+  }
+  .hero .sharp .dot{width:7px; height:7px; border-radius:50%; background:var(--accent); opacity:.7;}
+
+  /* ── Pillar / country bands ── */
+  .group-label{
+    font-size:11.5px; text-transform:uppercase; letter-spacing:.12em;
+    color:var(--dim); font-weight:600; margin:26px 2px 10px;
+    display:flex; justify-content:space-between; align-items:baseline;
+  }
+  .group-label .gtot{font-family:var(--font-num); color:var(--muted); letter-spacing:0; text-transform:none;}
+
+  .band-card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:15px 16px 16px; margin-bottom:10px;
+    transition:border-color .3s, box-shadow .3s;
+  }
+  .band-card.tight{border-color:color-mix(in srgb,var(--verified) 40%, var(--border));}
+  .band-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px;}
+  .band-name{font-size:15px; font-weight:600;}
+  .band-name .flag{font-size:14px; margin-right:7px;}
+  .band-val{font-family:var(--font-num); font-size:15px; font-weight:500; text-align:right; white-space:nowrap;}
+  .band-sub{font-size:12.5px; color:var(--dim); margin-top:2px;}
+
+  /* the band itself — a range track */
+  .track{position:relative; height:9px; border-radius:6px; background:var(--band-soft); margin:13px 0 4px; overflow:visible;}
+  .track .fill{
+    position:absolute; top:0; bottom:0; border-radius:6px; background:var(--band);
+    transition:left .6s cubic-bezier(.4,0,.2,1), right .6s cubic-bezier(.4,0,.2,1);
+  }
+  .band-card.tight .track .fill{background:color-mix(in srgb,var(--verified) 28%, transparent);}
+  .track .mid{
+    position:absolute; top:-3px; width:2px; height:15px; border-radius:2px;
+    background:var(--accent); transition:left .6s cubic-bezier(.4,0,.2,1);
+  }
+  .band-card.tight .track .mid{background:var(--verified);}
+  .band-spread{display:flex; justify-content:space-between; font-family:var(--font-num); font-size:11px; color:var(--dim); margin-top:4px;}
+
+  .badge{
+    display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600;
+    padding:3px 8px; border-radius:999px; letter-spacing:.02em;
+  }
+  .badge.est{background:var(--band); color:var(--muted);}
+  .badge.engine{background:color-mix(in srgb,var(--accent) 16%, transparent); color:var(--accent);}
+  .badge.verified{background:color-mix(in srgb,var(--verified) 16%, transparent); color:var(--verified);}
+  .badge .vd{width:6px; height:6px; border-radius:50%; background:currentColor;}
+
+  /* ── The single whisper ── */
+  .whisper{
+    margin-top:13px; border-top:1px dashed var(--border); padding-top:13px;
+    display:flex; gap:11px; align-items:flex-start; animation:fade .4s ease;
+  }
+  .whisper .ic{
+    flex:none; width:26px; height:26px; border-radius:50%;
+    background:var(--whisper); color:var(--accent); display:flex; align-items:center; justify-content:center;
+    font-size:14px; margin-top:1px;
+  }
+  .whisper .wtxt{font-size:13.5px; color:var(--muted); line-height:1.5;}
+  .whisper .wtxt b{color:var(--text); font-weight:600;}
+  .whisper .wact{
+    margin-top:8px; display:flex; gap:14px; align-items:center; flex-wrap:wrap;
+  }
+  .linkbtn{
+    background:none; border:none; padding:0; cursor:pointer;
+    color:var(--accent); font-family:var(--font-ui); font-size:13.5px; font-weight:600;
+    text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+    min-height:30px;
+  }
+  .linkbtn.ghost{color:var(--dim); text-decoration:none;}
+  .linkbtn.ghost:hover{color:var(--muted);}
+
+  /* ── Inline guide (expanded ask) ── */
+  .guide{
+    margin-top:13px; background:var(--surface2); border:1px solid var(--border);
+    border-radius:12px; padding:16px; animation:fade .35s ease;
+  }
+  .guide .gtitle{font-family:var(--font-display); font-size:16.5px; font-weight:600; margin-bottom:4px;}
+  .guide .payoff{
+    font-size:13px; color:var(--accent); font-weight:600; margin-bottom:13px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .meta-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;}
+  .meta{
+    font-size:11.5px; color:var(--muted); background:var(--surface);
+    border:1px solid var(--border); border-radius:7px; padding:5px 9px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .meta .ml{color:var(--dim);}
+  .meta b{color:var(--text); font-weight:600;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; border-bottom:1px solid var(--border);}
+  .tabs button{
+    background:none; border:none; border-bottom:2px solid transparent; margin-bottom:-1px;
+    color:var(--muted); font-family:var(--font-ui); font-size:13px; font-weight:500;
+    padding:8px 4px; cursor:pointer; min-height:38px;
+  }
+  .tabs button.on{color:var(--text); border-bottom-color:var(--accent);}
+  .tabpane{display:none;}
+  .tabpane.on{display:block; animation:fade .25s ease;}
+
+  .steps{margin:0; padding:0; list-style:none; counter-reset:s;}
+  .steps li{
+    position:relative; padding:0 0 12px 30px; counter-increment:s;
+    font-size:13.5px; color:var(--muted); line-height:1.5;
+  }
+  .steps li::before{
+    content:counter(s); position:absolute; left:0; top:0;
+    width:21px; height:21px; border-radius:50%; background:var(--surface);
+    border:1px solid var(--border); color:var(--accent); font-family:var(--font-num);
+    font-size:11px; display:flex; align-items:center; justify-content:center; font-weight:500;
+  }
+  .steps li b{color:var(--text); font-weight:600;}
+  .steps a{color:var(--accent); text-underline-offset:2px;}
+
+  .tipbox{
+    background:var(--whisper); border-radius:9px; padding:11px 13px; margin-top:6px;
+    font-size:12.5px; color:var(--muted); line-height:1.5;
+  }
+  .tipbox b{color:var(--text);}
+  .altpath{
+    margin-top:11px; font-size:12.5px; color:var(--dim); line-height:1.5;
+    padding-top:11px; border-top:1px solid var(--border);
+  }
+  .altpath b{color:var(--muted);}
+
+  .reassure{
+    margin-top:15px; padding-top:14px; border-top:1px solid var(--border);
+    font-size:13px; color:var(--muted); font-family:var(--font-display); font-style:italic;
+  }
+  .guide-actions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;}
+  .btn{
+    font-family:var(--font-ui); font-size:13.5px; font-weight:600;
+    border-radius:9px; padding:11px 16px; cursor:pointer; min-height:44px;
+    border:1px solid var(--border); background:var(--surface); color:var(--text);
+    transition:.15s; flex:1; min-width:140px;
+  }
+  .btn:hover{border-color:var(--accent);}
+  .btn.primary{background:var(--accent); color:var(--page); border-color:var(--accent);}
+  [data-theme="dark"] .btn.primary{color:#0E1016;}
+  .btn.primary:hover{background:var(--accent-soft);}
+
+  /* manual / upload tabs content */
+  .drop{
+    border:1.5px dashed var(--border); border-radius:11px; padding:24px 16px;
+    text-align:center; color:var(--muted); font-size:13.5px; cursor:pointer;
+    transition:.15s; background:var(--surface);
+  }
+  .drop:hover{border-color:var(--accent); color:var(--text);}
+  .drop .di{font-size:24px; display:block; margin-bottom:6px; opacity:.7;}
+  .field{margin-bottom:12px;}
+  .field label{display:block; font-size:12px; color:var(--muted); font-weight:600; margin-bottom:5px;}
+  .field input{
+    width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    padding:11px 12px; color:var(--text); font-family:var(--font-num); font-size:14px; min-height:44px;
+  }
+  .field input:focus{outline:none; border-color:var(--accent);}
+
+  /* ── Gather tray ── */
+  .tray{
+    margin-top:26px; background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; overflow:hidden;
+  }
+  .tray-head{
+    display:flex; align-items:center; gap:11px; padding:15px 16px; cursor:pointer;
+    user-select:none;
+  }
+  .tray-head .ic{
+    width:30px; height:30px; border-radius:8px; background:var(--surface2);
+    display:flex; align-items:center; justify-content:center; font-size:15px; flex:none;
+  }
+  .tray-head .tt{flex:1;}
+  .tray-head .tt .t1{font-size:14px; font-weight:600;}
+  .tray-head .tt .t2{font-size:12px; color:var(--dim); margin-top:1px;}
+  .tray-head .chev{color:var(--dim); transition:.2s; font-family:var(--font-num);}
+  .tray.open .chev{transform:rotate(90deg);}
+  .tray-body{display:none; padding:0 16px 14px;}
+  .tray.open .tray-body{display:block; animation:fade .3s ease;}
+  .tray-item{
+    display:flex; align-items:center; gap:12px; padding:12px 0;
+    border-top:1px solid var(--border); font-size:13.5px;
+  }
+  .tray-item .titxt{flex:1;}
+  .tray-item .titxt .ti1{font-weight:600; color:var(--text);}
+  .tray-item .titxt .ti2{font-size:12px; color:var(--dim); margin-top:1px;}
+  .tray-item .linkbtn{flex:none; font-size:13px;}
+
+  /* ── persistent contract footer ── */
+  .contract{
+    position:fixed; left:0; right:0; bottom:0; z-index:30;
+    background:color-mix(in srgb,var(--surface) 88%, transparent);
+    backdrop-filter:saturate(1.1) blur(8px);
+    border-top:1px solid var(--border); padding:11px 16px;
+    text-align:center; font-size:12.5px; color:var(--muted);
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .contract .vd{width:7px; height:7px; border-radius:50%; background:var(--verified);}
+  .contract b{color:var(--text); font-weight:600;}
+
+  .toast{
+    position:fixed; left:50%; bottom:64px; transform:translateX(-50%) translateY(20px);
+    background:var(--text); color:var(--bg); font-size:13px; font-weight:500;
+    padding:11px 18px; border-radius:10px; z-index:50; opacity:0; pointer-events:none;
+    transition:.3s; box-shadow:0 8px 30px rgba(0,0,0,.25); max-width:88%;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:430px){
+    .hero .lead{font-size:21px;}
+    .stage{padding:0 12px 120px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="brand">Prev<b>i</b>sta</div>
+  <div class="switcher" id="switcher">
+    <button data-s="s0" class="on">S0 · Arrival</button>
+    <button data-s="s1">S1 · Whisper</button>
+    <button data-s="s2">S2 · Guide</button>
+    <button data-s="s3">S3 · Has-docs</button>
+    <button data-s="s5">S5 · Return</button>
+  </div>
+  <button class="tgl" id="tgl">◐ <span id="tglt">Dark</span></button>
+</div>
+
+<div class="stage">
+
+  <!-- ════════════ S0 — ARRIVAL ════════════ -->
+  <section class="screen show" data-screen="s0">
+    <div class="scene-note">Mats lands here with no documents on hand. No tour. No CTA banner. No to-do list. Just an answer about his own retirement.</div>
+
+    <div class="hero">
+      <div class="kick">Your retirement picture</div>
+      <div class="lead">Your retirement income looks like roughly
+        <span class="amt">€3,200&ndash;€4,480</span> a month.</div>
+      <div class="sub">Based on what you've told us so far — Luxembourg residence, age 58, and a career across France, Switzerland and Luxembourg.</div>
+      <div class="sharp"><span class="dot"></span> This is an early estimate. It sharpens as the picture fills.</div>
+    </div>
+
+    <div class="group-label">State pension · Pillar 1 <span class="gtot tnum">≈ €2,140/mo</span></div>
+
+    <div class="band-card">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇫🇷</span>France · CNAV</div>
+        <div class="band-sub">10 years · régime général</div></div>
+        <div class="band-val">€780&ndash;€940</div>
+      </div>
+      <div class="track"><div class="fill" style="left:18%;right:30%"></div><div class="mid" style="left:42%"></div></div>
+      <div class="band-spread"><span>€780</span><span class="badge est"><span class="vd"></span>Estimate</span><span>€940</span></div>
+    </div>
+
+    <div class="band-card">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇨🇭</span>Switzerland · AVS / AHV</div>
+        <div class="band-sub">5 years · 1st pillar</div></div>
+        <div class="band-val">€420&ndash;€820</div>
+      </div>
+      <div class="track"><div class="fill" style="left:10%;right:8%"></div><div class="mid" style="left:50%"></div></div>
+      <div class="band-spread"><span>€420</span><span class="badge est"><span class="vd"></span>Estimate</span><span>€820</span></div>
+    </div>
+
+    <div class="band-card">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇱🇺</span>Luxembourg · CNAP</div>
+        <div class="band-sub">6 years · ongoing</div></div>
+        <div class="band-val">€520&ndash;€640</div>
+      </div>
+      <div class="track"><div class="fill" style="left:22%;right:34%"></div><div class="mid" style="left:40%"></div></div>
+      <div class="band-spread"><span>€520</span><span class="badge est"><span class="vd"></span>Estimate</span><span>€640</span></div>
+    </div>
+
+    <div class="group-label">Workplace &amp; personal · Pillars 2 &amp; 3 <span class="gtot tnum">≈ €1,400/mo</span></div>
+
+    <div class="band-card">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇨🇭</span>Swiss 2nd pillar · vested benefits</div>
+        <div class="band-sub">Likely held at a Freizügigkeit foundation</div></div>
+        <div class="band-val">€600&ndash;€1,200</div>
+      </div>
+      <div class="track"><div class="fill" style="left:6%;right:6%"></div><div class="mid" style="left:48%"></div></div>
+      <div class="band-spread"><span>€600</span><span class="badge est"><span class="vd"></span>Estimate</span><span>€1,200</span></div>
+    </div>
+
+    <div class="band-card">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇱🇺</span>Personal · Pillar 3a equivalent</div>
+        <div class="band-sub">Private savings &amp; assurance-vie</div></div>
+        <div class="band-val">€180&ndash;€260</div>
+      </div>
+      <div class="track"><div class="fill" style="left:26%;right:32%"></div><div class="mid" style="left:42%"></div></div>
+      <div class="band-spread"><span>€180</span><span class="badge est"><span class="vd"></span>Estimate</span><span>€260</span></div>
+    </div>
+
+    <p style="text-align:center; color:var(--dim); font-size:13px; margin:28px 0 0;">↓ keep reading — one thing worth a look ↓</p>
+  </section>
+
+  <!-- ════════════ S1 — ONE WHISPER ════════════ -->
+  <section class="screen" data-screen="s1">
+    <div class="scene-note">Exactly one nudge — inline, on the widest (least certain) band. The Swiss 2nd-pillar figure is the roughest guess and the biggest potential slice, so the whisper lands here. Nowhere else nags.</div>
+
+    <div class="hero">
+      <div class="kick">Your retirement picture</div>
+      <div class="lead">Your retirement income looks like roughly
+        <span class="amt">€3,200&ndash;€4,480</span> a month.</div>
+      <div class="sharp"><span class="dot"></span> This is an early estimate. It sharpens as the picture fills.</div>
+    </div>
+
+    <div class="group-label">Workplace &amp; personal · Pillars 2 &amp; 3</div>
+
+    <div class="band-card" style="border-color:color-mix(in srgb,var(--accent) 30%, var(--border));">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇨🇭</span>Swiss 2nd pillar · vested benefits</div>
+        <div class="band-sub">The widest band in your picture right now</div></div>
+        <div class="band-val">€600&ndash;€1,200</div>
+      </div>
+      <div class="track"><div class="fill" style="left:6%;right:6%"></div><div class="mid" style="left:48%"></div></div>
+      <div class="band-spread"><span>€600</span><span class="badge est"><span class="vd"></span>Roughest guess</span><span>€1,200</span></div>
+
+      <div class="whisper">
+        <div class="ic">✶</div>
+        <div>
+          <div class="wtxt">This Swiss figure is my <b>roughest guess (±€300/mo)</b> — and it's likely your largest single slice. One document would pin it down.</div>
+          <div class="wact">
+            <button class="linkbtn" onclick="go('s2')">Show me how →</button>
+            <button class="linkbtn ghost" onclick="toast('No problem — nothing changes, your estimate still stands.')">Not now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center; color:var(--dim); font-size:13px; margin:22px 0 0; font-family:var(--font-display); font-style:italic;">Ignore it and scroll on — the rest of the picture stays exactly as calm as before.</p>
+  </section>
+
+  <!-- ════════════ S2 — GUIDE IN PLACE (no-docs) ════════════ -->
+  <section class="screen" data-screen="s2">
+    <div class="scene-note">He taps "Show me how". The guide expands right under the band — band stays in view so the payoff is visible. This is the load-bearing answer to "HOW do I even get this?"</div>
+
+    <div class="band-card" style="border-color:color-mix(in srgb,var(--accent) 30%, var(--border));">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇨🇭</span>Swiss 2nd pillar · vested benefits</div>
+        <div class="band-sub">±€300/mo of uncertainty rides on this</div></div>
+        <div class="band-val">€600&ndash;€1,200</div>
+      </div>
+      <div class="track"><div class="fill" style="left:6%;right:6%"></div><div class="mid" style="left:48%"></div></div>
+      <div class="band-spread"><span>€600</span><span class="badge est"><span class="vd"></span>Estimate</span><span>€1,200</span></div>
+
+      <div class="guide">
+        <div class="gtitle">Tracing your Swiss vested benefits</div>
+        <div class="payoff">✶ Tightens your Swiss band by ±€300/mo</div>
+
+        <div class="meta-row">
+          <span class="meta"><span class="ml">Time</span><b>1–2 weeks</b></span>
+          <span class="meta"><span class="ml">Cost</span><b>Free</b></span>
+          <span class="meta"><span class="ml">Effort</span><b>Easy</b></span>
+          <span class="meta"><span class="ml">Language</span><b>DE / FR / EN</b></span>
+        </div>
+
+        <div class="tabs" data-tabset="g2">
+          <button class="on" data-tab="how">How to get it</button>
+          <button data-tab="have">I have it now</button>
+        </div>
+
+        <div class="tabpane on" data-pane="how">
+          <ol class="steps">
+            <li>Go to the <b>2nd Pillar Central Office (LOB Guarantee Fund)</b> at <a href="#">sfbvg.ch</a> — they hold records of forgotten vested-benefit accounts.</li>
+            <li>Download the <b>search request form</b> and enter your <b>AVS/AHV number</b> (the 13-digit 756.xxxx number on your old Swiss payslips).</li>
+            <li>Send it by post or email. They search every foundation in Switzerland for accounts in your name.</li>
+            <li>You receive a reply <b>by post</b> naming the foundation(s) holding your money and the current balance.</li>
+          </ol>
+          <div class="tipbox"><b>Tip:</b> Many expats discover a vested-benefit account they'd entirely forgotten — this is the step that most often <b>raises</b> the estimate rather than just narrowing it.</div>
+          <div class="altpath"><b>Lost your AVS number?</b> Your old Swiss employer or the cantonal compensation office (Ausgleichskasse) can retrieve it from your name and date of birth — no document needed to start.</div>
+
+          <div class="reassure">No rush — your estimate already stands without it.</div>
+
+          <div class="guide-actions">
+            <button class="btn primary" onclick="saveForLater()">Save this to gather later</button>
+            <button class="btn" onclick="switchTab('g2','have')">I have it now</button>
+          </div>
+        </div>
+
+        <div class="tabpane" data-pane="have">
+          <div class="tabs" data-tabset="g2b" style="margin-top:-2px;">
+            <button class="on" data-tab="upload">Upload document</button>
+            <button data-tab="manual">Type it in</button>
+          </div>
+          <div class="tabpane on" data-pane="upload">
+            <div class="drop" onclick="toast('PDF accepted — Switzerland is now read by the pension engine.'); setTimeout(()=>go('s3'),700);">
+              <span class="di">📄</span>
+              Drop your vested-benefits statement here
+              <div style="font-size:12px;color:var(--dim);margin-top:4px;">PDF · we read the balance, you confirm it</div>
+            </div>
+          </div>
+          <div class="tabpane" data-pane="manual">
+            <div class="field"><label>Foundation / institution name</label><input placeholder="e.g. Stiftung Auffangeinrichtung BVG"></div>
+            <div class="field"><label>Current balance (CHF)</label><input class="tnum" placeholder="124,500"></div>
+            <div class="field"><label>As of date</label><input class="tnum" placeholder="2026-03-31"></div>
+            <button class="btn primary" style="width:100%" onclick="toast('Saved — Switzerland is now calculated by the pension engine.'); setTimeout(()=>go('s3'),700);">Save · watch the band tighten</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center; color:var(--dim); font-size:13px; margin:22px 0 0; font-family:var(--font-display); font-style:italic;">No-docs user leaves with: a real estimate already on screen, and exactly what to fetch this Saturday — and how.</p>
+  </section>
+
+  <!-- ════════════ S3 — HAS-DOCS, BAND SETTLES ════════════ -->
+  <section class="screen" data-screen="s3">
+    <div class="scene-note">He had the statement. He typed three fields. The band visibly re-renders tighter, the badge flips to "Engine", and — because that was a vested account he'd half-forgotten — the figure jumped up. The next-weakest band quietly grows its own whisper. Never two at once.</div>
+
+    <div class="hero">
+      <div class="kick">Your retirement picture</div>
+      <div class="lead">Your retirement income looks like roughly
+        <span class="amt">€3,560&ndash;€4,520</span> a month.</div>
+      <div class="sub" style="color:var(--verified);">Switzerland is now calculated by the real pension engine — and your forgotten vested account added about €240/mo.</div>
+      <div class="sharp"><span class="dot" style="background:var(--verified)"></span> Getting sharper. One band now sits on engine data.</div>
+    </div>
+
+    <div class="group-label">Workplace &amp; personal · Pillars 2 &amp; 3</div>
+
+    <div class="band-card tight">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇨🇭</span>Swiss 2nd pillar · vested benefits</div>
+        <div class="band-sub">Stiftung Auffangeinrichtung BVG · CHF 124,500</div></div>
+        <div class="band-val">€1,020&ndash;€1,120</div>
+      </div>
+      <div class="track"><div class="fill" style="left:40%;right:30%"></div><div class="mid" style="left:55%"></div></div>
+      <div class="band-spread"><span>€1,020</span><span class="badge engine"><span class="vd"></span>Engine</span><span>€1,120</span></div>
+    </div>
+
+    <div class="group-label">State pension · Pillar 1</div>
+
+    <div class="band-card" style="border-color:color-mix(in srgb,var(--accent) 30%, var(--border));">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇨🇭</span>Switzerland · AVS / AHV</div>
+        <div class="band-sub">Now the widest band in your picture</div></div>
+        <div class="band-val">€420&ndash;€820</div>
+      </div>
+      <div class="track"><div class="fill" style="left:10%;right:8%"></div><div class="mid" style="left:50%"></div></div>
+      <div class="band-spread"><span>€420</span><span class="badge est"><span class="vd"></span>Estimate</span><span>€820</span></div>
+
+      <div class="whisper">
+        <div class="ic">✶</div>
+        <div>
+          <div class="wtxt">Your Swiss <b>AVS/AHV state pension</b> is now the roughest band <b>(±€200/mo)</b>. The free contribution extract would settle it.</div>
+          <div class="wact">
+            <button class="linkbtn" onclick="toast('Opens the AHV extract guide — free, by post, starts at ahv-iv.ch.')">Show me how →</button>
+            <button class="linkbtn ghost" onclick="toast('Left as an estimate — no problem.')">Not now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="band-card">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇫🇷</span>France · CNAV</div>
+        <div class="band-sub">10 years · régime général</div></div>
+        <div class="band-val">€780&ndash;€940</div>
+      </div>
+      <div class="track"><div class="fill" style="left:18%;right:30%"></div><div class="mid" style="left:42%"></div></div>
+      <div class="band-spread"><span>€780</span><span class="badge est"><span class="vd"></span>Estimate</span><span>€940</span></div>
+    </div>
+
+    <p style="text-align:center; color:var(--dim); font-size:13px; margin:22px 0 0; font-family:var(--font-display); font-style:italic;">The reward is the picture settling — in place, no "next step" shove. A motivated user just works down the bands at their own pace.</p>
+  </section>
+
+  <!-- ════════════ S5 — RETURN SESSION ════════════ -->
+  <section class="screen" data-screen="s5">
+    <div class="scene-note">Two weeks later. Mats ordered his AVS extract; it arrived by post. The hero is unchanged-but-tighter. The gather tray sits low and calm — a reference, not a nag. One fresh whisper lives on whatever band is weakest now.</div>
+
+    <div class="hero">
+      <div class="kick">Welcome back, Mats</div>
+      <div class="lead">Your retirement income looks like roughly
+        <span class="amt">€3,560&ndash;€4,520</span> a month.</div>
+      <div class="sub">A little tighter than last time. One band on engine data, four still estimated.</div>
+      <div class="sharp"><span class="dot" style="background:var(--verified)"></span> Sharpening session by session — no single overwhelming sitting.</div>
+    </div>
+
+    <div class="group-label">This visit's one thing <span class="gtot tnum">±€120/mo</span></div>
+
+    <div class="band-card" style="border-color:color-mix(in srgb,var(--accent) 30%, var(--border));">
+      <div class="band-head">
+        <div><div class="band-name"><span class="flag">🇫🇷</span>France · CNAV</div>
+        <div class="band-sub">Now your widest band</div></div>
+        <div class="band-val">€780&ndash;€940</div>
+      </div>
+      <div class="track"><div class="fill" style="left:18%;right:30%"></div><div class="mid" style="left:42%"></div></div>
+      <div class="band-spread"><span>€780</span><span class="badge est"><span class="vd"></span>Estimate</span><span>€940</span></div>
+
+      <div class="whisper">
+        <div class="ic">✶</div>
+        <div>
+          <div class="wtxt">Your <b>French Relevé de Carrière</b> (the official career record) would settle this band <b>(±€80/mo)</b>. Free, online, instant via your Assurance Retraite account.</div>
+          <div class="wact">
+            <button class="linkbtn" onclick="toast('Opens the CNAV / Relevé de Carrière guide — instant via info-retraite.fr.')">Show me how →</button>
+            <button class="linkbtn ghost" onclick="toast('Saved as-is. The picture keeps its memory.')">Not now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gather tray -->
+    <div class="tray" id="tray">
+      <div class="tray-head" onclick="document.getElementById('tray').classList.toggle('open')">
+        <div class="ic">🗂️</div>
+        <div class="tt">
+          <div class="t1">Things to gather</div>
+          <div class="t2">2 documents you saved for later · no deadline</div>
+        </div>
+        <div class="chev tnum">›</div>
+      </div>
+      <div class="tray-body">
+        <div class="tray-item">
+          <div class="titxt">
+            <div class="ti1">Swiss AVS/AHV contribution extract</div>
+            <div class="ti2">Saved 2 weeks ago · ±€200/mo · arrived by post ✓</div>
+          </div>
+          <button class="linkbtn" onclick="toast('Reopens the AHV guide with upload + manual tabs ready.')">Upload now</button>
+        </div>
+        <div class="tray-item">
+          <div class="titxt">
+            <div class="ti1">Luxembourg Extrait de Carrière</div>
+            <div class="ti2">Saved 2 weeks ago · ±€60/mo · via guichet.lu</div>
+          </div>
+          <button class="linkbtn" onclick="toast('Reopens the guichet.lu guide — same steps you saved, intact.')">Get it →</button>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center; color:var(--dim); font-size:13px; margin:24px 0 0; font-family:var(--font-display); font-style:italic;">Open the tray to act on a saved item, follow the one new whisper, or just look at the tighter picture and leave. Nothing is wasted.</p>
+  </section>
+
+</div>
+
+<div class="contract">
+  <span class="vd"></span>
+  <span><b>Everything's saved.</b> Add more whenever — the picture only sharpens.</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── screen switching ──
+  const switcher = document.getElementById('switcher');
+  function go(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('show', s.dataset.screen===id));
+    switcher.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.s===id));
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  switcher.querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.s));
+
+  // ── theme toggle ──
+  const tgl = document.getElementById('tgl');
+  const tglt = document.getElementById('tglt');
+  tgl.onclick = ()=>{
+    const dark = document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', dark?'light':'dark');
+    tglt.textContent = dark?'Dark':'Light';
+  };
+
+  // ── in-guide tabs ──
+  function switchTab(set, tab){
+    document.querySelectorAll(`[data-tabset="${set}"] button`).forEach(b=>b.classList.toggle('on', b.dataset.tab===tab));
+    const scope = document.querySelector(`[data-tabset="${set}"]`).closest('.tabpane, .guide');
+    scope.querySelectorAll(':scope > .tabpane, .tabpane').forEach(p=>{
+      if(p.dataset.pane) p.classList.toggle('on', p.dataset.pane===tab);
+    });
+  }
+  document.querySelectorAll('.tabs button').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const set = btn.closest('.tabs').dataset.tabset;
+      switchTab(set, btn.dataset.tab);
+    });
+  });
+
+  // ── toast ──
+  let tT;
+  function toast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(tT); tT = setTimeout(()=>t.classList.remove('show'), 2600);
+  }
+  function saveForLater(){
+    toast('Saved to “Things to gather”. No rush — see it on your next visit.');
+    setTimeout(()=>go('s5'), 900);
+  }
+</script>
+</body>
+</html>
