@@ -18,7 +18,7 @@ export function SimulationControls({
 }: Props) {
   return (
     <div className="mb-5">
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {/* Age slider */}
         <div
           className="rounded-[14px] p-6 relative overflow-hidden"

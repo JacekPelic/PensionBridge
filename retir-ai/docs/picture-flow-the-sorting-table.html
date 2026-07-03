@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prevista — The Sorting Table</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="light"]{
+  --bg:#F7F4ED; --surface:#FFFFFF; --surface2:#F1EDE3;
+  --text:#1B1E26; --muted:#3D4658; --dim:#6A7184;
+  --accent:#9A7B28; --accent-soft:#7A6118; --verified:#1F8C7E;
+  --alert:#C23A30; --border:rgba(20,20,20,0.10);
+  --shadow:0 1px 2px rgba(20,20,20,0.04),0 8px 24px rgba(20,20,20,0.05);
+}
+:root[data-theme="dark"]{
+  --bg:#0E1016; --surface:#161922; --surface2:#1E222E;
+  --text:#ECEEF3; --muted:#9AA3B5; --dim:#6B7488;
+  --accent:#C9A24A; --accent-soft:#E3C77E; --verified:#3FB6A8;
+  --alert:#E5544B; --border:rgba(255,255,255,0.08);
+  --shadow:0 1px 2px rgba(0,0,0,0.3),0 8px 28px rgba(0,0,0,0.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter Tight',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+body{padding-bottom:120px}
+.serif{font-family:'Source Serif 4',Georgia,serif}
+.mono{font-family:'Geist Mono',monospace;font-variant-numeric:tabular-nums}
+.num{font-family:'Geist Mono',monospace;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+
+/* Top bar */
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:14px 22px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Source Serif 4',serif;font-weight:600;font-size:18px;letter-spacing:0.01em}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.brand small{font-family:'Inter Tight';font-weight:400;color:var(--dim);font-size:12px;letter-spacing:0.06em;text-transform:uppercase}
+.toggle{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:6px 6px;cursor:pointer;min-height:40px}
+.toggle button{border:none;background:transparent;color:var(--dim);font-family:'Inter Tight';font-size:13px;padding:6px 12px;border-radius:999px;cursor:pointer;min-height:32px}
+.toggle button.active{background:var(--surface2);color:var(--text)}
+
+/* Screen nav */
+.screennav{display:flex;gap:6px;overflow-x:auto;padding:14px 22px;border-bottom:1px solid var(--border);background:var(--surface)}
+.screennav button{white-space:nowrap;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Inter Tight';font-size:12.5px;padding:8px 12px;border-radius:8px;cursor:pointer;min-height:40px}
+.screennav button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+:root[data-theme="dark"] .screennav button.active{color:#0E1016}
+
+.wrap{max-width:760px;margin:0 auto;padding:32px 22px}
+.screen{display:none}
+.screen.active{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-bottom:14px;font-weight:500}
+h1.lead{font-family:'Source Serif 4',serif;font-weight:500;font-size:30px;line-height:1.22;letter-spacing:-0.01em;margin-bottom:18px;max-width:30ch}
+h2.lead{font-family:'Source Serif 4',serif;font-weight:500;font-size:24px;line-height:1.25;margin-bottom:14px}
+p.body{font-size:16px;color:var(--muted);max-width:54ch;margin-bottom:14px}
+p.body strong{color:var(--text);font-weight:500}
+
+/* Recap card */
+.recap{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:var(--shadow);margin:22px 0}
+.recap h3{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);font-weight:500;margin-bottom:16px}
+.recap-row{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-top:1px solid var(--border)}
+.recap-row:first-of-type{border-top:none}
+.recap-row .k{color:var(--muted);font-size:15px}
+.recap-row .v{font-size:15px;text-align:right}
+.flag{display:inline-flex;align-items:center;gap:7px;font-size:14px}
+.flag .fc{width:18px;height:13px;border-radius:2px;display:inline-block;border:1px solid var(--border)}
+.fc.fr{background:linear-gradient(90deg,#3a4a8c 33%,#fff 33% 66%,#c23a30 66%)}
+.fc.ch{background:#c23a30;position:relative}
+.fc.ch::after{content:"+";position:absolute;inset:0;color:#fff;font-size:11px;line-height:11px;text-align:center;font-weight:700}
+.fc.lu{background:linear-gradient(180deg,#c23a30 33%,#fff 33% 66%,#5fa3d9 66%)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:none;border-radius:11px;font-family:'Inter Tight';font-size:16px;font-weight:500;cursor:pointer;min-height:52px;padding:0 24px;width:100%;transition:transform .08s ease,filter .15s ease}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);color:#fff}
+:root[data-theme="dark"] .btn-primary{color:#0E1016}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-ghost{background:var(--surface);border:1px solid var(--border);color:var(--text)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-row{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+.btn-row .btn{flex:1;min-width:200px}
+
+.footnote{color:var(--dim);font-size:13.5px;margin-top:18px}
+
+/* Sorting table */
+.country-group{margin-bottom:22px}
+.country-head{display:flex;align-items:center;gap:11px;margin:0 2px 12px}
+.country-head .ch-flag{width:24px;height:17px;border-radius:3px;border:1px solid var(--border)}
+.country-head h3{font-family:'Source Serif 4',serif;font-size:18px;font-weight:600}
+.country-head .yrs{margin-left:auto;font-size:12.5px;color:var(--dim);font-family:'Geist Mono',monospace}
+.country-head .res{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--verified);border:1px solid color-mix(in srgb,var(--verified) 40%,transparent);border-radius:999px;padding:3px 9px}
+
+.ask{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.ask-top{display:flex;gap:13px;align-items:flex-start}
+.ask-icon{flex:0 0 40px;width:40px;height:40px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:20px}
+.ask-meta{flex:1;min-width:0}
+.ask-title{font-size:16px;font-weight:500;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pri{font-size:10.5px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 7px;border-radius:999px;font-weight:600}
+.pri.high{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent-soft)}
+:root[data-theme="light"] .pri.high{color:var(--accent)}
+.pri.med{background:var(--surface2);color:var(--dim)}
+.ask-pay{font-size:13.5px;color:var(--muted);margin-top:4px}
+.ask-pay b{color:var(--text);font-weight:500;font-family:'Geist Mono',monospace;font-variant-numeric:tabular-nums}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.choice{min-height:48px;border:1px solid var(--border);background:var(--surface);border-radius:10px;font-family:'Inter Tight';font-size:13.5px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px;transition:all .12s ease}
+.choice small{font-size:10.5px;color:var(--dim)}
+.choice:hover{border-color:var(--dim)}
+.choice.sel-have{background:color-mix(in srgb,var(--verified) 14%,var(--surface));border-color:var(--verified);color:var(--verified)}
+.choice.sel-have small{color:var(--verified)}
+.choice.sel-canget{background:color-mix(in srgb,var(--accent) 13%,var(--surface));border-color:var(--accent);color:var(--accent)}
+:root[data-theme="light"] .choice.sel-canget{color:var(--accent)}
+.choice.sel-canget small{color:inherit;opacity:.8}
+.choice.sel-unsure{background:var(--surface2);border-color:var(--dim);color:var(--text)}
+
+.sticky-foot{position:fixed;left:0;right:0;bottom:0;z-index:40;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:14px 22px}
+.sticky-foot .inner{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:16px}
+.sticky-foot .quiet{font-size:13px;color:var(--dim);flex:1}
+.sticky-foot .btn{width:auto;flex:0 0 auto;padding:0 22px}
+.progress-mini{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)}
+
+/* Result screen */
+.result-band{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;box-shadow:var(--shadow);margin-bottom:18px}
+.floor-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;letter-spacing:0.07em;text-transform:uppercase;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:999px;padding:4px 11px;margin-bottom:16px;font-weight:500}
+:root[data-theme="light"] .floor-tag{color:var(--accent)}
+.band-num{font-family:'Geist Mono',monospace;font-variant-numeric:tabular-nums;font-size:38px;font-weight:500;letter-spacing:-0.01em;line-height:1.1}
+.band-num .sep{color:var(--dim);font-weight:400}
+.band-sub{color:var(--muted);font-size:15px;margin-top:8px;max-width:46ch}
+.band-sub b{color:var(--text);font-weight:500}
+.gauge{margin-top:20px}
+.gauge-label{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:7px}
+.gauge-label .pct{font-family:'Geist Mono',monospace;color:var(--text)}
+.gauge-track{height:9px;border-radius:999px;background:var(--surface2);overflow:hidden}
+.gauge-fill{height:100%;border-radius:999px;background:var(--accent);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+
+.tally{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.tally-cell{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px 14px;text-align:center;box-shadow:var(--shadow)}
+.tally-n{font-family:'Geist Mono',monospace;font-variant-numeric:tabular-nums;font-size:34px;font-weight:500;line-height:1}
+.tally-cell.have .tally-n{color:var(--verified)}
+.tally-cell.gather .tally-n{color:var(--accent)}
+:root[data-theme="light"] .tally-cell.gather .tally-n{color:var(--accent)}
+.tally-cell.decide .tally-n{color:var(--text)}
+.tally-k{font-size:12.5px;color:var(--muted);margin-top:7px}
+
+/* Tour / entry */
+.tour-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:var(--shadow);margin-bottom:16px}
+.tour-step{font-family:'Geist Mono',monospace;font-size:12px;color:var(--dim);letter-spacing:0.04em;margin-bottom:14px}
+.tour-card h2{font-family:'Source Serif 4',serif;font-weight:500;font-size:22px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.tour-card .why{font-size:14px;color:var(--muted);margin-bottom:18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+.field input,.field select{width:100%;min-height:48px;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:10px;padding:0 14px;font-family:'Geist Mono',monospace;font-size:16px}
+.field input:focus,.field select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.upload-zone{border:1.5px dashed var(--border);border-radius:12px;padding:20px;text-align:center;color:var(--dim);font-size:14px;margin-bottom:14px;background:var(--surface2)}
+.side-band{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.side-band .sb-num{font-family:'Geist Mono',monospace;font-variant-numeric:tabular-nums;font-size:19px;font-weight:500}
+.side-band .sb-meta{flex:1;font-size:12.5px;color:var(--muted)}
+.side-band .tick{color:var(--verified);font-size:12px;font-weight:500}
+
+/* Gather plan */
+.plan-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;margin-bottom:11px;box-shadow:var(--shadow);overflow:hidden}
+.plan-head{display:flex;gap:13px;align-items:center;padding:16px;cursor:pointer}
+.plan-num{flex:0 0 30px;width:30px;height:30px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:14px;font-weight:600;color:var(--accent)}
+:root[data-theme="light"] .plan-num{color:var(--accent)}
+.plan-info{flex:1;min-width:0}
+.plan-info .pt{font-size:15.5px;font-weight:500}
+.plan-info .pm{font-size:12.5px;color:var(--dim);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+.plan-info .pm .t{font-family:'Geist Mono',monospace}
+.chev{color:var(--dim);font-size:18px;transition:transform .2s ease;flex:0 0 auto}
+.plan-card.open .chev{transform:rotate(90deg)}
+.plan-body{display:none;padding:0 16px 18px 59px;border-top:1px solid var(--border);margin-top:-1px}
+.plan-card.open .plan-body{display:block}
+.plan-body .sec{margin-top:14px}
+.plan-body .sec h4{font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:var(--dim);margin-bottom:8px;font-weight:600}
+.plan-body ol{margin-left:18px;font-size:14px;color:var(--muted)}
+.plan-body ol li{margin-bottom:6px}
+.plan-body .meta-line{font-size:13px;color:var(--muted);margin-bottom:6px}
+.plan-body .meta-line b{color:var(--text);font-weight:500}
+.plan-body .pay{font-size:13.5px;color:var(--text);background:var(--surface2);border-radius:9px;padding:11px 13px;margin-top:14px}
+.plan-body .pay b{font-family:'Geist Mono',monospace;color:var(--accent)}
+:root[data-theme="light"] .plan-body .pay b{color:var(--accent)}
+.nudge{font-size:13px;color:var(--muted);font-style:italic;margin-top:10px;padding-left:10px;border-left:2px solid var(--accent)}
+.plan-body .btn{margin-top:16px;width:auto;min-height:46px;font-size:14.5px;padding:0 18px}
+.plan-section-h{display:flex;align-items:center;gap:10px;margin:24px 0 12px}
+.plan-section-h h3{font-family:'Source Serif 4',serif;font-size:17px;font-weight:600}
+.plan-section-h .line{flex:1;height:1px;background:var(--border)}
+
+/* Close screen */
+.close-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:var(--shadow);margin-bottom:16px}
+.close-row{padding:16px 0;border-top:1px solid var(--border)}
+.close-row:first-child{border-top:none;padding-top:0}
+.close-row .cl{font-size:12px;letter-spacing:0.07em;text-transform:uppercase;color:var(--dim);margin-bottom:7px;font-weight:500}
+.close-row .cv{font-size:17px}
+.close-row .cv .num{font-size:20px;font-weight:500}
+.next-move{background:color-mix(in srgb,var(--accent) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+.permission{font-size:15px;color:var(--muted);background:var(--surface2);border-radius:13px;padding:18px;margin-bottom:16px}
+.permission b{color:var(--text);font-weight:500}
+
+@media (max-width:430px){
+  .wrap{padding:24px 16px}
+  h1.lead{font-size:25px}
+  .choices{gap:6px}
+  .choice{font-size:12.5px}
+  .band-num{font-size:30px}
+  .tally{gap:8px}
+  .tally-n{font-size:27px}
+  .btn-row .btn{min-width:100%}
+  .sticky-foot .inner{flex-wrap:wrap}
+  .sticky-foot .quiet{flex:1 1 100%;order:2}
+  .topbar{padding:12px 16px}
+  .plan-body{padding-left:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="dot"></span>Prevista <small>Your picture</small></div>
+  <div class="toggle" role="group" aria-label="Theme">
+    <button id="tLight" class="active" onclick="setTheme('light')">Light</button>
+    <button id="tDark" onclick="setTheme('dark')">Dark</button>
+  </div>
+</div>
+
+<nav class="screennav" aria-label="Flow steps">
+  <button class="active" data-go="1">1 · Recap</button>
+  <button data-go="2">2 · Sorting Table</button>
+  <button data-go="3">3 · Result split</button>
+  <button data-go="4a">4a · Enter what I have</button>
+  <button data-go="4b">4b · Gather plan</button>
+  <button data-go="5">5 · Leave anytime</button>
+</nav>
+
+<main class="wrap">
+
+<!-- SCREEN 1 -->
+<section class="screen active" data-screen="1">
+  <div class="eyebrow">Step 1 — what we already know</div>
+  <h1 class="lead">You worked in France, Switzerland and Luxembourg. There are documents in each that make this exact.</h1>
+  <p class="body">Let's first just see <strong>which ones you can lay your hands on</strong>. No typing yet — we'll sort before we fill anything in.</p>
+
+  <div class="recap">
+    <h3>From your 2-minute start</h3>
+    <div class="recap-row"><span class="k">You are</span><span class="v">Mats Karlsson, 58</span></div>
+    <div class="recap-row"><span class="k">Living in</span><span class="v"><span class="flag"><span class="fc lu"></span>Luxembourg</span></span></div>
+    <div class="recap-row"><span class="k">Worked in France</span><span class="v"><span class="flag mono"><span class="fc fr"></span>~10 years</span></span></div>
+    <div class="recap-row"><span class="k">Worked in Switzerland</span><span class="v"><span class="flag mono"><span class="fc ch"></span>~5 years</span></span></div>
+    <div class="recap-row"><span class="k">Working in Luxembourg</span><span class="v"><span class="flag mono"><span class="fc lu"></span>~6 years, ongoing</span></span></div>
+    <div class="recap-row"><span class="k">Your goal</span><span class="v"><span class="num">€5,500</span> / month</span></div>
+  </div>
+
+  <button class="btn btn-primary" onclick="go('2')">Sort my documents &nbsp;→</button>
+  <p class="footnote">It takes about a minute. You won't enter a single number on the next screen.</p>
+</section>
+
+<!-- SCREEN 2 -->
+<section class="screen" data-screen="2">
+  <div class="eyebrow">Step 2 — which of these do you already have?</div>
+  <h2 class="lead">A quick sort, not a test.</h2>
+  <p class="body">Here's every document that exists for the countries you worked in. For each, just tap how close it is to hand. <strong>"Not sure" is a perfectly good answer.</strong></p>
+  <div id="sortTable"></div>
+</section>
+
+<!-- SCREEN 3 -->
+<section class="screen" data-screen="3">
+  <div class="eyebrow">Step 3 — so where does this leave you?</div>
+  <h2 class="lead">You're not at zero.</h2>
+
+  <div class="result-band">
+    <span class="floor-tag">● This is a floor, not a verdict</span>
+    <div class="band-num"><span class="num">€2,200</span> <span class="sep">–</span> <span class="num">€3,840</span> <span style="font-size:18px;color:var(--dim)">/mo</span></div>
+    <p class="band-sub">This is the <b>least</b> you're currently on track for, from what you've told us so far. Documents only move this number <b>up</b> and narrow the range.</p>
+    <div class="gauge">
+      <div class="gauge-label"><span>Sharpness of estimate</span><span class="pct" id="sharpPct">18%</span></div>
+      <div class="gauge-track"><div class="gauge-fill" id="sharpFill" style="width:18%"></div></div>
+    </div>
+  </div>
+
+  <div class="tally">
+    <div class="tally-cell have"><div class="tally-n" id="tHave">0</div><div class="tally-k">In hand</div></div>
+    <div class="tally-cell gather"><div class="tally-n" id="tGather">0</div><div class="tally-k">To gather</div></div>
+    <div class="tally-cell decide"><div class="tally-n" id="tDecide">0</div><div class="tally-k">To decide</div></div>
+  </div>
+
+  <p class="body" id="splitMsg" style="margin-bottom:6px">Partial is the normal state here — most people start with a few documents and a list. You've already given your session a shape.</p>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" id="enterBtn" onclick="go('4a')">Enter what I have now</button>
+    <button class="btn btn-ghost" onclick="go('4b')">Get my gather plan</button>
+  </div>
+  <p class="footnote">No rush — either path is safe, and you can do the other one later.</p>
+</section>
+
+<!-- SCREEN 4a -->
+<section class="screen" data-screen="4a">
+  <div class="eyebrow">Step 4a — enter what you have</div>
+  <h2 class="lead">Just the documents you marked "Have it".</h2>
+
+  <div class="side-band">
+    <div class="sb-num" id="sbBand"><span class="num">€2,400</span>–<span class="num">€3,900</span></div>
+    <div class="sb-meta">Estimate tightens as you save <span class="tick" id="sbTick"></span></div>
+    <div style="flex:0 0 auto;font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)" id="sbSharp">22%</div>
+  </div>
+
+  <div class="tour-card">
+    <div class="tour-step" id="tourStep">Step 1 of 3</div>
+    <h2 id="tourTitle"><span id="tourIcon">📄</span> <span id="tourTitleTxt">Your Luxembourg career record</span></h2>
+    <p class="why" id="tourWhy">From guichet.lu — your CNS / CCSS record. Confirms your ongoing LU contributions.</p>
+
+    <div class="upload-zone" id="tourUpload">📎 &nbsp;Drop a photo or PDF here — or enter the figures below</div>
+
+    <div id="tourFields"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="tourNext()" id="tourSave">Save &amp; continue &nbsp;→</button>
+      <button class="btn btn-ghost" onclick="tourNext(true)">Skip for now</button>
+    </div>
+  </div>
+  <p class="footnote">Short and finite — you'll see exactly how many steps are left, never a wall of fifteen.</p>
+</section>
+
+<!-- SCREEN 4b -->
+<section class="screen" data-screen="4b">
+  <div class="eyebrow">Step 4b — your gather plan</div>
+  <h2 class="lead">A prioritised list. Quick wins first.</h2>
+  <p class="body">Everything you marked <strong>"Can get it"</strong> or <strong>"Not sure"</strong>, ordered so the instant ones come before the slow ones. Each card tells you exactly how to get it, and what it's worth.</p>
+  <div id="gatherPlan"></div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="emailPlan()">✉ &nbsp;Email me this plan</button>
+    <button class="btn btn-ghost" onclick="go('5')">Done sorting — where do I stand? →</button>
+  </div>
+</section>
+
+<!-- SCREEN 5 -->
+<section class="screen" data-screen="5">
+  <div class="eyebrow">Step 5 — leave anytime</div>
+  <h2 class="lead">Here's where you stand.</h2>
+
+  <div class="close-card">
+    <div class="close-row">
+      <div class="cl">Your current band</div>
+      <div class="cv"><span class="num" id="closeBand">€2,400</span> – <span class="num" id="closeBand2">€3,900</span> / month &nbsp;<span style="color:var(--dim);font-size:13px">· sharpness <span class="num" id="closeSharp">22%</span></span></div>
+    </div>
+    <div class="close-row">
+      <div class="cl">What you have</div>
+      <div class="cv"><span class="num" id="closeEntered">0</span> documents entered, <span class="num" id="closePlan">0</span> on your gather plan</div>
+    </div>
+  </div>
+
+  <div class="close-card next-move">
+    <div class="cl">Your next move — one thing</div>
+    <div class="cv" style="margin-top:4px"><b style="font-weight:600">French career record (Relevé de carrière)</b></div>
+    <p class="band-sub" style="margin-top:8px">Get it instantly from <b>lassuranceretraite.fr</b> — no waiting. <span style="color:var(--accent)">Tightens your France band by ±€200/mo.</span></p>
+  </div>
+
+  <div class="permission">
+    <b>Nothing here expires.</b> Come back when a document arrives — we'll pick up exactly here. Your gather plan stays pinned to your picture.
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="emailPlan()">✉ &nbsp;Email me my plan</button>
+    <button class="btn btn-ghost" onclick="alert('Saved. See you when a document arrives.')">Done for now</button>
+  </div>
+</section>
+
+</main>
+
+<!-- Sticky footer for sorting table -->
+<div class="sticky-foot" id="stickyFoot" style="display:none">
+  <div class="inner">
+    <span class="progress-mini" id="sortProgress">0 of 11 sorted</span>
+    <span class="quiet">You can stop after this — nothing's lost.</span>
+    <button class="btn btn-primary" onclick="submitSort()">See where this leaves me →</button>
+  </div>
+</div>
+
+<script>
+/* ---------- Theme ---------- */
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('tLight').classList.toggle('active',t==='light');
+  document.getElementById('tDark').classList.toggle('active',t==='dark');
+}
+
+/* ---------- ALL_ASKS (reused verbatim shape) ---------- */
+const ALL_ASKS = [
+  // LUXEMBOURG (residence)
+  {id:'lu-p1', country:'LU', icon:'🏛️', title:'Your Luxembourg career record',
+   pri:'high', impact:'tightens your LU band by ±€150/mo',
+   why:'From guichet.lu — your CNAP pension account. Confirms your ongoing LU state contributions.',
+   guide:{time:'Instant–10 min', diff:'Easy', lang:'FR / DE',
+     steps:['Log in to MyGuichet.lu with your LuxTrust token or eID','Open "Caisse nationale d\'assurance pension (CNAP)"','Download your "Décompte de carrière"'],
+     alt:'No LuxTrust yet? Request a paper record by post from CNAP — arrives in ~1 week.',
+     fields:[{l:'Years contributed in LU',ph:'6'},{l:'Current monthly salary (€)',ph:'8,200'}]}},
+  {id:'lu-p2', country:'LU', icon:'🏢', title:'Your Luxembourg workplace pension',
+   pri:'medium', impact:'adds a 2nd-pillar line, often +€100–€300/mo',
+   why:'Your employer\'s régime complémentaire de pension, if one exists. Check your last payslip or HR.',
+   guide:{time:'1–3 days', diff:'Medium', lang:'FR / EN',
+     steps:['Ask HR whether a "régime complémentaire de pension" exists','Request the most recent annual statement','Note the accrued capital or projected annuity'],
+     alt:'Not all LU employers offer one — if HR says no, mark it resolved and move on.',
+     fields:[{l:'Accrued capital (€)',ph:'optional'},{l:'Projected annuity (€/mo)',ph:'optional'}]}},
+  // FRANCE
+  {id:'fr-p1', country:'FR', icon:'🇫🇷', title:'Your French career record',
+   pri:'high', impact:'tightens your France band by ±€200/mo',
+   why:'The Relevé de carrière — your full French contribution history across all régimes.',
+   guide:{time:'Instant–5 min', diff:'Easy', lang:'FR',
+     steps:['Go to lassuranceretraite.fr and log in with FranceConnect','Open "Mon relevé de carrière"','Download the PDF — it lists every trimester validated'],
+     alt:'No FranceConnect? Create one via your Impots.gouv.fr or Ameli login in 2 minutes.',
+     fields:[{l:'Trimesters validated',ph:'40'},{l:'Reference annual salary (€)',ph:'48,000'}]}},
+  {id:'fr-p1b', country:'FR', icon:'📊', title:'Your French complementary pension (Agirc-Arrco)',
+   pri:'high', impact:'often the larger half of a French pension — ±€180/mo',
+   why:'Private-sector top-up pension, counted in points. Separate from the state régime de base.',
+   guide:{time:'Instant–5 min', diff:'Easy', lang:'FR',
+     steps:['Log in at agirc-arrco.fr with FranceConnect','Open "Mes points retraite"','Note your total point count and the current point value'],
+     alt:'Same FranceConnect login works for both le relevé and Agirc-Arrco.',
+     fields:[{l:'Total Agirc-Arrco points',ph:'4,820'}]}},
+  {id:'fr-p3', country:'FR', icon:'💶', title:'Your French personal savings (PER / assurance-vie)',
+   pri:'medium', impact:'adds your own 3rd-pillar line if you hold one',
+   why:'A PER or assurance-vie opened while in France. Optional — only if you have one.',
+   guide:{time:'5–15 min', diff:'Easy', lang:'FR',
+     steps:['Find your provider\'s annual statement (relevé de situation)','Note the current value and any guaranteed annuity option'],
+     alt:'Don\'t hold one? Mark "Not sure" and we\'ll skip it — no plan item created.',
+     fields:[{l:'Current value (€)',ph:'optional'}]}},
+  // SWITZERLAND
+  {id:'ch-p1', country:'CH', icon:'⛰️', title:'Your Swiss state pension record (AHV / AVS)',
+   pri:'high', impact:'tightens your Switzerland band by ±€170/mo',
+   why:'Your individual AHV/AVS account statement — the 1st pillar from your 5 years in CH.',
+   guide:{time:'2–4 weeks', diff:'Medium', lang:'DE / FR',
+     steps:['Identify which cantonal Ausgleichskasse / caisse de compensation held your account','Request an "IK-Auszug / extrait de compte individuel" by post or online form','Statement is mailed to you'],
+     alt:'Unsure which caisse? The central office at zas.admin.ch can route your request.',
+     fields:[{l:'Years of CH contributions',ph:'5'},{l:'Average annual income (CHF)',ph:'95,000'}]}},
+  {id:'ch-p2', country:'CH', icon:'🏔️', title:'Your Swiss occupational pension (BVG / LPP, 2nd pillar)',
+   pri:'high', impact:'often the biggest single Swiss line — ±€250/mo',
+   why:'Your Pensionskasse / caisse de pension vested benefits from your CH employment.',
+   guide:{time:'2–6 weeks', diff:'Hard', lang:'DE / FR',
+     steps:['Find your last Pensionskasse certificate (Vorsorgeausweis)','If you left CH, trace your vested benefits via the 2nd-Pillar Central Office','Request your current Freizügigkeitskonto / compte de libre passage balance'],
+     alt:'Lost track after leaving? sfbvg.ch (the Auffangeinrichtung) traces dormant accounts.',
+     fields:[{l:'Vested benefit balance (CHF)',ph:'120,000'}]}},
+  {id:'ch-p3', country:'CH', icon:'🏦', title:'Your Swiss 3a savings (pillar 3a)',
+   pri:'medium', impact:'adds a 3rd-pillar line if you opened a 3a',
+   why:'A tied 3a account (bank or insurer) opened while resident in CH. Optional.',
+   guide:{time:'1–2 weeks', diff:'Medium', lang:'DE / FR',
+     steps:['Contact the bank or insurer holding your 3a','Request the current balance statement'],
+     alt:'Never opened a 3a? Mark "Not sure" — most short-stay expats don\'t hold one.',
+     fields:[{l:'3a balance (CHF)',ph:'optional'}]}},
+];
+
+const COUNTRIES = {
+  LU:{name:'Luxembourg', yrs:'~6y, ongoing', res:true, cls:'lu'},
+  FR:{name:'France', yrs:'~10 years', res:false, cls:'fr'},
+  CH:{name:'Switzerland', yrs:'~5 years', res:false, cls:'ch'},
+};
+const ORDER = ['LU','FR','CH'];
+
+/* status map: id -> 'have' | 'canget' | 'unsure' | undefined */
+const status = {};
+/* entered: id -> true (fulfilled in tour) */
+const entered = {};
+
+/* ---------- Build Sorting Table ---------- */
+function buildSort(){
+  const root = document.getElementById('sortTable');
+  let html='';
+  ORDER.forEach(cc=>{
+    const c=COUNTRIES[cc];
+    const asks=ALL_ASKS.filter(a=>a.country===cc);
+    html+=`<div class="country-group"><div class="country-head">
+      <span class="ch-flag fc ${c.cls}"></span>
+      <h3>${c.name}</h3>
+      ${c.res?'<span class="res">You live here</span>':''}
+      <span class="yrs">${c.yrs}</span></div>`;
+    asks.forEach(a=>{
+      html+=`<div class="ask">
+        <div class="ask-top">
+          <div class="ask-icon">${a.icon}</div>
+          <div class="ask-meta">
+            <div class="ask-title">${a.title}<span class="pri ${a.pri==='high'?'high':'med'}">${a.pri==='high'?'Priority':'Optional'}</span></div>
+            <div class="ask-pay">${payHtml(a.impact)}</div>
+          </div>
+        </div>
+        <div class="choices">
+          <button class="choice" data-id="${a.id}" data-v="have" onclick="setStatus('${a.id}','have',this)">✓ Have it<small>ready now</small></button>
+          <button class="choice" data-id="${a.id}" data-v="canget" onclick="setStatus('${a.id}','canget',this)">↻ Can get it<small>I know how</small></button>
+          <button class="choice" data-id="${a.id}" data-v="unsure" onclick="setStatus('${a.id}','unsure',this)">? Not sure<small>show me</small></button>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  root.innerHTML=html;
+}
+function payHtml(s){ return s.replace(/(±?€[\d,–-]+(?:\/mo)?)/g,'<b>$1</b>'); }
+
+function setStatus(id,v,btn){
+  status[id]=v;
+  const group=btn.parentElement;
+  group.querySelectorAll('.choice').forEach(c=>{
+    c.classList.remove('sel-have','sel-canget','sel-unsure');
+  });
+  btn.classList.add('sel-'+v);
+  updateSortProgress();
+}
+function updateSortProgress(){
+  const n=Object.keys(status).length, tot=ALL_ASKS.length;
+  document.getElementById('sortProgress').textContent=`${n} of ${tot} sorted`;
+}
+
+/* prefill a realistic partial scenario so stakeholder sees a populated state */
+function seedDemo(){
+  const seed={'lu-p1':'have','fr-p1':'have','fr-p1b':'have','ch-p1':'canget','ch-p2':'canget','fr-p3':'unsure','ch-p3':'unsure','lu-p2':'canget','ch-... ':null};
+  Object.entries(seed).forEach(([id,v])=>{ if(v) status[id]=v; });
+}
+
+/* ---------- Submit sort -> result ---------- */
+function counts(){
+  let have=0,gather=0,decide=0;
+  ALL_ASKS.forEach(a=>{
+    const s=status[a.id];
+    if(s==='have')have++;
+    else if(s==='canget')gather++;
+    else if(s==='unsure')decide++;
+    else gather++; /* untouched treated as to-gather so no dead rows */
+  });
+  return {have,gather,decide};
+}
+function submitSort(){
+  const c=counts();
+  animateN('tHave',c.have); animateN('tGather',c.gather); animateN('tDecide',c.decide);
+  // sharpness scales with documents in hand
+  const sharp=Math.min(94, 18 + c.have*14);
+  document.getElementById('sharpPct').textContent=sharp+'%';
+  document.getElementById('sharpFill').style.width=sharp+'%';
+  // if user has docs, default to enter; else to plan
+  document.getElementById('enterBtn').textContent = c.have>0 ? 'Enter what I have now' : 'Get my gather plan';
+  go('3');
+  buildTour();
+  buildPlan();
+}
+function animateN(elid,target){
+  const el=document.getElementById(elid); let cur=0;
+  const step=Math.max(1,Math.ceil(target/12));
+  const iv=setInterval(()=>{cur+=step; if(cur>=target){cur=target;clearInterval(iv);} el.textContent=cur;},35);
+}
+
+/* ---------- 4a Entry tour (filtered to 'have') ---------- */
+let tourAsks=[], tourIdx=0;
+let bandLo=2400, bandHi=3900, sharpEntry=22;
+function buildTour(){
+  tourAsks=ALL_ASKS.filter(a=>status[a.id]==='have');
+  if(tourAsks.length===0) tourAsks=ALL_ASKS.filter(a=>a.id==='lu-p1'); // fallback so screen renders
+  tourIdx=0; bandLo=2400; bandHi=3900; sharpEntry=22;
+  renderTour();
+}
+function renderTour(){
+  if(tourIdx>=tourAsks.length){ go('5'); refreshClose(); return; }
+  const a=tourAsks[tourIdx];
+  document.getElementById('tourStep').textContent=`Step ${tourIdx+1} of ${tourAsks.length}`;
+  document.getElementById('tourIcon').textContent=a.icon;
+  document.getElementById('tourTitleTxt').textContent=a.title;
+  document.getElementById('tourWhy').textContent=a.why;
+  let f='';
+  a.guide.fields.forEach(fl=>{ f+=`<div class="field"><label>${fl.l}</label><input type="text" placeholder="${fl.ph}" inputmode="numeric"></div>`; });
+  document.getElementById('tourFields').innerHTML=f;
+  // side band
+  document.getElementById('sbBand').innerHTML=`<span class="num">€${bandLo.toLocaleString()}</span>–<span class="num">€${bandHi.toLocaleString()}</span>`;
+  document.getElementById('sbSharp').textContent=sharpEntry+'%';
+  document.getElementById('sbTick').textContent='';
+}
+function tourNext(skip){
+  const a=tourAsks[tourIdx];
+  if(!skip){
+    entered[a.id]=true;
+    // tighten band: raise floor, drop ceiling, bump sharpness
+    bandLo+=Math.round(120+Math.random()*80);
+    bandHi-=Math.round(70+Math.random()*60);
+    if(bandHi<bandLo+200) bandHi=bandLo+200;
+    sharpEntry=Math.min(96, sharpEntry+18);
+    document.getElementById('sbTick').textContent='✓ tightened';
+  }
+  tourIdx++;
+  setTimeout(renderTour, skip?0:450);
+}
+
+/* ---------- 4b Gather plan ---------- */
+const diffOrder={'Easy':0,'Medium':1,'Hard':2};
+function timeScore(t){
+  if(/Instant/i.test(t))return 0;
+  if(/min/i.test(t))return 1;
+  if(/day/i.test(t))return 2;
+  if(/1–2 week|1-2 week/i.test(t))return 3;
+  if(/week/i.test(t))return 4;
+  return 5;
+}
+function buildPlan(){
+  let items=ALL_ASKS.filter(a=>{const s=status[a.id];return s==='canget'||s==='unsure'||!s;});
+  items.sort((x,y)=>{
+    const p=(x.pri==='high'?0:1)-(y.pri==='high'?0:1);
+    if(p)return p;
+    const d=diffOrder[x.guide.diff]-diffOrder[y.guide.diff];
+    if(d)return d;
+    return timeScore(x.guide.time)-timeScore(y.guide.time);
+  });
+  const root=document.getElementById('gatherPlan');
+  let html='';
+  let lastPri=null;
+  items.forEach((a,i)=>{
+    if(a.pri!==lastPri){
+      html+=`<div class="plan-section-h"><h3>${a.pri==='high'?'Do these first — high value':'Then, if you hold them — optional'}</h3><span class="line"></span></div>`;
+      lastPri=a.pri;
+    }
+    const isUnsure=status[a.id]==='unsure';
+    html+=`<div class="plan-card">
+      <div class="plan-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="plan-num">${i+1}</div>
+        <div class="plan-info">
+          <div class="pt">${a.icon} ${a.title}</div>
+          <div class="pm"><span class="t">⏱ ${a.guide.time}</span><span>${a.guide.diff}</span><span>${a.guide.lang}</span></div>
+        </div>
+        <span class="chev">›</span>
+      </div>
+      <div class="plan-body">
+        ${isUnsure?`<div class="nudge">Most people in your situation do have this — worth a quick check.</div>`:''}
+        <div class="sec"><h4>How to get it</h4><ol>${a.guide.steps.map(s=>`<li>${s}</li>`).join('')}</ol></div>
+        <div class="sec"><div class="meta-line"><b>If that doesn't work:</b> ${a.guide.alt}</div>
+        <div class="meta-line"><b>Languages:</b> ${a.guide.lang} &nbsp;·&nbsp; <b>Time:</b> ${a.guide.time}</div></div>
+        <div class="pay">Payoff — ${payHtml(a.impact)}</div>
+        <button class="btn btn-ghost" onclick="event.stopPropagation(); gotEnterNow('${a.id}')">I got it → enter now</button>
+      </div>
+    </div>`;
+  });
+  if(!items.length) html='<p class="body">Nothing left to gather — you marked everything as in hand.</p>';
+  root.innerHTML=html;
+}
+function gotEnterNow(id){
+  status[id]='have';
+  buildTour();
+  // jump tour to that ask
+  const idx=tourAsks.findIndex(a=>a.id===id);
+  if(idx>=0){tourIdx=idx;renderTour();}
+  go('4a');
+}
+
+/* ---------- Close screen ---------- */
+function refreshClose(){
+  const enteredN=Object.keys(entered).length;
+  const planN=ALL_ASKS.filter(a=>{const s=status[a.id];return (s==='canget'||s==='unsure'||!s)&&!entered[a.id];}).length;
+  document.getElementById('closeBand').textContent='€'+bandLo.toLocaleString();
+  document.getElementById('closeBand2').textContent='€'+bandHi.toLocaleString();
+  document.getElementById('closeSharp').textContent=sharpEntry+'%';
+  document.getElementById('closeEntered').textContent=enteredN;
+  document.getElementById('closePlan').textContent=planN;
+}
+
+function emailPlan(){ alert('Your gather plan has been emailed to mats.karlsson@example.lu and pinned to your picture.\n\nNothing expires — come back when a document arrives.'); }
+
+/* ---------- Screen routing ---------- */
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===id));
+  document.querySelectorAll('.screennav button').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
+  document.getElementById('stickyFoot').style.display = id==='2'?'block':'none';
+  if(id==='3'){ const c=counts(); /* keep tallies fresh if visited directly */ }
+  if(id==='5') refreshClose();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.screennav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const id=b.dataset.go;
+    if(id==='3'){ submitSort(); }
+    else { go(id); if(id==='4a'){buildTour();} if(id==='4b'){buildPlan();} }
+  });
+});
+
+/* ---------- Init ---------- */
+buildSort();
+seedDemo();
+// reflect seeded selections in UI
+Object.entries(status).forEach(([id,v])=>{
+  const btn=document.querySelector(`.choice[data-id="${id}"][data-v="${v}"]`);
+  if(btn){btn.classList.add('sel-'+v);}
+});
+updateSortProgress();
+buildTour();
+buildPlan();
+</script>
+</body>
+</html>

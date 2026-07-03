@@ -101,7 +101,7 @@ export function CapitalModeller({ retirementAge }: Props) {
           <span className="text-[11px]" style={{ color: 'var(--text-dim)' }}>100% capital</span>
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="p-3 rounded-lg text-center" style={{ background: 'var(--navy-4)' }}>
             <div className="text-[11px] uppercase tracking-wide mb-1" style={{ color: 'var(--text-dim)' }}>Monthly Annuity</div>
             <div className="text-xl font-bold" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--gold-light)' }}>

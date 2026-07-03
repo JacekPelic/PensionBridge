@@ -49,9 +49,9 @@ export default function PicturePage() {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
+      <div className="flex-1 flex flex-col min-w-0" style={{ marginLeft: 'var(--sidebar-w)' }}>
         <PictureChrome />
-        <div className="flex-1 p-7 animate-fade-in">
+        <div className="flex-1 p-4 sm:p-7 animate-fade-in">
           <PictureSurface />
         </div>
       </div>

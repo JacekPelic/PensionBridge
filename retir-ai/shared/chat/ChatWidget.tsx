@@ -26,7 +26,7 @@ function welcomeFor(mode: 'mock' | 'user', picture: PartialPicture): ChatMessage
   if (mode === 'mock') {
     return {
       role: 'bot',
-      text: `Hello Mats! I'm your Prevista advisor. I've analysed your career across France, Switzerland, and Luxembourg.\n\n**3 things need your attention:**\n1. Your **Luxembourg employer pension (RCP)** hasn't been located yet — typically the second-largest slice for LU residents\n2. You have **2 contribution gaps** and a **freelance year** with unclear attribution\n3. Retiring at **64** carries a risk of permanent French pension penalty\n\nYour projected income is **€1,660/month below your goal**.`,
+      text: `Hello Mats! I'm your Clerio advisor. I've analysed your career across France, Switzerland, and Luxembourg.\n\n**3 things need your attention:**\n1. Your **Luxembourg employer pension (RCP)** hasn't been located yet — typically the second-largest slice for LU residents\n2. You have **2 contribution gaps** and a **freelance year** with unclear attribution\n3. Retiring at **64** carries a risk of permanent French pension penalty\n\nYour projected income is **€1,660/month below your goal**.`,
       suggestions: [
         'What is my LU RCP?',
         'Explain my gaps',
@@ -40,9 +40,9 @@ function welcomeFor(mode: 'mock' | 'user', picture: PartialPicture): ChatMessage
   if (!hasOpening) {
     return {
       role: 'bot',
-      text: `Welcome to Prevista. I'm your pension advisor, and I'll get more useful as you fill in your picture.\n\nStart by answering the first few questions on the **Your picture** page — it takes about 2 minutes. Once I know where you live, your age, and your career countries, I can flag gaps, model retirement scenarios, and help you find forgotten pensions.`,
+      text: `Welcome to Clerio. I'm your pension advisor, and I'll get more useful as you fill in your picture.\n\nStart by answering the first few questions on the **Your picture** page — it takes about 2 minutes. Once I know where you live, your age, and your career countries, I can flag gaps, model retirement scenarios, and help you find forgotten pensions.`,
       suggestions: [
-        'How does Prevista work?',
+        'How does Clerio work?',
         'What countries are supported?',
         'Why do you need my age?',
       ],
@@ -58,7 +58,7 @@ function welcomeFor(mode: 'mock' | 'user', picture: PartialPicture): ChatMessage
       : 'I can help once you\u2019ve added where you\u2019ve worked.';
   return {
     role: 'bot',
-    text: `Hi ${name} — I'm your Prevista advisor. ${countryLine}\n\nAsk me anything about your pension picture, or tap a suggestion to start.`,
+    text: `Hi ${name} — I'm your Clerio advisor. ${countryLine}\n\nAsk me anything about your pension picture, or tap a suggestion to start.`,
     suggestions: [
       'Explain my pension gaps',
       'What documents should I upload?',

@@ -89,12 +89,12 @@ export function PicturePreview({ estimate, forceUnverified = false }: PicturePre
       <div className="flex items-start justify-between gap-8 flex-wrap">
         <div className="min-w-[260px]">
           <div
-            className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-2 flex items-center gap-2"
+            className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-2 flex items-center gap-2 flex-wrap"
             style={{ color: 'var(--text-dim)' }}
           >
             <span>Your monthly income at retirement</span>
             <span
-              className="text-[9.5px] font-bold px-1.5 py-[1px] rounded-[4px]"
+              className="text-[11px] font-bold px-2 py-[2px] rounded-[4px]"
               style={{
                 background: verified ? 'var(--green-dim)' : 'var(--amber-dim)',
                 color: verified ? 'var(--green)' : 'var(--amber)',
@@ -105,15 +105,25 @@ export function PicturePreview({ estimate, forceUnverified = false }: PicturePre
             </span>
           </div>
           {hasData ? (
-            <div
-              className="text-[36px] leading-none font-semibold tabular-nums"
-              style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}
-            >
-              {'\u20AC'}{alignedNet.toLocaleString()}
-              <span className="text-[13px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
-                /mo
-              </span>
-            </div>
+            <>
+              {/* Floor reframe (estimate mode): the number counts Pillar 1 only,
+                  so workplace + personal can only add to it \u2014 present it as a
+                  floor ("at least"), never a vague verdict. */}
+              {!verified && (
+                <div className="text-[14px] mb-1" style={{ color: 'var(--text-muted)' }}>
+                  You&apos;re on track for <strong style={{ color: 'var(--text)' }}>at least</strong>:
+                </div>
+              )}
+              <div
+                className="text-[40px] leading-none font-semibold tabular-nums"
+                style={{ fontFamily: 'var(--font-mono)', color: 'var(--text)' }}
+              >
+                {'\u20AC'}{alignedNet.toLocaleString()}
+                <span className="text-[14px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
+                  /mo
+                </span>
+              </div>
+            </>
           ) : (
             <div
               className="text-[30px] leading-none font-semibold"
@@ -123,7 +133,7 @@ export function PicturePreview({ estimate, forceUnverified = false }: PicturePre
             </div>
           )}
           {hasData && (
-            <div className="text-[11.5px] mt-2 flex items-center gap-3 flex-wrap" style={{ color: 'var(--text-dim)' }}>
+            <div className="text-[12px] mt-2 flex items-center gap-3 flex-wrap" style={{ color: 'var(--text-dim)' }}>
               <span>
                 after {alignedEffectivePct}% tax
                 {' '}{'\u00B7'}{' '}
@@ -131,13 +141,13 @@ export function PicturePreview({ estimate, forceUnverified = false }: PicturePre
                   {'\u20AC'}{alignedGross.toLocaleString()}/mo gross
                 </span>
               </span>
-              <span>
-                {'\u00B7'} {verified
-                  ? 'P1 + P2 verified'
-                  : forceUnverified
-                    ? 'Estimate from your answers \u2014 sharpen by uploading documents'
-                    : 'Pillar 1 only \u2014 P2 / P3 pending upload'}
-              </span>
+              {verified ? (
+                <span>{'\u00B7'} P1 + P2 verified</span>
+              ) : (
+                <span style={{ color: 'var(--green)' }}>
+                  {'\u00B7'} Workplace &amp; personal pensions only add to this
+                </span>
+              )}
             </div>
           )}
           {!hasData && (

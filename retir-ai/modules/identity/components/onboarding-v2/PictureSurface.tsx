@@ -5,8 +5,10 @@ import { Button } from '@/shared/ui/Button';
 import { PicturePreview } from './PicturePreview';
 import { estimate } from './estimate';
 import { usePicture } from '@/modules/identity/PictureProvider';
-import type { MaritalStatus, PartialPicture } from '@/modules/identity/picture-types';
+import type { MaritalStatus, PartialPicture, AskStatus } from '@/modules/identity/picture-types';
 import { AsksStack, deriveAsks, OnboardingCapstone, PillarTour } from '@/modules/guidance';
+import { AskCard } from '@/modules/guidance/AskCard';
+import type { DataAsk } from '@/modules/guidance/types';
 
 /**
  * The picture surface — the always-on home for ongoing sharpening of the
@@ -50,15 +52,23 @@ export function PictureSurface() {
         <PillarTour picture={picture} onUpdate={updatePicture} onExit={exitTour} />
       ) : (
         <>
+          {/* Settling Picture: the preview above is the answer; below is ONE
+              clear next step, then quiet secondary surfaces. No tour to abandon,
+              no 11-item backlog. (See docs/picture-settling-spec.md) */}
           <CompletionHeader picture={picture} />
-          <TourCta
-            everCompleted={tourEverCompleted}
-            pausedAt={picture.tour?.currentStepIndex ?? 0}
-            onStart={startTour}
-          />
-          <QuickEditsRow picture={picture} onUpdate={updatePicture} />
+          <NextBestStep asks={asks} picture={picture} onUpdate={updatePicture} />
+          <GatherTray asks={asks} picture={picture} />
+          <PreparedDoor>
+            <QuickEditsRow picture={picture} onUpdate={updatePicture} />
+            <AsksSection asks={asks} />
+            <TourCta
+              everCompleted={tourEverCompleted}
+              pausedAt={picture.tour?.currentStepIndex ?? 0}
+              onStart={startTour}
+            />
+          </PreparedDoor>
+          {/* Act (products) — after sharpen. */}
           <OnboardingCapstone picture={picture} asks={asks} />
-          <AsksSection asks={asks} />
           <FooterActions
             mode={mode}
             onLoadMock={loadMock}
@@ -105,7 +115,7 @@ function TourCta({
       </div>
       <div className="flex-1 min-w-[220px]">
         <div
-          className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-1"
+          className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-1"
           style={{ color: isDone ? 'var(--text-dim)' : 'var(--gold-light)' }}
         >
           {isDone ? 'Tour complete' : isResume ? 'Resume where you left off' : 'Complete your picture'}
@@ -142,7 +152,7 @@ function CompletionHeader({ picture }: { picture: PartialPicture }) {
     <div className="flex items-end justify-between gap-4 flex-wrap">
       <div>
         <div
-          className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-1"
+          className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-1"
           style={{ color: 'var(--gold-light)' }}
         >
           Opening complete
@@ -153,11 +163,193 @@ function CompletionHeader({ picture }: { picture: PartialPicture }) {
         >
           {picture.firstName ? `Nice work, ${picture.firstName}.` : 'Nice work.'}
           {' '}
-          <span style={{ color: 'var(--text-muted)' }}>Sharpen from here.</span>
+          <span style={{ color: 'var(--text-muted)' }}>Here’s your picture so far.</span>
         </h2>
       </div>
     </div>
   );
+}
+
+// ─── Settling: the single next-best step ───────────────────────────
+
+const HANDLED_STATUSES: AskStatus[] = ['fulfilled', 'skipped', 'saved'];
+
+function isHandled(picture: PartialPicture, ask: DataAsk): boolean {
+  const s = picture.askStatus?.[ask.id];
+  return s != null && HANDLED_STATUSES.includes(s);
+}
+
+const COUNTRY_ADJ: Record<string, string> = {
+  CH: 'Swiss', FR: 'French', LU: 'Luxembourg', DE: 'German', BE: 'Belgian',
+  IT: 'Italian', ES: 'Spanish', PT: 'Portuguese', NL: 'Dutch',
+};
+
+const PRIO_STYLE: Record<string, { color: string; bg: string; label: string }> = {
+  high: { color: 'var(--red)', bg: 'var(--red-dim)', label: 'High priority' },
+  medium: { color: 'var(--amber)', bg: 'var(--amber-dim)', label: 'Medium' },
+  low: { color: 'var(--text-dim)', bg: 'var(--navy-4)', label: 'Low' },
+};
+
+function NextBestStep({
+  asks,
+  picture,
+  onUpdate,
+}: {
+  asks: DataAsk[];
+  picture: PartialPicture;
+  onUpdate: (patch: Partial<PartialPicture>) => void;
+}) {
+  const [openedId, setOpenedId] = useState<string | null>(null);
+  // deriveAsks is already priority-sorted (high → low), so the first unhandled
+  // ask is the highest-leverage next step — no band-width ranking needed.
+  const ask = asks.find((a) => !isHandled(picture, a));
+
+  if (!ask) {
+    return (
+      <div
+        className="rounded-[14px] p-5"
+        style={{ background: 'var(--navy-2)', border: '1px solid var(--border)' }}
+      >
+        <div
+          className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-1"
+          style={{ color: 'var(--green)' }}
+        >
+          All caught up
+        </div>
+        <div className="text-[15px]" style={{ color: 'var(--text)' }}>
+          You&apos;ve handled everything we suggested. Your picture sharpens
+          automatically as those documents come in.
+        </div>
+      </div>
+    );
+  }
+
+  const saveForLater = () =>
+    onUpdate({ askStatus: { ...(picture.askStatus ?? {}), [ask.id]: 'saved' } });
+  const opened = openedId === ask.id;
+  const adj = ask.country ? COUNTRY_ADJ[ask.country] : undefined;
+  const ctaLabel = adj ? `Tighten your ${adj} estimate` : 'Show me how';
+  const prio = PRIO_STYLE[ask.priority] ?? PRIO_STYLE.low;
+
+  return (
+    <div>
+      <div
+        className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-2"
+        style={{ color: 'var(--gold)' }}
+      >
+        Your next best step
+      </div>
+      <div
+        className="rounded-[15px] p-1.5"
+        style={{ background: 'var(--gold-dim)', border: '1px solid var(--gold-border)' }}
+      >
+        {opened ? (
+          <AskCard key={ask.id} ask={ask} defaultExpanded onSaveForLater={saveForLater} />
+        ) : (
+          <div className="rounded-[12px] p-4" style={{ background: 'var(--navy-3)' }}>
+            <div className="flex items-start gap-3 mb-3.5">
+              <div
+                className="w-9 h-9 rounded-[10px] flex items-center justify-center text-base shrink-0"
+                style={{ background: 'var(--navy-4)' }}
+              >
+                {ask.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <span
+                  className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-[2px] rounded-[4px]"
+                  style={{ background: prio.bg, color: prio.color }}
+                >
+                  {prio.label}
+                </span>
+                <div className="text-[15px] font-semibold mt-1.5" style={{ color: 'var(--text)' }}>
+                  {ask.title}
+                </div>
+                <div className="text-[13px] leading-relaxed mt-1" style={{ color: 'var(--text-muted)' }}>
+                  {ask.whyNow}
+                </div>
+                <div className="text-[13px] font-medium mt-1.5" style={{ color: 'var(--gold-light)' }}>
+                  {ask.impact}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setOpenedId(ask.id)}
+              className="inline-flex items-center gap-2 rounded-[10px] cursor-pointer transition-colors"
+              style={{
+                background: 'var(--gold)', color: 'var(--navy)', fontFamily: 'var(--font-sans)',
+                fontWeight: 600, fontSize: '15px', padding: '13px 22px', minHeight: 48, border: 'none',
+              }}
+            >
+              {ctaLabel} <span aria-hidden>→</span>
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="text-[12.5px] mt-2" style={{ color: 'var(--text-dim)' }}>
+        Just this one for now — everything else can wait. Your estimate already stands.
+      </div>
+    </div>
+  );
+}
+
+// ─── Settling: "Things to gather" tray ─────────────────────────────
+
+function GatherTray({ asks, picture }: { asks: DataAsk[]; picture: PartialPicture }) {
+  const saved = asks.filter((a) => picture.askStatus?.[a.id] === 'saved');
+  if (saved.length === 0) return null;
+  return (
+    <div
+      className="rounded-[12px] p-4"
+      style={{ background: 'var(--navy-2)', border: '1px dashed var(--border)' }}
+    >
+      <div
+        className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-2.5"
+        style={{ color: 'var(--text-dim)' }}
+      >
+        Things to gather ({saved.length})
+      </div>
+      <div className="flex flex-col gap-1.5">
+        {saved.map((a) => (
+          <div key={a.id} className="flex items-center justify-between gap-3 text-[13px]">
+            <span style={{ color: 'var(--text)' }}>
+              {a.icon} {a.title}
+            </span>
+            <span className="text-[12px]" style={{ color: 'var(--green)' }}>
+              {a.impact} on the way
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="text-[11.5px] mt-2.5" style={{ color: 'var(--text-dim)' }}>
+        We&apos;ll keep these here until you have them. Nothing expires.
+      </div>
+    </div>
+  );
+}
+
+// ─── Settling: prepared-user door ──────────────────────────────────
+
+function PreparedDoor({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="flex items-center justify-center gap-2 rounded-[12px] text-[13.5px] font-medium cursor-pointer transition-colors w-full"
+        style={{
+          minHeight: 48,
+          background: 'transparent',
+          border: '1px solid var(--border)',
+          color: 'var(--text-muted)',
+        }}
+      >
+        I already have my documents — show all details
+      </button>
+    );
+  }
+  return <div className="flex flex-col gap-5 animate-fade-in">{children}</div>;
 }
 
 // ─── Quick edits — 3 compact cards in a row ────────────────────────
@@ -172,7 +364,7 @@ function QuickEditsRow({
   return (
     <div>
       <div
-        className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-2"
+        className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-2"
         style={{ color: 'var(--text-dim)' }}
       >
         Quick edits
@@ -297,7 +489,7 @@ function RefinementCard({
       >
         <div className="flex-1 min-w-0">
           <div
-            className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-0.5"
+            className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-0.5"
             style={{ color: 'var(--text-dim)' }}
           >
             {label}

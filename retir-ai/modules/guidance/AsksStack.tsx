@@ -34,19 +34,19 @@ export function AsksStack({ asks }: AsksStackProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between gap-3 mb-1">
         <div
-          className="text-[10.5px] uppercase tracking-[0.14em] font-semibold"
+          className="text-[12px] uppercase tracking-[0.14em] font-semibold"
           style={{ color: 'var(--text-dim)' }}
         >
-          Next {'\u00B7'} {asks.length} things to add
+          Or sharpen it piece by piece
         </div>
         {highCount > 0 && (
           <span
-            className="text-[10px] font-medium"
-            style={{ color: 'var(--red)' }}
+            className="text-[11.5px] font-medium"
+            style={{ color: 'var(--text-dim)' }}
           >
-            {highCount} high priority
+            {highCount} worth doing first
           </span>
         )}
       </div>

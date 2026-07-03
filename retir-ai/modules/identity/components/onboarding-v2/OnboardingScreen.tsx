@@ -70,7 +70,7 @@ export function OnboardingScreen() {
             className="text-base font-semibold"
             style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}
           >
-            Prevista
+            Clerio
           </span>
         </div>
         {phase === 'questions' && (
@@ -121,7 +121,7 @@ export function OnboardingScreen() {
         className="px-8 py-3 text-[11px] text-center shrink-0"
         style={{ borderTop: '1px solid var(--border)', color: 'var(--text-dim)' }}
       >
-        Prevista {'·'} your future, foreseen
+        Clerio {'·'} your future, foreseen
       </footer>
     </div>
   );
@@ -172,7 +172,7 @@ function SplashPanel({
       </div>
 
       <div
-        className="mt-12 grid grid-cols-3 gap-3 text-left"
+        className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left"
       >
         {[
           {

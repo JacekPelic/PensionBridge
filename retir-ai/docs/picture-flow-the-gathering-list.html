@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prevista — The Gathering List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter+Tight:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="light"]{
+  --bg:#F7F4ED; --surface:#FFFFFF; --surface2:#F1EDE3;
+  --text:#1B1E26; --muted:#3D4658; --dim:#6A7184;
+  --accent:#9A7B28; --accent-soft:#7A6118; --verified:#1F8C7E;
+  --alert:#C23A30; --border:rgba(20,20,20,0.10);
+  --shadow:0 1px 2px rgba(20,20,20,0.04),0 8px 24px rgba(20,20,20,0.06);
+  --chip-bg:#F1EDE3;
+}
+:root[data-theme="dark"]{
+  --bg:#0E1016; --surface:#161922; --surface2:#1E222E;
+  --text:#ECEEF3; --muted:#9AA3B5; --dim:#6B7488;
+  --accent:#C9A24A; --accent-soft:#E3C77E; --verified:#3FB6A8;
+  --alert:#E5544B; --border:rgba(255,255,255,0.08);
+  --shadow:0 1px 2px rgba(0,0,0,0.3),0 8px 28px rgba(0,0,0,0.4);
+  --chip-bg:#1E222E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);
+  font-family:'Inter Tight',system-ui,sans-serif;font-size:16px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+.mono{font-family:'Geist Mono',monospace;font-variant-numeric:tabular-nums}
+.serif{font-family:'Source Serif 4',Georgia,serif}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,serif;font-weight:500;letter-spacing:-.01em;line-height:1.18}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit}
+
+/* ---- shell ---- */
+.app{max-width:560px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+.topbar{position:sticky;top:0;z-index:30;background:var(--bg);
+  border-bottom:1px solid var(--border);padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:9px;font-family:'Source Serif 4',serif;font-weight:600;font-size:18px;letter-spacing:-.02em}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.controls{display:flex;align-items:center;gap:8px}
+.theme-toggle{display:flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid var(--border);
+  border-radius:999px;font-size:13px;color:var(--muted);background:var(--surface)}
+.theme-toggle:hover{color:var(--text)}
+
+/* screen switcher */
+.stepnav{display:flex;gap:4px;padding:10px 16px;overflow-x:auto;background:var(--surface2);
+  border-bottom:1px solid var(--border);scrollbar-width:none}
+.stepnav::-webkit-scrollbar{display:none}
+.stepnav button{white-space:nowrap;font-size:12px;padding:6px 11px;border-radius:999px;color:var(--dim);
+  letter-spacing:.01em;border:1px solid transparent}
+.stepnav button.active{background:var(--surface);color:var(--text);border-color:var(--border);box-shadow:var(--shadow)}
+
+.screen{padding:24px 20px 140px;flex:1;display:none}
+.screen.active{display:block}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:500;margin-bottom:12px}
+
+/* ---- screen 1 opening recap ---- */
+.lead{font-size:25px;line-height:1.28;margin:6px 0 8px;max-width:30ch}
+.sub{color:var(--muted);font-size:16px;margin-bottom:26px;max-width:46ch}
+.career{display:flex;flex-direction:column;gap:10px;margin-bottom:30px}
+.career-row{display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--surface);
+  border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+.flag{font-size:24px;line-height:1;flex-shrink:0}
+.career-row .cc{flex:1}
+.career-row .ccname{font-weight:500;font-size:16px}
+.career-row .ccyears{color:var(--dim);font-size:13.5px}
+.career-row .dur{font-size:15px;color:var(--muted)}
+.career-row .tag{font-size:11px;color:var(--verified);border:1px solid var(--verified);border-radius:999px;padding:2px 9px;margin-top:4px;display:inline-block}
+
+/* primary button */
+.btn-primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  min-height:52px;background:var(--accent);color:#fff;border-radius:13px;font-weight:600;font-size:16px;
+  letter-spacing:.005em;box-shadow:var(--shadow)}
+:root[data-theme="light"] .btn-primary{color:#fff}
+.btn-primary:hover{filter:brightness(1.06)}
+.reassure{text-align:center;color:var(--dim);font-size:13.5px;margin-top:14px}
+
+/* ---- header estimate band ---- */
+.estband{position:sticky;top:57px;z-index:20;background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:15px 17px;margin-bottom:8px;box-shadow:var(--shadow)}
+.estband .lbl{font-size:12.5px;color:var(--muted);margin-bottom:7px}
+.estband .figs{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.estband .band{font-size:22px;font-weight:600;letter-spacing:-.01em}
+.estband .goal{font-size:12.5px;color:var(--dim);margin-left:auto}
+.estband .goal b{color:var(--text);font-weight:600}
+.estbar{height:7px;border-radius:4px;background:var(--surface2);margin-top:11px;position:relative;overflow:hidden}
+.estbar .fillmin{position:absolute;left:0;top:0;bottom:0;background:var(--accent);opacity:.32;border-radius:4px}
+.estbar .fillmax{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:4px}
+.estbar .goalmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--text);opacity:.5}
+.tighten-note{font-size:12px;color:var(--accent-soft);margin-top:9px;font-weight:500}
+:root[data-theme="light"] .tighten-note{color:var(--accent)}
+
+/* progress strip + filters */
+.progress-strip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);
+  padding:13px 4px 6px;flex-wrap:wrap}
+.progress-strip .seg{display:flex;align-items:center;gap:5px}
+.progress-strip .num{font-weight:600;color:var(--text)}
+.progress-strip .sep{color:var(--border);color:var(--dim);opacity:.5}
+.filters{display:flex;gap:7px;margin:8px 0 18px;flex-wrap:wrap}
+.filters button{font-size:12.5px;padding:7px 13px;border-radius:999px;border:1px solid var(--border);
+  color:var(--muted);background:var(--surface)}
+.filters button.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+/* group headers */
+.group{margin-bottom:26px}
+.group-head{margin:4px 0 4px}
+.group-head h3{font-size:18px;margin-bottom:2px}
+.group-head p{font-size:13px;color:var(--dim);max-width:48ch;line-height:1.4}
+
+/* ---- the row ---- */
+.row{display:flex;align-items:flex-start;gap:13px;padding:16px 6px;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.row .rflag{font-size:21px;line-height:1.1;flex-shrink:0;width:24px;text-align:center}
+.row-main{flex:1;min-width:0}
+.row-title{font-weight:500;font-size:16px;line-height:1.3;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pri{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);
+  border-radius:4px;padding:1px 6px;font-weight:600}
+:root[data-theme="dark"] .pri{color:var(--accent-soft);border-color:var(--accent-soft)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.chip{font-size:11.5px;color:var(--muted);background:var(--chip-bg);border:1px solid var(--border);
+  border-radius:6px;padding:3px 8px;display:inline-flex;align-items:center;gap:5px;line-height:1.2}
+.chip .ic{opacity:.7}
+.impact{font-size:13px;color:var(--accent);margin-top:10px;font-weight:500}
+:root[data-theme="dark"] .impact{color:var(--accent-soft)}
+.row-actions{display:flex;gap:9px;margin-top:13px}
+.act{flex:1;min-height:44px;border-radius:10px;font-size:14px;font-weight:500;display:flex;
+  align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);background:var(--surface);color:var(--text)}
+.act:hover{border-color:var(--accent)}
+.act.ghost{color:var(--muted)}
+.act.have{border-color:var(--accent);color:var(--accent)}
+:root[data-theme="dark"] .act.have{color:var(--accent-soft);border-color:var(--accent-soft)}
+
+/* row states */
+.row.verified .row-title{color:var(--verified)}
+.statepill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;
+  padding:5px 11px;border-radius:999px;margin-top:11px}
+.statepill.verified{color:var(--verified);background:color-mix(in srgb,var(--verified) 12%,transparent);border:1px solid color-mix(in srgb,var(--verified) 40%,transparent)}
+.statepill.onlist{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent)}
+:root[data-theme="dark"] .statepill.onlist{color:var(--accent-soft)}
+.row.verified{background:color-mix(in srgb,var(--verified) 5%,transparent);border-radius:12px;padding-left:12px;padding-right:12px}
+.row.dimmed{opacity:.55}
+
+/* ---- sticky homework button ---- */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;
+  padding:14px 16px calc(14px + env(safe-area-inset-bottom));pointer-events:none}
+.dock-inner{max-width:560px;width:100%;pointer-events:auto}
+.homework-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+  background:var(--text);color:var(--bg);min-height:54px;border-radius:14px;padding:0 18px;
+  font-weight:600;font-size:15px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.homework-btn .cnt{font-family:'Geist Mono',monospace;background:var(--accent);color:#fff;
+  border-radius:8px;padding:3px 9px;font-size:13px}
+
+/* ---- drawer ---- */
+.scrim{position:fixed;inset:0;background:rgba(10,12,18,.5);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;left:0;right:0;bottom:0;z-index:60;max-width:560px;margin:0 auto;
+  background:var(--surface);border-radius:20px 20px 0 0;max-height:92vh;display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.22,1,.36,1);box-shadow:0 -8px 40px rgba(0,0,0,.25)}
+.drawer.open{transform:translateY(0)}
+.drawer-grip{width:38px;height:4px;border-radius:3px;background:var(--border);margin:10px auto 4px;flex-shrink:0}
+.drawer-head{padding:8px 22px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.drawer-head .dflag{font-size:22px}
+.drawer-head h2{font-size:20px;margin:8px 0 4px;line-height:1.25}
+.drawer-head .dwhy{font-size:13.5px;color:var(--muted);line-height:1.45}
+.drawer-body{overflow-y:auto;padding:18px 22px 24px;flex:1}
+
+/* guide content */
+.metastrip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.metastrip .chip{font-size:12px}
+.steps{list-style:none;display:flex;flex-direction:column;gap:16px;margin-bottom:22px}
+.steps li{display:flex;gap:13px}
+.stepnum{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--surface2);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-family:'Geist Mono',monospace;font-size:13px;font-weight:600;color:var(--accent)}
+:root[data-theme="dark"] .stepnum{color:var(--accent-soft)}
+.steptxt .st{font-weight:500;font-size:15px;margin-bottom:3px}
+.steptxt .sd{font-size:13.5px;color:var(--muted);line-height:1.5}
+.altpath{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:15px 16px;margin-bottom:20px}
+.altpath h4{font-family:'Inter Tight',sans-serif;font-size:13.5px;font-weight:600;margin-bottom:9px;display:flex;gap:7px;align-items:flex-start}
+.altpath h4 .q{color:var(--accent)}
+.altpath ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.altpath li{font-size:12.5px;color:var(--muted);line-height:1.45;padding-left:14px;position:relative}
+.altpath li::before{content:"—";position:absolute;left:0;color:var(--dim)}
+.tips{margin-bottom:8px}
+.tips h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:600;margin-bottom:9px}
+.tips ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.tips li{font-size:13px;color:var(--muted);line-height:1.45;padding-left:18px;position:relative}
+.tips li::before{content:"›";position:absolute;left:2px;color:var(--accent);font-weight:600}
+.advisor{margin-top:18px;padding:13px 15px;border:1px dashed var(--border);border-radius:11px;
+  font-size:13px;color:var(--muted);display:flex;align-items:center;gap:9px}
+.advisor b{color:var(--text);font-weight:600}
+
+/* manual form */
+.field{margin-bottom:17px}
+.field label{display:block;font-size:14px;font-weight:500;margin-bottom:5px}
+.field .hint{font-size:12.5px;color:var(--dim);margin-bottom:8px;line-height:1.4}
+.field .inwrap{position:relative;display:flex;align-items:center}
+.field input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;
+  padding:13px 14px;font-size:15px;color:var(--text);font-family:'Geist Mono',monospace;min-height:48px}
+.field input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.field .unit{position:absolute;right:13px;font-family:'Geist Mono',monospace;font-size:13px;color:var(--dim)}
+.upload-stub{border:1.5px dashed var(--border);border-radius:12px;padding:18px;text-align:center;
+  color:var(--muted);font-size:13.5px;margin-bottom:20px;background:var(--bg)}
+.upload-stub b{display:block;color:var(--text);font-weight:500;margin-bottom:3px;font-size:14.5px}
+.upload-stub .or{font-size:12px;color:var(--dim);margin-top:6px}
+
+.drawer-foot{flex-shrink:0;padding:14px 22px calc(16px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;gap:9px}
+.drawer-foot .dual{display:flex;gap:10px}
+.btn-soft{flex:1;min-height:50px;border-radius:12px;border:1px solid var(--border);background:var(--surface);
+  color:var(--text);font-size:15px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-soft:hover{border-color:var(--accent)}
+
+/* ---- homework screen ---- */
+.hw-intro{font-size:15px;color:var(--muted);max-width:46ch;margin-bottom:8px;line-height:1.5}
+.hw-paper{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 20px;
+  box-shadow:var(--shadow);margin-bottom:20px}
+.hw-paper h2{font-size:19px;margin-bottom:3px}
+.hw-paper .hw-sub{font-size:12.5px;color:var(--dim);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.hw-item{display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--border)}
+.hw-item:last-child{border-bottom:none}
+.hw-check{flex-shrink:0;width:20px;height:20px;border:1.5px solid var(--dim);border-radius:5px;margin-top:2px}
+.hw-it-main{flex:1;min-width:0}
+.hw-it-title{font-weight:500;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hw-where{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.4}
+.hw-meta{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.hw-time{font-family:'Geist Mono',monospace;font-size:11.5px;color:var(--dim)}
+.diff-tag{font-size:10.5px;padding:2px 8px;border-radius:5px;font-weight:500;letter-spacing:.02em}
+.diff-easy{color:var(--verified);background:color-mix(in srgb,var(--verified) 12%,transparent)}
+.diff-mod{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+:root[data-theme="dark"] .diff-mod{color:var(--accent-soft)}
+.diff-hard{color:var(--alert);background:color-mix(in srgb,var(--alert) 12%,transparent)}
+.hw-alt{font-size:12px;color:var(--muted);margin-top:9px;padding:8px 11px;background:var(--bg);
+  border-radius:8px;line-height:1.4;border:1px solid var(--border)}
+.hw-alt b{color:var(--text);font-weight:600;font-size:11.5px}
+.hw-divider{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+  font-weight:600;margin:18px 0 4px;padding-top:6px}
+.hw-actions{display:flex;gap:10px;margin-bottom:14px}
+.hw-actions button{flex:1;min-height:50px;border-radius:12px;font-size:15px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:8px}
+.hw-actions .email{background:var(--accent);color:#fff}
+.hw-actions .print{border:1px solid var(--border);background:var(--surface);color:var(--text)}
+.hw-noexpire{text-align:center;font-size:13.5px;color:var(--muted);padding:6px}
+.hw-noexpire .serif{color:var(--text)}
+
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);z-index:80;
+  background:var(--text);color:var(--bg);font-size:13.5px;font-weight:500;padding:11px 18px;border-radius:11px;
+  opacity:0;pointer-events:none;transition:all .3s;box-shadow:0 6px 24px rgba(0,0,0,.25);white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:400px){
+  .screen{padding:20px 15px 130px}
+  .lead{font-size:22px}
+  .estband .band{font-size:19px}
+  .row-actions{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span>Prevista</div>
+    <div class="controls">
+      <button class="theme-toggle" id="themeBtn"><span id="themeIcon">☾</span><span id="themeLbl">Dark</span></button>
+    </div>
+  </div>
+
+  <nav class="stepnav" id="stepnav">
+    <button data-screen="recap" class="active">1 · Opening recap</button>
+    <button data-screen="list">2 · Gathering list</button>
+    <button data-screen="guide">3a · Show me how</button>
+    <button data-screen="entry">3b · Enter data</button>
+    <button data-screen="progress">4 · List & progress</button>
+    <button data-screen="homework">5 · Your homework</button>
+  </nav>
+
+  <!-- ============ SCREEN 1 : OPENING RECAP ============ -->
+  <section class="screen active" id="screen-recap">
+    <div class="eyebrow">Step one · Your career, confirmed</div>
+    <h1 class="lead serif">Before we gather anything, let's confirm where you've worked.</h1>
+    <p class="sub">You told us your career so far. We'll use it to build a personalised list of exactly which pension documents exist for you — and how to get each one. You don't need any of them right now.</p>
+
+    <div class="career">
+      <div class="career-row">
+        <span class="flag">🇫🇷</span>
+        <div class="cc"><div class="ccname">France</div><div class="ccyears">CNAV · private sector</div></div>
+        <div class="dur mono">10 yrs</div>
+      </div>
+      <div class="career-row">
+        <span class="flag">🇨🇭</span>
+        <div class="cc"><div class="ccname">Switzerland</div><div class="ccyears">AHV/AVS · BVG</div></div>
+        <div class="dur mono">5 yrs</div>
+      </div>
+      <div class="career-row">
+        <span class="flag">🇱🇺</span>
+        <div class="cc"><div class="ccname">Luxembourg</div><div class="ccyears">CNAP · current residence</div><span class="tag">Ongoing</span></div>
+        <div class="dur mono">6 yrs</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="go('list')">Build my gathering list →</button>
+    <p class="reassure">Takes a few minutes to read. Nothing to fill in yet.</p>
+  </section>
+
+  <!-- ============ SCREEN 2 : THE GATHERING LIST ============ -->
+  <section class="screen" id="screen-list">
+    <div class="estband">
+      <div class="lbl">Your retirement picture, right now</div>
+      <div class="figs">
+        <span class="band mono">€2,200 – €3,840<span style="font-size:14px;color:var(--dim)">/mo</span></span>
+        <span class="goal">Goal <b class="mono">€5,500/mo</b></span>
+      </div>
+      <div class="estbar">
+        <div class="fillmin" style="width:40%"></div>
+        <div class="fillmax" style="width:70%"></div>
+        <div class="goalmark" style="left:100%"></div>
+      </div>
+      <div class="tighten-note">Each document below tightens this estimate.</div>
+    </div>
+
+    <h1 class="lead serif" style="font-size:21px;margin:22px 0 6px">Your gathering list</h1>
+    <p class="sub" style="margin-bottom:18px;font-size:14.5px">Eleven documents make up your full picture across France, Switzerland and Luxembourg. Tap <b>Show me how</b> to learn what each one is and where to get it. Tap <b>I have it</b> only if it's already in front of you.</p>
+
+    <div id="listContent"></div>
+  </section>
+
+  <!-- ============ SCREEN 4 : LIST STATE & PROGRESS ============ -->
+  <section class="screen" id="screen-progress">
+    <div class="estband">
+      <div class="lbl">Your retirement picture — tightening as you go</div>
+      <div class="figs">
+        <span class="band mono">€2,650 – €3,510<span style="font-size:14px;color:var(--dim)">/mo</span></span>
+        <span class="goal">Goal <b class="mono">€5,500/mo</b></span>
+      </div>
+      <div class="estbar">
+        <div class="fillmin" style="width:48%"></div>
+        <div class="fillmax" style="width:64%"></div>
+        <div class="goalmark" style="left:100%"></div>
+      </div>
+      <div class="tighten-note">The band narrowed from €2,200–€3,840 — three documents verified.</div>
+    </div>
+
+    <div class="progress-strip">
+      <span class="seg"><span class="num mono">3</span> verified</span><span class="sep">·</span>
+      <span class="seg"><span class="num mono">4</span> on your list</span><span class="sep">·</span>
+      <span class="seg"><span class="num mono">4</span> to review</span>
+    </div>
+
+    <div class="filters">
+      <button class="active" onclick="filterRows(this,'all')">All</button>
+      <button onclick="filterRows(this,'onlist')">On my list</button>
+      <button onclick="filterRows(this,'verified')">Verified</button>
+    </div>
+
+    <div id="progressContent"></div>
+  </section>
+
+  <!-- ============ SCREEN 5 : HOMEWORK ============ -->
+  <section class="screen" id="screen-homework">
+    <div class="eyebrow">The takeaway</div>
+    <h1 class="lead serif" style="font-size:23px">Your gathering list, ready to take with you.</h1>
+    <p class="hw-intro">Everything you still need to get, sorted easiest-first so you can start with a quick win. Print it, or email it to yourself — then come back whenever you've gathered a piece.</p>
+
+    <div class="hw-paper">
+      <h2 class="serif">Mats Karlsson — pension homework</h2>
+      <div class="hw-sub mono">FR · CH · LU career &nbsp;|&nbsp; 8 documents to gather &nbsp;|&nbsp; generated today</div>
+
+      <div class="hw-divider">Quick wins — start here</div>
+
+      <div class="hw-item">
+        <div class="hw-check"></div>
+        <div class="hw-it-main">
+          <div class="hw-it-title">🇫🇷 French Relevé de Carrière</div>
+          <div class="hw-where">Log in to lassuranceretraite.fr with FranceConnect → "Mon relevé de carrière" → Télécharger.</div>
+          <div class="hw-meta"><span class="hw-time">Instant – 5 min</span><span class="diff-tag diff-easy">Easy</span></div>
+          <div class="hw-alt"><b>If you can't log in:</b> create a FranceConnect account via impots.gouv.fr with your numéro fiscal — about 5 minutes.</div>
+        </div>
+      </div>
+
+      <div class="hw-item">
+        <div class="hw-check"></div>
+        <div class="hw-it-main">
+          <div class="hw-it-title">🇫🇷 Agirc-Arrco complementary pension</div>
+          <div class="hw-where">Log in to agirc-arrco.fr → "Mon espace personnel" (same FranceConnect login) → download relevé de points.</div>
+          <div class="hw-meta"><span class="hw-time">Instant – 5 min</span><span class="diff-tag diff-easy">Easy</span></div>
+        </div>
+      </div>
+
+      <div class="hw-item">
+        <div class="hw-check"></div>
+        <div class="hw-it-main">
+          <div class="hw-it-title">🇨🇭 Swiss Pillar 3a (Säule 3a)</div>
+          <div class="hw-where">Log in to each 3a provider (PostFinance, VIAC, Finpension…) → download the annual attestation.</div>
+          <div class="hw-meta"><span class="hw-time">Instant</span><span class="diff-tag diff-easy">Easy</span></div>
+        </div>
+      </div>
+
+      <div class="hw-divider">A little more effort</div>
+
+      <div class="hw-item">
+        <div class="hw-check"></div>
+        <div class="hw-it-main">
+          <div class="hw-it-title">🇨🇭 Swiss AHV/AVS career extract</div>
+          <div class="hw-where">Order at ahv-iv.ch (or avs-ai.ch) → "Individual account" → "Order an extract". Arrives by post.</div>
+          <div class="hw-meta"><span class="hw-time">1–2 weeks</span><span class="diff-tag diff-easy">Easy</span></div>
+        </div>
+      </div>
+
+      <div class="hw-item">
+        <div class="hw-check"></div>
+        <div class="hw-it-main">
+          <div class="hw-it-title">🇱🇺 Luxembourg Extrait de Carrière</div>
+          <div class="hw-where">Log in to guichet.lu with LuxTrust → Social security → Pension → Career extract.</div>
+          <div class="hw-meta"><span class="hw-time">2–3 weeks</span><span class="diff-tag diff-easy">Easy</span></div>
+          <div class="hw-alt"><b>If LuxTrust expired:</b> call CNAP at +352 22 41 41-1 and request by phone — they'll post it.</div>
+        </div>
+      </div>
+
+      <div class="hw-item">
+        <div class="hw-check"></div>
+        <div class="hw-it-main">
+          <div class="hw-it-title">🇱🇺 Luxembourg employer pension (RCP)</div>
+          <div class="hw-where">Check your annual salary statement under "pension complémentaire employeur"; ask HR for the current statement.</div>
+          <div class="hw-meta"><span class="hw-time">1–3 weeks</span><span class="diff-tag diff-mod">Moderate</span></div>
+        </div>
+      </div>
+
+      <div class="hw-divider">Worth the effort — the "found money" ones</div>
+
+      <div class="hw-item">
+        <div class="hw-check"></div>
+        <div class="hw-it-main">
+          <div class="hw-it-title">🇨🇭 Swiss workplace pension (Vorsorgeausweis / BVG)</div>
+          <div class="hw-where">Find your last Vorsorgeausweis, or search zentralstelle.ch with your AHV number for transferred capital.</div>
+          <div class="hw-meta"><span class="hw-time">1–4 weeks</span><span class="diff-tag diff-hard">May need help</span></div>
+          <div class="hw-alt"><b>If zentralstelle finds nothing:</b> call Auffangeinrichtung BVG at +41 41 799 75 75 — unclaimed benefits default there.</div>
+        </div>
+      </div>
+
+      <div class="hw-item">
+        <div class="hw-check"></div>
+        <div class="hw-it-main">
+          <div class="hw-it-title">🇨🇭 Swiss vested benefits (Freizügigkeitskonto)</div>
+          <div class="hw-where">Search zentralstelle.ch with your AHV number for forgotten 2nd-pillar capital, then request a Freizügigkeitsausweis.</div>
+          <div class="hw-meta"><span class="hw-time">2–6 weeks</span><span class="diff-tag diff-hard">May need help</span></div>
+          <div class="hw-alt"><b>Can't read German sites:</b> the whole process can be done by phone or letter to Zentralstelle 2. Säule, Bern.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hw-actions">
+      <button class="email" onclick="toast('Sent to mats.karlsson@email.lu')">✉ Email this to myself</button>
+      <button class="print" onclick="window.print()">⎙ Print</button>
+    </div>
+    <p class="hw-noexpire"><span class="serif">Come back anytime — nothing here expires.</span></p>
+  </section>
+
+  <!-- alias screens for guide/entry tabs jump straight into drawer over the list -->
+  <section class="screen" id="screen-guide"></section>
+  <section class="screen" id="screen-entry"></section>
+
+</div>
+
+<!-- sticky homework dock -->
+<div class="dock" id="dock">
+  <div class="dock-inner">
+    <button class="homework-btn" onclick="go('homework')">
+      <span>My gathering list</span>
+      <span class="cnt" id="dockCnt">8</span>
+    </button>
+  </div>
+</div>
+
+<!-- drawer -->
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-grip"></div>
+  <div class="drawer-head" id="drawerHead"></div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot" id="drawerFoot"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- THEME ---------- */
+const root=document.documentElement;
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  const dark=root.getAttribute('data-theme')==='dark';
+  root.setAttribute('data-theme',dark?'light':'dark');
+  document.getElementById('themeIcon').textContent=dark?'☾':'☀';
+  document.getElementById('themeLbl').textContent=dark?'Dark':'Light';
+});
+
+/* ---------- SCREEN SWITCH ---------- */
+const dock=document.getElementById('dock');
+function go(s){
+  document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
+  document.getElementById('screen-'+s).classList.add('active');
+  document.querySelectorAll('#stepnav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===s));
+  dock.style.display=(s==='recap'||s==='homework')?'none':'flex';
+  window.scrollTo(0,0);
+  closeDrawer();
+  if(s==='guide'){go('list');setTimeout(()=>openDrawer('lu-extrait','guide'),120);}
+  if(s==='entry'){go('list');setTimeout(()=>openDrawer('fr-releve','entry'),120);}
+}
+document.querySelectorAll('#stepnav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.screen)));
+
+/* ---------- ASK DATA (faithful subset of deriveAsks output for Mats) ---------- */
+const ASKS={
+'fr-releve':{flag:'🇫🇷',title:'Your French Relevé de Carrière',pri:'high',
+  why:"Confirms your exact trimestres and SAM (best 25 years) — France's calculation swings by hundreds of euros based on these.",
+  impact:'tightens FR band by ±€200/mo',time:'Instant – 5 min',diff:'Easy',diffCls:'diff-easy',lang:'French',uploadHint:'PDF from lassuranceretraite.fr',
+  steps:[['Log in to lassuranceretraite.fr','Go to lassuranceretraite.fr and sign in with FranceConnect (your impots.gouv.fr or Ameli login).'],
+    ['Navigate to your career overview','Click "Mon relevé de carrière" in your personal space. This shows all validated trimestres, annual salaries, and any gaps.'],
+    ['Download the PDF','Click "Télécharger" to download your full career statement. This is the official CNAV document.'],
+    ['Upload to Prevista','We’ll extract your trimestres, SAM, and calculate your verified CNAV pension with décote/surcote applied.']],
+  alt:{q:"Can't log in to FranceConnect?",opts:["Forgot your impots.gouv.fr password — reset it at impots.gouv.fr. You'll need your numéro fiscal.","No FranceConnect account — create one via impots.gouv.fr using your numéro fiscal + revenu fiscal de référence. ~5 minutes.","No longer a French tax resident — call CNAV at +33 9 71 10 39 60 to request by post."]},
+  tips:["This is the fastest document to get — available instantly online if you have FranceConnect.","The Estimation Indicative Globale (EIG) gives even more detail — download that too if available.","Your numéro fiscal is the 13-digit number top-left of any avis d'imposition."],
+  fields:[['Trimestres validated','Labeled "Trimestres validés (tous régimes)" — total across all schemes','e.g. 41',''],
+    ['Average annual salary (SAM)','Labeled "Salaire annuel moyen" — average of your best 25 years','e.g. 38500','€/yr'],
+    ['Projected monthly pension','Labeled "Montant estimé" — monthly amount at target retirement age','e.g. 1220','€/mo']]},
+'fr-agirc-arrco':{flag:'🇫🇷',title:'Your French Agirc-Arrco complementary pension',pri:'med',
+  why:"Nearly every French private-sector worker has this on top of CNAV — typically €300–600/mo that most estimates ignore.",
+  impact:'unlocks FR pillar 2 — typically +€300–600/mo',time:'Instant – 5 min',diff:'Easy',diffCls:'diff-easy',lang:'French',uploadHint:'PDF from agirc-arrco.fr',
+  steps:[['Log in to agirc-arrco.fr','Go to agirc-arrco.fr → "Mon espace personnel". Sign in via FranceConnect — same credentials as lassuranceretraite.fr.'],
+    ['Open your account summary','Shows total points across all French private-sector employments and a projected annual pension.'],
+    ['Download the "relevé de points"','The official statement showing every year of contributions and points earned.'],
+    ['Upload to Prevista','We’ll add your complementary pension to your French retirement picture.']],
+  tips:["If you've worked for multiple French employers, all feed into the same Agirc-Arrco account — one statement covers everything.","The points system means early-career years keep earning you income decades later."],
+  fields:[['Total points accumulated','Sum across all French employments — labeled "Total des points"','e.g. 4820',''],
+    ['Projected annual pension','Labeled "Pension annuelle estimée" at target retirement age','e.g. 5400','€/yr']]},
+'ch-ahv':{flag:'🇨🇭',title:'Your Swiss AHV/AVS career extract',pri:'high',
+  why:'Replaces our estimate of your Swiss state pension with the verified figures SVA holds on file.',
+  impact:'tightens CH band by ±€400/mo',time:'1–2 weeks',diff:'Easy',diffCls:'diff-easy',lang:'German / French',uploadHint:'PDF of your Individuelles Konto',
+  steps:[['Visit ahv-iv.ch','Go to ahv-iv.ch (German) or avs-ai.ch (French). Click "Individual account" → "Order an extract".'],
+    ['Fill in the request form','Provide your AHV/AVS number (756.XXXX.XXXX.XX — on your Swiss health insurance card or old payslip). No number? Give name + date of birth.'],
+    ['Receive by post','Arrives in 7–10 business days. Shows every year of contributions, insured income, and any gaps.'],
+    ['Upload to Prevista','We’ll replace your estimated Swiss state pension with verified figures.']],
+  tips:["Your AHV number is on your Swiss health insurance card (Versichertenkarte).","You can also request the extract at any Swiss embassy or consulate if you're abroad.","The extract is free to anyone who has ever contributed to the Swiss system."],
+  fields:[['Contribution years','Count the number of years listed — each row is one year','e.g. 5.3',''],
+    ['Average annual insured income','Add up all "Einkommen" values ÷ number of years','e.g. 125000','CHF/yr'],
+    ['AHV/AVS number','Format 756.XXXX.XXXX.XX — top of the extract','756.____.____.__','']]},
+'ch-bvg':{flag:'🇨🇭',title:'Your Swiss workplace pension (Vorsorgeausweis / BVG)',pri:'high',
+  why:'Workplace pensions are often the largest single piece of retirement income — many expats forget theirs when they leave Switzerland.',
+  impact:'unlocks pillar 2 — could add €1,000+/mo',time:'1–4 weeks',diff:'May need help',diffCls:'diff-hard',lang:'German',uploadHint:'PDF of Vorsorgeausweis or Freizügigkeitsausweis',
+  steps:[['Check if you already have it','Look for your last "Vorsorgeausweis" from your Swiss employer — received annually while employed. Shows vested benefits, projected pension, insured salary.'],
+    ["If you don't have it — locate your vested benefits",'When you left, your BVG capital transferred to a Freizügigkeitskonto. Contact your provider, or it may sit with Stiftung Auffangeinrichtung BVG.'],
+    ['Search the central register','Visit zentralstelle.ch and search for forgotten assets with your AHV number. Free; checks all Swiss pension funds.'],
+    ['Request a current statement','Contact the holder and request a current "Freizügigkeitsausweis" — balance, strategy, conversion rate.'],
+    ['Upload to Prevista','This could significantly change your retirement picture.']],
+  alt:{q:"Don't have your AHV number or can't access zentralstelle.ch?",opts:["AHV number lost — check old Swiss payslips, your Versichertenkarte, or SVA correspondence. Format 756.XXXX.XXXX.XX.","zentralstelle search returned nothing — call Auffangeinrichtung BVG at +41 41 799 75 75.","Can't navigate German sites — the whole process can be done by phone or letter to Zentralstelle 2. Säule, Eigerplatz 2, 3007 Bern."]},
+  tips:["zentralstelle.ch is the official free search service — avoid paid 'pension finder' services.","Your capital has been earning interest since you left — current value may be higher than your last statement."],
+  fields:[['Vested benefits / capital balance','Labeled "Freizügigkeitsleistung" — total capital','e.g. 210000','CHF'],
+    ['Projected annual pension','Labeled "Voraussichtliche Altersrente"','e.g. 12480','CHF/yr'],
+    ['Conversion rate','Labeled "Umwandlungssatz" — typically 5–6.8%','e.g. 6.0','%']]},
+'ch-freizugigkeit':{flag:'🇨🇭',title:'Your Swiss vested benefits (Freizügigkeitskonto)',pri:'high',
+  why:'When you leave a Swiss employer, your BVG capital transfers to a vested-benefits account. Many expats lose track — it compounds silently for years.',
+  impact:'recovers forgotten CH capital — typically €50k–300k',time:'2–6 weeks',diff:'May need help',diffCls:'diff-hard',lang:'German',uploadHint:'Freizügigkeitsausweis from the foundation',
+  steps:[['Check your own records first','If you chose a vested-benefits provider when leaving CH (a bank foundation, VIAC, Finpension…), they should send annual statements.'],
+    ['Search zentralstelle.ch','Submit a free search with your AHV number — the official register for forgotten 2nd-pillar assets.'],
+    ['Call Auffangeinrichtung BVG','If zentralstelle returns nothing, call +41 41 799 75 75. Unclaimed benefits default here after a few years.'],
+    ['Request a current statement','Ask for a current "Freizügigkeitsausweis" — balance, strategy, withdrawal conditions.'],
+    ['Upload to Prevista','This can materially change your retirement picture.']],
+  alt:{q:"Can't find anything on zentralstelle.ch?",opts:["Call Auffangeinrichtung BVG at +41 41 799 75 75 — most unclaimed capital ends up there.","Splitting vested benefits across two foundations allows staggered, tax-optimised withdrawal."]},
+  tips:["Interest compounds silently — current value is almost always higher than your last statement.","If leaving CH permanently for a non-EU/EFTA country, the non-compulsory portion can be withdrawn in cash."],
+  fields:[['Current capital on deposit','Labeled "Freizügigkeitsguthaben"','e.g. 185000','CHF'],
+    ['Foundation / provider','Holding your capital','e.g. Auffangeinrichtung BVG, VIAC',''],
+    ['Former employer','Swiss employer this capital originates from','e.g. UBS','']]},
+'lu-extrait':{flag:'🇱🇺',title:'Your Luxembourg Extrait de Carrière',pri:'med',
+  why:"Verifies your exact LU insurance years and salary coefficients — CNAP's calculation depends on both.",
+  impact:'tightens LU band by ±€150/mo',time:'2–3 weeks',diff:'Easy',diffCls:'diff-easy',lang:'French / German',uploadHint:'PDF from guichet.lu',
+  steps:[['Go to guichet.lu','Visit guichet.public.lu, log in with LuxTrust or eIDAS ID → "Social security" → "Pension" → "Career extract".'],
+    ['Request your extract online','CNAP generates your "Extrait de carrière" showing all Luxembourg insurance periods and salary data.'],
+    ['Wait for delivery','Available within 10–15 business days — by post, or digitally if you opted in.'],
+    ['Upload to Prevista','We’ll extract your exact insurance years, coefficients, and verified CNAP pension.']],
+  alt:{q:"Can't access guichet.lu?",opts:["LuxTrust token expired or lost — order a replacement at luxtrust.lu (5 business days).","No LuxTrust — send a signed letter with ID copy to CNAP, 1 boulevard Prince Henri, L-1724 Luxembourg. Include your matricule.","Living abroad — call CNAP at +352 22 41 41-1 and request by phone."]},
+  tips:["Your matricule is on any old payslip or the Carte d'identification de sécurité sociale.","Also request an 'E205 LU' form if you need EU totalization data."],
+  fields:[['Luxembourg insurance years','Labeled "Périodes d’assurance" — total months ÷ 12','e.g. 6.0',''],
+    ['Total coefficient sum','Labeled "Somme des coefficients"','e.g. 7.2',''],
+    ['Projected monthly pension','Labeled "Pension mensuelle estimée" if shown','e.g. 980','€/mo']]},
+'lu-rcp':{flag:'🇱🇺',title:'Your Luxembourg employer pension (RCP)',pri:'high',
+  why:'Many larger LU employers (banks, EU institutions, Big Four) fund a complementary pension under the LPFP 1999 regime — often the second-largest slice of retirement.',
+  impact:'unlocks LU pillar 2 — can add €500–2,500/mo',time:'1–3 weeks',diff:'Moderate',diffCls:'diff-mod',lang:'French / English',uploadHint:'Annual RCP statement from your employer',
+  steps:[['Check your payroll & HR portal','RCP contributions appear on your annual salary statement under "pension complémentaire employeur".'],
+    ['Ask HR for your current statement','Plans are administered by an insurer or pension fund (AXA, Foyer, Swiss Life, Vitis Life, Generali). HR can direct you.'],
+    ["If you've left the employer",'Your vested rights remain with the provider. Contact them with your matricule and ask for a "reconstitution des droits acquis".'],
+    ['Upload to Prevista','We’ll add your RCP capital or projected annuity to your Luxembourg pillar 2.']],
+  tips:["Most LU plans pay out as a tax-privileged lump sum at retirement; some offer an annuity.","Several LU employers? You may have several small RCP plans — each provider issues a separate statement."],
+  fields:[['Current vested capital','Labeled "provisions constituées" or "droits acquis"','e.g. 65000','€'],
+    ['Projected lump sum at retirement','Labeled "capital constitutif estimé"','e.g. 180000','€'],
+    ['Plan provider','Insurer or pension fund','e.g. Foyer, AXA','']]},
+'fr-per':{flag:'🇫🇷',title:'Your French PER (Plan d’Épargne Retraite)',pri:'med',
+  why:"The PER replaced PERP/Madelin in 2019 as France's unified personal pension. Contributions reduce taxable income (up to 10% of net pro income).",
+  impact:'adds tax-advantaged French P3 bucket',time:'Instant – 5 min',diff:'Easy',diffCls:'diff-easy',lang:'French',uploadHint:'Annual PER statement from bank or insurer',
+  steps:[['Log in to your provider','PERs are held at a bank (BoursoBank, Crédit Agricole, BNP) or insurer (AXA, Generali, Spirica). Find "Plan d’Épargne Retraite".'],
+    ['Download the annual statement','Shows encours (balance), versements, and a projected income at retirement, plus a tax-deduction summary.'],
+    ['Check for legacy PERP / Madelin','Saved before 2019? You may still have a PERP/Madelin to consolidate into a PER individuel.'],
+    ['Upload to Prevista','We’ll add your PER capital to French pillar 3 and factor the tax deduction.']],
+  tips:["Annual cap: 10% of net pro income (floor €4,637; ceiling ≈ €37k). Unused cap carries 3 years.","Exit at retirement: capital (taxed), annuity, or mix."],
+  fields:[['Current balance (encours)','Total accumulated balance','e.g. 42000','€'],
+    ['Monthly contribution','Versement mensuel moyen','e.g. 300','€/mo'],
+    ['Provider','Bank or insurer','e.g. BoursoBank, AXA','']]},
+'ch-3a':{flag:'🇨🇭',title:'Your Swiss Pillar 3a (Säule 3a)',pri:'med',
+  why:'Annual 3a contributions are fully tax-deductible — CHF 7,258 for employees in 2025. The iconic Swiss tax-advantaged retirement vehicle.',
+  impact:'adds tax-advantaged Swiss savings',time:'Instant',diff:'Easy',diffCls:'diff-easy',lang:'German / French',uploadHint:'Annual 3a attestation from your provider',
+  steps:[['Log in to your 3a provider','Banks (PostFinance, Migros Bank, ZKB) or digital providers (VIAC, Finpension, Frankly). Each account issues a separate attestation.'],
+    ['Download the annual attestation','Shows opening balance, annual contribution, allocation, closing balance, and the tax deduction.'],
+    ['Gather all 3a accounts','You may hold up to 5 separate 3a accounts. Gather each provider’s attestation — we’ll sum them.'],
+    ['Upload to Prevista','We’ll add your 3a savings to Swiss pillar 3 and flag unused tax room.']],
+  tips:["Up to 5 separate 3a accounts — staggering withdrawal across tax years optimises the lump-sum tax.","Moved to the EU? Your 3a stays accessible — but early-withdrawal rules differ by canton."],
+  fields:[['Total 3a balance','Across all 3a accounts','e.g. 48000','CHF'],
+    ['Annual contribution','2025 max CHF 7,258 (employee)','e.g. 7258','CHF/yr'],
+    ['Main provider','Bank or digital 3a platform','e.g. VIAC, PostFinance','']]},
+'lu-prevoyance':{flag:'🇱🇺',title:'Your Luxembourg personal pension (Art. 111bis)',pri:'med',
+  why:'Art. 111bis LIR lets you deduct up to €3,200/yr from taxable income. Pays out from age 60 as capital, annuity, or both.',
+  impact:'adds tax-deductible LU P3 savings',time:'5 min',diff:'Easy',diffCls:'diff-easy',lang:'French / German',uploadHint:'Annual statement from bank or insurer',
+  steps:[['Log in to your provider','Contracts held at LU banks (ING, BIL, Spuerkeess, BGL BNP) or insurers (Foyer, Swiss Life, LaLux, Cardif Lux Vie).'],
+    ['Download the annual statement','Shows versements de l’année, provisions, and the tax deduction to claim.'],
+    ['Check your tax declaration','Unsure if you have a contract? Look at your last LU tax return under "Art. 111bis LIR".'],
+    ['Upload to Prevista','We’ll add your prévoyance balance to Luxembourg pillar 3.']],
+  tips:["Flat €3,200/yr deduction at any age. Unused cap doesn't carry forward.","Min 50% must be taken as annuity; up to 50% as a tax-free lump sum."],
+  fields:[['Current provision','Accumulated balance on the contract','e.g. 18000','€'],
+    ['Annual contribution','2025 max €3,200/yr','e.g. 3200','€/yr'],
+    ['Provider','Bank or insurer','e.g. Foyer, BIL','']]},
+'private-savings':{flag:'💰',title:'Your private savings & investments',pri:'low',
+  why:'Your own savings are the third leg of retirement — even a rough figure lets us show the full picture, not just pensions.',
+  impact:'completes the 3-pillar picture',time:'2 min',diff:'Easy',diffCls:'diff-easy',lang:'—',uploadHint:null,
+  steps:[['Gather rough totals','No need to be precise — a rough figure across brokerage, PEA, assurance-vie, and investment apps is enough.'],
+    ['Note what you set aside monthly','An average monthly contribution is all we need to project forward.'],
+    ['Enter in Prevista','You can refine per-product later.']],
+  tips:["A rough total is enough to place your savings in the full picture.","You can break this down per product whenever you like."],
+  fields:[['Total current savings & investments','Across all accounts','e.g. 85000','€'],
+    ['Monthly contribution','What you set aside each month on average','e.g. 600','€/mo'],
+    ['Expected annual return','4% is a common baseline for a balanced portfolio','e.g. 4','%']]}
+};
+
+/* row state store; states: toget | onlist | verified | skip */
+const STATE={
+  'fr-releve':'toget','fr-agirc-arrco':'toget','ch-ahv':'toget','ch-bvg':'toget',
+  'ch-freizugigkeit':'toget','lu-extrait':'toget','lu-rcp':'toget',
+  'fr-per':'toget','ch-3a':'toget','lu-prevoyance':'toget','private-savings':'toget'
+};
+/* pre-seeded states for the "progress" screen so it reads as a returning session */
+const PROGRESS_STATE={
+  'fr-releve':'verified','fr-agirc-arrco':'verified','ch-3a':'verified',
+  'ch-ahv':'onlist','lu-extrait':'onlist','ch-bvg':'onlist','ch-freizugigkeit':'onlist',
+  'lu-rcp':'toget','fr-per':'toget','lu-prevoyance':'toget','private-savings':'toget'
+};
+
+const GROUPS=[
+  {key:'p1',head:'State pensions',sub:"What each country owes you from its social-security system — CNAV (FR), AHV/AVS (CH), CNAP (LU). You'll get a partial pension from each.",ids:['ch-ahv','fr-releve','lu-extrait']},
+  {key:'p2',head:'Workplace pensions',sub:"Set up by your employers, on top of the state system. Often add up to more than the state pension — and the piece people most commonly lose track of.",ids:['ch-bvg','ch-freizugigkeit','fr-agirc-arrco','lu-rcp']},
+  {key:'p3',head:'Personal savings',sub:"What you've set aside yourself — French PER, Swiss 3a, Luxembourg Art. 111bis, or any brokerage / life-insurance wrapper. A rough total is fine.",ids:['fr-per','ch-3a','lu-prevoyance','private-savings']}
+];
+
+/* sort high priority first within group */
+function sortByPriority(ids){const w={high:0,med:1,low:2};return [...ids].sort((a,b)=>w[ASKS[a].pri]-w[ASKS[b].pri]);}
+
+function priBadge(a){return a.pri==='high'?'<span class="pri">High priority</span>':'';}
+
+function rowHTML(id,states){
+  const a=ASKS[id];const st=states[id];
+  let actions;
+  if(st==='verified'){actions=`<div class="statepill verified">✓ Verified — data entered</div>`;}
+  else if(st==='onlist'){actions=`<div class="statepill onlist">☆ On your to-get list</div>`;}
+  else{
+    actions=`<div class="row-actions">
+      <button class="act have" onclick="openDrawer('${id}','entry')">I have it ✓</button>
+      <button class="act ghost" onclick="openDrawer('${id}','guide')">Show me how →</button></div>`;
+  }
+  return `<div class="row ${st==='verified'?'verified':''}" data-id="${id}" data-state="${st}">
+    <span class="rflag">${a.flag}</span>
+    <div class="row-main">
+      <div class="row-title">${a.title} ${priBadge(a)}</div>
+      <div class="chips">
+        <span class="chip"><span class="ic">⏱</span>${a.time}</span>
+        <span class="chip"><span class="ic">◇</span>${a.diff}</span>
+        ${a.lang!=='—'?`<span class="chip"><span class="ic">𝐀</span>${a.lang}</span>`:''}
+      </div>
+      <div class="impact">${a.impact}</div>
+      ${actions}
+    </div>
+  </div>`;
+}
+
+function renderList(container,states){
+  let h='';
+  for(const g of GROUPS){
+    h+=`<div class="group"><div class="group-head"><h3 class="serif">${g.head}</h3><p>${g.sub}</p></div>`;
+    for(const id of sortByPriority(g.ids)){h+=rowHTML(id,states);}
+    h+='</div>';
+  }
+  container.innerHTML=h;
+}
+renderList(document.getElementById('listContent'),STATE);
+renderList(document.getElementById('progressContent'),PROGRESS_STATE);
+
+function filterRows(btn,mode){
+  document.querySelectorAll('#screen-progress .filters button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#progressContent .row').forEach(r=>{
+    const s=r.dataset.state;
+    let show=true;
+    if(mode==='onlist')show=(s==='onlist');
+    if(mode==='verified')show=(s==='verified');
+    r.style.display=show?'flex':'none';
+  });
+  document.querySelectorAll('#progressContent .group').forEach(g=>{
+    const any=[...g.querySelectorAll('.row')].some(r=>r.style.display!=='none');
+    g.style.display=any?'block':'none';
+  });
+}
+
+/* ---------- DRAWER ---------- */
+const scrim=document.getElementById('scrim'),drawer=document.getElementById('drawer');
+function openDrawer(id,mode){
+  const a=ASKS[id];
+  document.getElementById('drawerHead').innerHTML=
+    `<span class="dflag">${a.flag}</span><h2 class="serif">${a.title}</h2><p class="dwhy">${a.why}</p>`;
+  if(mode==='guide')renderGuide(id,a);else renderEntry(id,a);
+  scrim.classList.add('open');drawer.classList.add('open');
+}
+function closeDrawer(){scrim.classList.remove('open');drawer.classList.remove('open');}
+
+function renderGuide(id,a){
+  let h=`<div class="metastrip">
+    <span class="chip"><span class="ic">⏱</span>${a.time}</span>
+    <span class="chip"><span class="ic">◇</span>${a.diff}</span>
+    ${a.lang!=='—'?`<span class="chip"><span class="ic">𝐀</span>${a.lang}</span>`:''}</div>`;
+  h+='<ol class="steps">';
+  a.steps.forEach((s,i)=>{h+=`<li><div class="stepnum">${i+1}</div><div class="steptxt"><div class="st">${s[0]}</div><div class="sd">${s[1]}</div></div></li>`;});
+  h+='</ol>';
+  if(a.alt){
+    h+=`<div class="altpath"><h4><span class="q">?</span>${a.alt.q}</h4><ul>`;
+    a.alt.opts.forEach(o=>h+=`<li>${o}</li>`);
+    h+='</ul></div>';
+  }
+  h+='<div class="tips"><h4>Good to know</h4><ul>';
+  a.tips.forEach(t=>h+=`<li>${t}</li>`);
+  h+='</ul></div>';
+  h+=`<div class="advisor">💬 Stuck on this one? <b>&nbsp;Ask your advisor</b> — we'll walk you through it.</div>`;
+  document.getElementById('drawerBody').innerHTML=h;
+  document.getElementById('drawerFoot').innerHTML=
+    `<div class="dual">
+      <button class="btn-soft" onclick="addToList('${id}')">Add to my to-get list ☆</button>
+      <button class="btn-primary" style="flex:1" onclick="openDrawer('${id}','entry')">I've got it now →</button>
+    </div>`;
+}
+
+function renderEntry(id,a){
+  let h='';
+  if(a.uploadHint){
+    h+=`<div class="upload-stub"><b>⤓ Upload the document</b>${a.uploadHint}<div class="or">— or enter the figures by hand below —</div></div>`;
+  }
+  a.fields.forEach(f=>{
+    h+=`<div class="field"><label>${f[0]}</label><div class="hint">${f[1]}</div>
+      <div class="inwrap"><input type="text" placeholder="${f[2]}">${f[3]?`<span class="unit">${f[3]}</span>`:''}</div></div>`;
+  });
+  document.getElementById('drawerBody').innerHTML=h;
+  document.getElementById('drawerFoot').innerHTML=
+    `<button class="btn-primary" onclick="saveEntry('${id}')">Save — this tightens your picture →</button>`;
+}
+
+function addToList(id){
+  STATE[id]='onlist';
+  renderList(document.getElementById('listContent'),STATE);
+  closeDrawer();updateDock();
+  toast('Added to your to-get list ☆');
+}
+function saveEntry(id){
+  STATE[id]='verified';
+  renderList(document.getElementById('listContent'),STATE);
+  closeDrawer();updateDock();
+  toast('Saved ✓ Your picture just tightened');
+}
+function updateDock(){
+  const n=Object.values(STATE).filter(s=>s==='toget'||s==='onlist').length;
+  document.getElementById('dockCnt').textContent=n;
+}
+updateDock();
+
+/* ---------- TOAST ---------- */
+let toastT;
+function toast(msg){
+  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2400);
+}
+</script>
+</body>
+</html>

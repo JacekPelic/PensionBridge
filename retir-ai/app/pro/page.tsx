@@ -67,12 +67,12 @@ export default function ProPage() {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-1 flex flex-col" style={{ marginLeft: 'var(--sidebar-w)' }}>
+      <div className="flex-1 flex flex-col min-w-0" style={{ marginLeft: 'var(--sidebar-w)' }}>
         <Topbar
-          title="Prevista Pro"
+          title="Clerio Pro"
           subtitle="Everything you need to act on your pension picture"
         />
-        <div className="flex-1 p-7 animate-fade-in">
+        <div className="flex-1 p-4 sm:p-7 animate-fade-in">
 
           {/* Hero */}
           <div
@@ -84,7 +84,7 @@ export default function ProPage() {
           >
             <div className="relative">
               <div className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--gold)' }}>
-                Prevista Pro
+                Clerio Pro
               </div>
               <div className="text-[28px] font-bold mb-2" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}>
                 See your situation. <span style={{ color: 'var(--gold-light)' }}>Now act on it.</span>

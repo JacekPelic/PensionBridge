@@ -58,15 +58,17 @@ export function PictureSummary() {
       className="rounded-[14px] p-5 mb-5 flex items-center gap-5 flex-wrap"
       style={{ background: 'var(--navy-2)', border: '1px solid var(--border)' }}
     >
-      {/* Headline */}
+      {/* Headline \u2014 picture status. The income answer itself lives in the gap
+          card below, so this leads with "your picture" and keeps the figure
+          secondary rather than competing with the gap hero. */}
       <div className="flex-1 min-w-[240px]">
         <div
-          className="text-[10.5px] uppercase tracking-[0.14em] font-semibold mb-1 flex items-center gap-2"
+          className="text-[12px] uppercase tracking-[0.14em] font-semibold mb-2 flex items-center gap-2 flex-wrap"
           style={{ color: 'var(--text-dim)' }}
         >
-          <span>Projected income at retirement</span>
+          <span>Your pension picture</span>
           <span
-            className="text-[9.5px] font-bold px-1.5 py-[1px] rounded-[4px]"
+            className="text-[11px] font-bold px-2 py-[2px] rounded-[4px]"
             style={{
               background: verified ? 'var(--green-dim)' : 'var(--amber-dim)',
               color: verified ? 'var(--green)' : 'var(--amber)',
@@ -77,21 +79,21 @@ export function PictureSummary() {
           </span>
         </div>
         {totalsReady ? (
-          <div
-            className="text-[26px] leading-none font-semibold tabular-nums"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}
-          >
-            {'\u20AC'}{netProjected.toLocaleString()}
-            <span className="text-[12px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
-              /mo
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span
+              className="text-[20px] leading-none font-semibold"
+              style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', color: 'var(--text)' }}
+            >
+              {'\u20AC'}{netProjected.toLocaleString()}
             </span>
-            <span className="text-[11px] font-normal ml-2" style={{ color: 'var(--text-dim)' }}>
+            <span className="text-[13px]" style={{ color: 'var(--text-dim)' }}>/mo projected</span>
+            <span className="text-[12.5px]" style={{ color: 'var(--text-dim)' }}>
               {'\u00B7'} {verified ? 'P1 + P2 verified' : 'Pillar 1 only \u2014 P2/P3 pending'}
             </span>
           </div>
         ) : (
           <div
-            className="text-[22px] leading-none font-semibold"
+            className="text-[18px] leading-snug font-semibold"
             style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text-dim)' }}
           >
             Answer a few questions to see your picture
@@ -108,7 +110,7 @@ export function PictureSummary() {
             ))}
           </div>
           <span
-            className="text-[11px]"
+            className="text-[12.5px]"
             style={{ color: 'var(--text-dim)' }}
           >
             {est.bands.length} {est.bands.length === 1 ? 'country' : 'countries'}
@@ -119,7 +121,7 @@ export function PictureSummary() {
       {/* Sharpness */}
       <div className="shrink-0 flex items-center gap-2">
         <div
-          className="w-[90px] h-1.5 rounded-full overflow-hidden"
+          className="w-[90px] h-2 rounded-full overflow-hidden"
           style={{ background: 'var(--navy-3)' }}
         >
           <div
@@ -131,7 +133,7 @@ export function PictureSummary() {
           />
         </div>
         <span
-          className="text-[11.5px] tabular-nums font-semibold"
+          className="text-[12.5px] tabular-nums font-semibold"
           style={{
             color: verified ? 'var(--green)' : 'var(--gold-light)',
             fontFamily: 'var(--font-mono)',
@@ -139,7 +141,7 @@ export function PictureSummary() {
         >
           {sharpness}%
         </span>
-        <span className="text-[11px]" style={{ color: 'var(--text-dim)' }}>
+        <span className="text-[12.5px]" style={{ color: 'var(--text-dim)' }}>
           {verified ? 'verified' : 'sharpness'}
         </span>
       </div>
@@ -147,8 +149,9 @@ export function PictureSummary() {
       {/* CTA */}
       <Link
         href="/picture"
-        className="text-[12px] font-medium px-3.5 py-2 rounded-lg no-underline transition-all shrink-0"
+        className="text-[13px] font-medium px-4 rounded-lg no-underline transition-all shrink-0 flex items-center"
         style={{
+          minHeight: 44,
           background: openingComplete ? 'var(--navy-3)' : 'var(--gold)',
           border: openingComplete ? '1px solid var(--border)' : '1px solid var(--gold)',
           color: openingComplete ? 'var(--text-muted)' : 'var(--navy)',

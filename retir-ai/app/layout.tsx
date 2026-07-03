@@ -1,28 +1,29 @@
 import type { Metadata } from "next";
-import { Playfair_Display, DM_Sans, DM_Mono } from "next/font/google";
+import { Source_Serif_4, Inter_Tight, Geist_Mono } from "next/font/google";
 import { Providers } from "./Providers";
 import "./globals.css";
 
-const playfair = Playfair_Display({
+// Warm palette type pairing. The CSS-var names are kept stable
+// (--font-playfair = display serif, --font-sans = UI, --font-mono = figures)
+// so existing call-sites re-skin without edits. All three are variable fonts,
+// so no `weight` is needed (full axis range loads).
+const serif = Source_Serif_4({
   variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
 });
 
-const dmSans = DM_Sans({
+const sans = Inter_Tight({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
 });
 
-const dmMono = DM_Mono({
+const mono = Geist_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Prevista — your future, foreseen",
+  title: "Clerio — your future, foreseen",
   description: "Track, optimize, and protect your retirement income across multiple countries",
 };
 
@@ -35,7 +36,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="light"
-      className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable}`}
+      className={`${serif.variable} ${sans.variable} ${mono.variable}`}
     >
       <body>
         <Providers>{children}</Providers>

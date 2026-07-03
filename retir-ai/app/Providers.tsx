@@ -7,6 +7,7 @@ import { PictureProvider } from '@/modules/identity/PictureProvider';
 import { DataStageProvider } from '@/modules/identity/DataStageProvider';
 import { OnboardingGate } from '@/modules/identity/OnboardingGate';
 import { ChatProvider } from '@/shared/chat/ChatProvider';
+import { SidebarProvider } from '@/shared/layout/SidebarProvider';
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -15,7 +16,9 @@ export function Providers({ children }: { children: ReactNode }) {
         <PictureProvider>
           <DataStageProvider>
             <ChatProvider>
-              <OnboardingGate>{children}</OnboardingGate>
+              <SidebarProvider>
+                <OnboardingGate>{children}</OnboardingGate>
+              </SidebarProvider>
             </ChatProvider>
           </DataStageProvider>
         </PictureProvider>

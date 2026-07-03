@@ -28,7 +28,7 @@ export function DocumentVault() {
   return (
     <>
       {/* Summary bar */}
-      <div className="grid grid-cols-3 gap-3.5 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 mb-5">
         {statusCards.map((s) => (
           <div key={s.key} className="rounded-xl p-4 flex items-center gap-3" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
             <div className="w-9 h-9 rounded-[10px] flex items-center justify-center text-sm" style={{ background: s.bg }}>{s.icon}</div>

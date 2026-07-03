@@ -10,7 +10,7 @@ interface DataStageContextType {
   setStage: (stage: DataStage) => void;
 }
 
-const STORAGE_KEY = 'prevista-data-stage';
+const STORAGE_KEY = 'clerio-data-stage';
 
 const DataStageContext = createContext<DataStageContextType>({
   stage: 'before',

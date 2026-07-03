@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Settling Picture — fixed S0 (one clear action)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter+Tight:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="light"]{
+    --bg:#F7F4ED; --surface:#fff; --surface2:#F1EDE3; --surface3:#E8E3D6;
+    --text:#1B1E26; --muted:#3D4658; --dim:#6A7184;
+    --accent:#9A7B28; --accent-soft:#7A6118; --verified:#1F8C7E; --alert:#C23A30;
+    --border:rgba(20,20,20,0.10); --page:#EBE6DA;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1016; --surface:#161922; --surface2:#1E222E; --surface3:#2A2F3D;
+    --text:#ECEEF3; --muted:#9AA3B5; --dim:#6B7488;
+    --accent:#C9A24A; --accent-soft:#E3C77E; --verified:#3FB6A8; --alert:#E5544B;
+    --border:rgba(255,255,255,0.08); --page:#08090D;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--text);font-family:'Inter Tight',sans-serif;-webkit-font-smoothing:antialiased;padding:28px 18px 80px;transition:.25s background,.25s color}
+  .num{font-family:'Geist Mono',monospace;font-variant-numeric:tabular-nums}
+  .toolbar{max-width:680px;margin:0 auto 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .toolbar .t{font-size:13px;color:var(--dim)}
+  .btn-ghost{font:inherit;font-size:13px;padding:8px 13px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);cursor:pointer}
+
+  .frame{max-width:680px;margin:0 auto;background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:34px 30px 30px;box-shadow:0 24px 60px rgba(0,0,0,.10)}
+  :root[data-theme="dark"] .frame{box-shadow:0 24px 60px rgba(0,0,0,.35)}
+
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .badge{font-size:11px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:4px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+  .lead{font-family:'Source Serif 4',serif;font-size:23px;line-height:1.4;font-weight:400;margin:0 0 6px;max-width:30ch}
+  .lead b{font-weight:600}
+  .hero{display:flex;align-items:baseline;gap:12px;margin:2px 0 4px}
+  .hero .n{font-family:'Geist Mono',monospace;font-variant-numeric:tabular-nums;font-size:60px;line-height:1;letter-spacing:-.02em;font-weight:500}
+  .hero .u{font-size:17px;color:var(--muted)}
+  .subline{font-size:15px;color:var(--muted);margin-bottom:26px}
+  .subline b{color:var(--text)}
+
+  .pillars{display:flex;flex-direction:column;gap:14px;margin-bottom:8px}
+  .pillar{border-top:1px solid var(--border);padding-top:14px}
+  .pillar .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:9px}
+  .pillar .name{font-size:14.5px;font-weight:600}
+  .pillar .name small{font-weight:400;color:var(--dim)}
+  .pillar .val{font-size:14px;color:var(--muted)}
+  .bar{position:relative;height:12px;border-radius:7px;background:var(--surface2);overflow:hidden}
+  /* the soft estimate range: a translucent fill spanning low..high */
+  .bar .range{position:absolute;top:0;bottom:0;border-radius:7px;background:color-mix(in srgb,var(--accent) 40%,transparent)}
+  .bar .range.wide{background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--accent) 22%,transparent),color-mix(in srgb,var(--accent) 22%,transparent) 1px,transparent 1px,transparent 7px);border:1px dashed color-mix(in srgb,var(--accent) 45%,transparent)}
+  .pillar .hint{font-size:12.5px;color:var(--dim);margin-top:7px}
+
+  /* the ONE primary action (was a whisper) */
+  .nudge{margin-top:12px;border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:12px;padding:15px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .nudge .copy{flex:1;min-width:180px}
+  .nudge .copy .h{font-size:14.5px;font-weight:600;margin-bottom:2px}
+  .nudge .copy .s{font-size:12.5px;color:var(--muted)}
+  .cta{font:inherit;font-weight:600;font-size:15px;background:var(--accent);color:var(--bg);border:none;border-radius:10px;padding:13px 20px;min-height:48px;cursor:pointer;white-space:nowrap}
+  .cta:hover{background:var(--accent-soft)}
+
+  /* saved/“on the way” state */
+  .onway{margin-top:10px;display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text)}
+  .onway .dot{width:8px;height:8px;border-radius:50%;background:var(--verified);flex:none}
+  .onway b{color:var(--verified)}
+
+  /* the guide (how to get it), inline */
+  .guide{margin-top:12px;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:16px;display:none}
+  .guide.open{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .guide .savetop{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .guide .savetop .lbl{font-size:13px;color:var(--dim)}
+  .link{font:inherit;font-size:13px;background:none;border:none;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:6px 2px}
+  .guide h4{font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;margin:0 0 4px}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px}
+  .chip{font-size:12px;padding:3px 9px;border-radius:6px;background:var(--surface2);color:var(--muted)}
+  .steps{margin:0 0 12px;padding-left:18px;font-size:14px;line-height:1.6;color:var(--text)}
+  .steps li{margin-bottom:3px}
+  .alt{font-size:12.5px;color:var(--dim);margin-bottom:14px}
+  .guide .close-line{font-size:14px;color:var(--muted);margin-bottom:14px}
+  .guide .acts{display:flex;gap:10px;flex-wrap:wrap}
+  .btn2{font:inherit;font-weight:600;font-size:14px;border-radius:10px;padding:12px 18px;min-height:46px;cursor:pointer}
+  .btn2.primary{background:var(--accent);color:var(--bg);border:none}
+  .btn2.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+
+  .door{margin-top:22px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .door .have{font:inherit;font-size:14px;font-weight:500;color:var(--text);background:transparent;border:1px solid var(--border);border-radius:10px;padding:11px 16px;min-height:44px;cursor:pointer}
+  .contract{font-size:12.5px;color:var(--dim);max-width:34ch}
+
+  .tray{margin-top:18px;border:1px dashed var(--border);border-radius:12px;padding:13px 16px;font-size:13px;color:var(--muted);display:none}
+  .tray.show{display:block}
+  .tray b{color:var(--text)}
+
+  .note{max-width:680px;margin:18px auto 0;font-size:12.5px;color:var(--dim);line-height:1.6;text-align:center}
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <span class="t">The Settling Picture — <b>fixed S0</b>: answer-first, but with one clear action</span>
+    <div style="display:flex;gap:8px">
+      <button class="btn-ghost" id="reset">↻ Reset</button>
+      <button class="btn-ghost" id="theme">☾ Light / Dark</button>
+    </div>
+  </div>
+
+  <div class="frame">
+    <div class="eyebrow">Your retirement income <span class="badge">EARLY ESTIMATE</span></div>
+
+    <!-- Floor-reframe hero (grafted from Triage) -->
+    <p class="lead">Based on what you’ve told us so far, you’re on track for <b>at&nbsp;least</b>:</p>
+    <div class="hero"><span class="n">€2,200</span><span class="u">a month</span></div>
+    <div class="subline">…and likely up to <b class="num">€3,840</b> as we confirm the details. <b>Documents only move this up.</b></div>
+
+    <!-- The picture: pillar bands -->
+    <div class="pillars">
+      <div class="pillar">
+        <div class="top"><span class="name">Luxembourg <small>· state pension</small></span><span class="val num">€850/mo</span></div>
+        <div class="bar"><div class="range" style="left:6%;width:30%"></div></div>
+      </div>
+      <div class="pillar">
+        <div class="top"><span class="name">France <small>· state pension</small></span><span class="val num">€400/mo</span></div>
+        <div class="bar"><div class="range" style="left:3%;width:18%"></div></div>
+      </div>
+
+      <!-- Weakest band — carries the single primary action -->
+      <div class="pillar" id="swiss">
+        <div class="top"><span class="name">Switzerland <small>· state pension · roughest guess</small></span><span class="val num" id="swiss-val">€200–€600/mo</span></div>
+        <div class="bar"><div class="range wide" id="swiss-bar" style="left:8%;width:46%"></div></div>
+
+        <!-- ONE clear primary action (replaces the dismissable whisper) -->
+        <div class="nudge" id="nudge">
+          <div class="copy">
+            <div class="h">Switzerland is the widest part of your picture.</div>
+            <div class="s">One free document, by post, narrows it by about <b class="num">€400/mo</b>.</div>
+          </div>
+          <button class="cta" id="tighten">Tighten your Swiss estimate →</button>
+        </div>
+
+        <!-- saved / on-the-way state (hidden until saved) -->
+        <div class="onway" id="onway" style="display:none">
+          <span class="dot"></span><span><b>1 document on the way</b> — adds ~<span class="num">€400/mo</span> when you upload it. <span style="color:var(--dim)">Saved to gather.</span></span>
+        </div>
+
+        <!-- inline guide -->
+        <div class="guide" id="guide">
+          <div class="savetop">
+            <span class="lbl">No rush — bank it and go:</span>
+            <button class="link" id="save-top">Save this to gather later ☆</button>
+          </div>
+          <h4>Swiss AVS account statement (Kontoauszug)</h4>
+          <div class="meta"><span class="chip">Free</span><span class="chip">Arrives by post · 1–2 weeks</span><span class="chip">Easy</span></div>
+          <ol class="steps">
+            <li>Go to <b>ahv-iv.ch</b> → “Order account statement (Kontoauszug).”</li>
+            <li>Enter your Swiss social-security (AHV) number — format 756.xxxx.xxxx.xx.</li>
+            <li>It’s posted to your address within 1–2 weeks. Upload it here when it arrives.</li>
+          </ol>
+          <div class="alt">Lost your AHV number? It’s on any old Swiss payslip or insurance card — or your last employer’s HR can retrieve it.</div>
+          <div class="close-line">No rush — <b>your estimate already stands without this.</b></div>
+          <div class="acts">
+            <button class="btn2 primary" id="save-bottom">Save this to gather later</button>
+            <button class="btn2 ghost" id="haveit">I have it now — enter it</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pillar">
+        <div class="top"><span class="name">Workplace &amp; personal <small>· not yet counted</small></span><span class="val" style="color:var(--dim)">likely +€1,000/mo</span></div>
+        <div class="bar"></div>
+        <div class="hint">Swiss 2nd-pillar (BVG) and any private savings aren’t in this number yet — they usually add the most.</div>
+      </div>
+    </div>
+
+    <!-- gather tray (appears after a save) -->
+    <div class="tray" id="tray"><b>Things to gather (1)</b> · Swiss AVS statement — ~€400/mo waiting. We’ll keep it here until you have it.</div>
+
+    <!-- prepared-user door + the always-true contract -->
+    <div class="door">
+      <button class="have" id="havedocs">I already have my documents →</button>
+      <span class="contract">Everything saves automatically. Add more whenever — the picture only sharpens.</span>
+    </div>
+  </div>
+
+  <div class="note">
+    The change vs. the panel draft: S0 keeps its calm answer-first screen, but the lone “whisper” is promoted to the screen’s <b>one clear action</b> (“Tighten your Swiss estimate”), saving shows a <b>visible payoff</b> (“€400/mo on the way”), the guide opens with “Save for later” at the <b>top</b> and ends with reassurance — <b>not a Pro upsell</b> — and a quiet “I have my documents” door serves the prepared user. Click the gold button.
+  </div>
+
+<script>
+  const root=document.documentElement;
+  document.getElementById('theme').onclick=()=>root.setAttribute('data-theme',root.getAttribute('data-theme')==='light'?'dark':'light');
+  const guide=document.getElementById('guide'), nudge=document.getElementById('nudge'),
+        onway=document.getElementById('onway'), tray=document.getElementById('tray');
+  const openGuide=()=>{guide.classList.add('open');};
+  document.getElementById('tighten').onclick=openGuide;
+  function save(){
+    guide.classList.remove('open');
+    nudge.style.display='none';
+    onway.style.display='flex';
+    tray.classList.add('show');
+    // band visibly narrows toward the provisional target
+    document.getElementById('swiss-bar').style.width='22%';
+    document.getElementById('swiss-bar').classList.remove('wide');
+    document.getElementById('swiss-val').textContent='≈ €600/mo (provisional)';
+  }
+  document.getElementById('save-top').onclick=save;
+  document.getElementById('save-bottom').onclick=save;
+  document.getElementById('haveit').onclick=()=>{alert('→ Opens the existing upload / manual-entry tabs for the Swiss AVS statement. On save, the band re-renders tight and the read-out switches to “Switzerland is now calculated by the real engine.”');};
+  document.getElementById('havedocs').onclick=()=>{alert('→ The prepared-user door: a flat, finite list of every document we can use, with upload/manual inline — work down it in your own order. The calm one-action surface stays the default for everyone else.');};
+  document.getElementById('reset').onclick=()=>{guide.classList.remove('open');nudge.style.display='flex';onway.style.display='none';tray.classList.remove('show');const b=document.getElementById('swiss-bar');b.style.width='46%';b.classList.add('wide');document.getElementById('swiss-val').textContent='€200–€600/mo';};
+</script>
+</body>
+</html>
