@@ -342,7 +342,7 @@ function ProductPane({ ask }: { ask: DataAsk }) {
   return (
     <div className="flex flex-col gap-3.5">
       <div className="text-[12px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-        Don’t have one yet? You can open one with a regulated partner. Prevista is paid only if you fund the product —
+        Don’t have one yet? You can open one with a regulated partner. Clerio is paid only if you fund the product —
         a small trailing partnership fee, never a subscription. You stay in full control.
       </div>
 

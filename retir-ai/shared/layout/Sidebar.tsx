@@ -72,7 +72,7 @@ export function Sidebar() {
       <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--border)' }}>
         <Link
           href="/"
-          aria-label="Prevista home"
+          aria-label="Clerio home"
           className="flex items-center gap-2.5 no-underline cursor-pointer transition-opacity duration-200 hover:opacity-80"
         >
           <div
@@ -83,7 +83,7 @@ export function Sidebar() {
           </div>
           <div>
             <div className="text-base font-semibold" style={{ fontFamily: 'var(--font-playfair)', color: 'var(--text)' }}>
-              Prevista
+              Clerio
             </div>
             <div className="text-[10px] italic tracking-wide" style={{ color: 'var(--text-dim)', fontFamily: 'var(--font-playfair)' }}>
               your future, foreseen

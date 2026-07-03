@@ -72,7 +72,7 @@ export function OnboardingCapstone({
         style={{ background: 'var(--navy-3)', borderTop: '1px solid var(--border)' }}
       >
         <div className="text-[10.5px] leading-relaxed" style={{ color: 'var(--text-dim)' }}>
-          Prevista is paid only if you fund a product — a small trailing partnership fee, never a subscription.
+          Clerio is paid only if you fund a product — a small trailing partnership fee, never a subscription.
           Projections assume 4% annual return and are illustrative.
         </div>
       </div>

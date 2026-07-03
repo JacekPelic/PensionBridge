@@ -43,7 +43,7 @@ export const ASK_CH_AHV: DataAsk = {
       },
       {
         num: 4,
-        text: 'Upload to Prevista',
+        text: 'Upload to Clerio',
         detail:
           'Upload the PDF. We\u2019ll replace your estimated Swiss state pension with verified figures and recalculate your scale number.',
       },
@@ -128,7 +128,7 @@ export const ASK_CH_BVG: DataAsk = {
       },
       {
         num: 5,
-        text: 'Upload to Prevista',
+        text: 'Upload to Clerio',
         detail:
           'Upload the statement. We\u2019ll add your workplace pension capital to your projection \u2014 this could significantly change your retirement picture.',
       },
@@ -225,7 +225,7 @@ export const ASK_FR_RELEVE: DataAsk = {
       },
       {
         num: 4,
-        text: 'Upload to Prevista',
+        text: 'Upload to Clerio',
         detail:
           'Upload the PDF. We\u2019ll extract your trimestres, SAM (best 25 years), and calculate your verified CNAV pension with décote/surcote applied.',
       },
@@ -320,7 +320,7 @@ export const ASK_LU_EXTRAIT: DataAsk = {
       },
       {
         num: 4,
-        text: 'Upload to Prevista',
+        text: 'Upload to Clerio',
         detail:
           'Upload the PDF. We\u2019ll extract your exact insurance years, salary coefficients, and calculate your verified CNAP pension.',
       },
@@ -406,7 +406,7 @@ export const ASK_FR_AGIRC_ARRCO: DataAsk = {
       },
       {
         num: 4,
-        text: 'Upload to Prevista',
+        text: 'Upload to Clerio',
         detail:
           'Upload the PDF. We\u2019ll add your complementary pension to your French retirement picture.',
       },
@@ -480,7 +480,7 @@ export const ASK_LU_RCP: DataAsk = {
       },
       {
         num: 4,
-        text: 'Upload to Prevista',
+        text: 'Upload to Clerio',
         detail:
           'We\u2019ll add your RCP capital or projected annuity to your Luxembourg pillar 2 \u2014 this typically changes the picture meaningfully.',
       },
@@ -577,7 +577,7 @@ export const ASK_CH_FREIZUGIGKEIT: DataAsk = {
       },
       {
         num: 5,
-        text: 'Upload to Prevista',
+        text: 'Upload to Clerio',
         detail:
           'We\u2019ll add your vested capital to your Swiss pillar 2 \u2014 this can materially change your retirement picture.',
       },
@@ -670,7 +670,7 @@ export const ASK_FR_PER: DataAsk = {
       },
       {
         num: 4,
-        text: 'Upload to Prevista',
+        text: 'Upload to Clerio',
         detail:
           'We\u2019ll add your PER capital to your French pillar 3 and factor the tax deduction into your net income.',
       },
@@ -772,7 +772,7 @@ export const ASK_CH_3A: DataAsk = {
       },
       {
         num: 4,
-        text: 'Upload to Prevista',
+        text: 'Upload to Clerio',
         detail:
           'We\u2019ll add your 3a savings to your Swiss pillar 3 and flag unused tax room.',
       },
@@ -874,7 +874,7 @@ export const ASK_LU_PREVOYANCE: DataAsk = {
       },
       {
         num: 4,
-        text: 'Upload to Prevista',
+        text: 'Upload to Clerio',
         detail:
           'We\u2019ll add your prévoyance balance to your Luxembourg pillar 3 and flag unused tax room.',
       },

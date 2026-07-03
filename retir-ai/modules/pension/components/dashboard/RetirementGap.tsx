@@ -352,7 +352,7 @@ export function RetirementGap() {
           <div className="flex items-start gap-2.5 p-3 px-4 rounded-[10px]" style={{ background: 'var(--navy-3)', border: '1px solid var(--border)' }}>
             <span className="text-sm shrink-0 mt-px">ℹ️</span>
             <div className="text-[11.5px] leading-relaxed" style={{ color: 'var(--text-dim)' }}>
-              <strong style={{ color: 'var(--text-muted)' }}>How this works:</strong> Prevista shows products from regulated providers matched to your situation.
+              <strong style={{ color: 'var(--text-muted)' }}>How this works:</strong> Clerio shows products from regulated providers matched to your situation.
               If you fund one, we receive a small trailing partnership fee — a fraction of a percent — which keeps core pension tracking free. Projections assume 5% annual return and are illustrative only.
             </div>
           </div>

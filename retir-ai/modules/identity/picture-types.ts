@@ -53,7 +53,7 @@ export interface TourState {
  * Marital status drives tax class (e.g. LU Class 1 vs Class 2) and
  * survivor-pension eligibility framing. We capture the status as a field
  * rather than a certificate — actual certificates go to pension institutions
- * at claim time, not to Prevista.
+ * at claim time, not to Clerio.
  */
 export type MaritalStatus = 'single' | 'married' | 'partnered' | 'divorced' | 'widowed';
 

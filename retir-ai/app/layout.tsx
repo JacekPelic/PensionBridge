@@ -23,7 +23,7 @@ const mono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Prevista — your future, foreseen",
+  title: "Clerio — your future, foreseen",
   description: "Track, optimize, and protect your retirement income across multiple countries",
 };
 

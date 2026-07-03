@@ -11,7 +11,7 @@ import {
 import type { PartialPicture } from './picture-types';
 import { MOCK_PICTURE } from './mock-picture';
 
-const STORAGE_KEY = 'prevista-picture';
+const STORAGE_KEY = 'clerio-picture';
 
 type PictureMode = 'mock' | 'user';
 
