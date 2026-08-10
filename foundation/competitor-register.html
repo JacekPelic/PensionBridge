@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Competitor Register — Clerio</title>
+<style>
+  :root{
+    --navy:#16243d; --navy-2:#22344f; --gold:#b8924a; --bg:#f6f3ec; --surface:#fffdf9;
+    --ink:#23241f; --muted:#6f6e66; --line:#e4ddcf;
+    --verified:#3f7d6e; --estimate:#8a6a23; --assumption:#6f6041; --alert:#9c3d2e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--ink); line-height:1.5;
+    font-family:-apple-system,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+    font-feature-settings:"tnum" 1,"lnum" 1;}
+  .wrap{max-width:1160px; margin:0 auto; padding:42px 26px 60px}
+  .serif{font-family:Georgia,"Source Serif Pro",serif}
+  header{border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:20px}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); font-weight:600}
+  h1{font-size:28px; line-height:1.15; margin:.35em 0 .2em; font-weight:600; color:var(--navy)}
+  .sub{color:var(--muted); font-size:14.5px; max-width:78ch}
+  .meta{margin-top:12px; font-size:12.5px; color:var(--muted)} .meta b{color:var(--ink)}
+
+  /* shortlist strip */
+  .short{background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--gold);
+    border-radius:0 8px 8px 0; padding:13px 18px; margin:8px 0 20px; font-size:13px}
+  .short b{color:var(--navy)} .short .lbl{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-right:8px}
+  .short .item{color:#4a4a44} .short .item + .item:before{content:"·"; margin:0 8px; color:var(--line)}
+
+  /* filter bar */
+  .filters{display:flex; flex-wrap:wrap; gap:16px 26px; align-items:center; margin:4px 0 14px}
+  .fgroup{display:flex; align-items:center; gap:7px; flex-wrap:wrap}
+  .fgroup .glabel{font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:700; margin-right:2px}
+  .fbtn{font-size:12px; padding:4px 11px; border:1px solid var(--line); background:var(--surface); color:var(--navy-2);
+    border-radius:20px; cursor:pointer; font-weight:600; transition:.12s}
+  .fbtn:hover{border-color:var(--gold)}
+  .fbtn.on{background:var(--navy); color:#fff; border-color:var(--navy)}
+  .fclear{font-size:12px; color:var(--muted); cursor:pointer; text-decoration:underline; background:none; border:0}
+  .count{font-size:12.5px; color:var(--muted); margin-left:auto}
+
+  .scroll{overflow-x:auto; border:1px solid var(--line); border-radius:8px; background:var(--surface)}
+  table{width:100%; border-collapse:collapse; font-size:12.8px; min-width:900px}
+  thead th{position:sticky; top:0; background:var(--surface); text-align:left; padding:11px 12px;
+    border-bottom:2px solid var(--line); font-size:10px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--muted); font-weight:700; cursor:pointer; white-space:nowrap; user-select:none}
+  thead th:hover{color:var(--navy)}
+  thead th .ar{opacity:.4; font-size:9px}
+  tbody td{padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top}
+  tbody tr:hover td{background:rgba(184,146,74,.06)}
+  td.name{font-weight:700; color:var(--navy); white-space:nowrap}
+  td.name a{color:var(--navy); text-decoration:none; border-bottom:1px solid var(--line)}
+  td.name a:hover{border-color:var(--gold)}
+  td.read{color:#4a4a44; min-width:300px; line-height:1.45}
+  td.read b{color:var(--ink)}
+  td.ctr{text-align:center; white-space:nowrap}
+  .yes{color:var(--verified); font-weight:700} .no{color:#b56; opacity:.65; font-weight:700} .par{color:var(--estimate); font-weight:700}
+  .model{color:var(--muted); white-space:nowrap; font-size:12px}
+
+  .mk{display:inline-block; font-size:10px; font-weight:700; letter-spacing:.04em; padding:2px 7px; border-radius:5px;
+    background:rgba(34,52,79,.10); color:var(--navy-2)}
+  .mk.eu{background:rgba(111,110,102,.14); color:var(--muted)}
+
+  .chip{display:inline-block; font-size:9.5px; letter-spacing:.05em; text-transform:uppercase;
+    font-weight:700; padding:2px 7px; border-radius:20px; white-space:nowrap}
+  .c-anchor{background:rgba(63,125,110,.15); color:var(--verified)}
+  .c-analog{background:rgba(156,61,46,.13); color:var(--alert)}
+  .c-watch{background:rgba(184,146,74,.20); color:var(--estimate)}
+  .c-sub{background:rgba(154,138,106,.20); color:var(--assumption)}
+  .c-seller{background:rgba(111,110,102,.15); color:var(--muted)}
+  .c-agg{background:rgba(34,52,79,.12); color:var(--navy-2)}
+  .c-infra{background:rgba(34,52,79,.08); color:var(--navy-2)}
+
+  .th3{color:var(--alert); letter-spacing:1px} .th2{color:var(--estimate); letter-spacing:1px}
+  .th1{color:var(--muted); letter-spacing:1px} .th0{color:var(--line); letter-spacing:1px}
+
+  .legend{display:flex; flex-wrap:wrap; gap:8px 18px; font-size:11.5px; color:var(--muted); margin-top:16px; align-items:center}
+  .legend span{display:flex; align-items:center; gap:6px}
+  footer{margin-top:26px; font-size:11.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:15px}
+  footer b{color:var(--ink)}
+  @media (max-width:640px){ h1{font-size:23px} .count{margin-left:0; width:100%} }
+  @media print{ body{background:#fff} .filters{display:none} .scroll{overflow:visible} thead th{position:static} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Clerio · Competitor Register</div>
+    <h1 class="serif">Potential competitors — by launch market</h1>
+    <p class="sub">A working catalog of every named player across Luxembourg, France, Germany and Belgium (plus pan-EU/global reference), scored on <i>Clerio's job</i>: unify state + workplace + personal pensions across countries and show the gap. Filter by market and class; click a column to sort. Commodity product-sellers are grouped; notable players get their own row.</p>
+    <div class="meta">Compiled <b>4 July 2026</b> · companion to <b>competitive-landscape.md/.html</b> · threat = obstacle to Clerio in that market, not company quality</div>
+  </header>
+
+  <div class="short">
+    <span class="lbl">Focus six</span>
+    <span class="item"><b>Easyvest</b> (BE)</span><span class="item"><b>Warren</b> (BE)</span><span class="item"><b>PensionPilot.de</b> (DE)</span><span class="item"><b>Prismo</b> (FR)</span><span class="item"><b>MyPensionPlan.lu</b> (LU)</span><span class="item"><b>Horizon65 / PensionFriend</b> (DE)</span>
+    &nbsp; — the well-funded local gap-tools that could add countries, plus the strongest free anchors are the real obstacles; product-sellers structurally won't build aggregation.
+  </div>
+
+  <div class="filters">
+    <div class="fgroup"><span class="glabel">Market</span>
+      <button class="fbtn" data-g="market" data-v="LU">🇱🇺 LU</button>
+      <button class="fbtn" data-g="market" data-v="FR">🇫🇷 FR</button>
+      <button class="fbtn" data-g="market" data-v="DE">🇩🇪 DE</button>
+      <button class="fbtn" data-g="market" data-v="BE">🇧🇪 BE</button>
+      <button class="fbtn" data-g="market" data-v="EU">EU/global</button>
+    </div>
+    <div class="fgroup"><span class="glabel">Class</span>
+      <button class="fbtn" data-g="class" data-v="anchor">free anchor</button>
+      <button class="fbtn" data-g="class" data-v="analog">direct/analog</button>
+      <button class="fbtn" data-g="class" data-v="watch">watch</button>
+      <button class="fbtn" data-g="class" data-v="sub">substitute</button>
+      <button class="fbtn" data-g="class" data-v="seller">product-seller</button>
+      <button class="fbtn" data-g="class" data-v="agg">aggregator</button>
+      <button class="fbtn" data-g="class" data-v="infra">infra</button>
+    </div>
+    <button class="fclear" id="clear">clear</button>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="scroll">
+  <table>
+    <thead><tr>
+      <th data-k="name">Name <span class="ar">↕</span></th>
+      <th data-k="market">Mkt <span class="ar">↕</span></th>
+      <th data-k="cat">Category <span class="ar">↕</span></th>
+      <th data-k="multi" class="ctr">Multi-<br>country <span class="ar">↕</span></th>
+      <th data-k="model">Model <span class="ar">↕</span></th>
+      <th data-k="threat" class="ctr">Threat <span class="ar">↕</span></th>
+      <th data-k="class">Class <span class="ar">↕</span></th>
+      <th data-k="read">One-line read <span class="ar">↕</span></th>
+    </tr></thead>
+    <tbody>
+
+    <!-- ============ LUXEMBOURG ============ -->
+    <tr data-market="LU" data-class="watch">
+      <td class="name"><a href="https://mypensionplan.lu/">MyPensionPlan.lu</a></td>
+      <td><span class="mk">LU</span></td><td>Gap/calc tool (P1)</td>
+      <td class="ctr" data-sort="1"><span class="par">~</span></td><td class="model">Free</td>
+      <td class="ctr" data-sort="2"><span class="th2">●●○</span></td>
+      <td><span class="chip c-watch">watch</span></td>
+      <td class="read">Free <b>LU state-pension (P1) calculator</b> — exact CNAP formula, does LU-side cross-border totalisation. <b>No multi-pillar, no gap, no other countries.</b> Backer unknown; actively maintained (v0.4.2). Could pivot.</td>
+    </tr>
+    <tr data-market="LU" data-class="anchor">
+      <td class="name"><a href="https://cnap.public.lu/">CNAP / MyGuichet</a></td>
+      <td><span class="mk">LU</span></td><td>Govt record</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Free</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-anchor">free anchor</span></td>
+      <td class="read"><b>No real online dashboard</b> — paper career statement, estimate only from age 55. The weakest government anchor of the four markets = Clerio's cleanest opening.</td>
+    </tr>
+    <tr data-market="LU" data-class="seller">
+      <td class="name">Bâloise iPension</td>
+      <td><span class="mk">LU</span></td><td>Insurer simulator</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Free (lead-gen)</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-seller">product-seller</span></td>
+      <td class="read">LU statutory simulator used as lead-gen for Bâloise's own Pillar-3 products. Single-pillar.</td>
+    </tr>
+    <tr data-market="LU" data-class="seller">
+      <td class="name">Swiss Life myBenefits / LALUX easyPENSION</td>
+      <td><span class="mk">LU</span></td><td>P2 provider portal</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Bundled w/ employer</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-seller">product-seller</span></td>
+      <td class="read">Single-provider Pillar-2 portals — show one pocket of savings only. LALUX bought Cardif's P2 book (Jan 2026); Cardif <i>exited</i> P2 tech ("lacked critical size") — signals single-market pension tech is hard to monetize.</td>
+    </tr>
+    <tr data-market="LU" data-class="sub">
+      <td class="name">deVere · Harrison Brook · Spectrum (LU)</td>
+      <td><span class="mk">LU</span></td><td>Expat IFA</td>
+      <td class="ctr" data-sort="1"><span class="par">~</span></td><td class="model">Commission/fee</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-sub">substitute</span></td>
+      <td class="read">Cross-border expat advisers (QROPS, wrappers). Human, opaque pricing, commission conflict. The entrenched non-software substitute in LU.</td>
+    </tr>
+
+    <!-- ============ FRANCE ============ -->
+    <tr data-market="FR" data-class="anchor">
+      <td class="name"><a href="https://www.info-retraite.fr/">info-retraite.fr</a></td>
+      <td><span class="mk">FR</span></td><td>Govt dashboard</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Free</td>
+      <td class="ctr" data-sort="3"><span class="th3">●●●</span></td>
+      <td><span class="chip c-anchor">free anchor</span></td>
+      <td class="read"><b>Strong:</b> real data, all ~22 regimes, good "Mon estimation retraite" simulator. <b>Foreign periods invisible until you file.</b> Out-position on cross-border, not on France alone.</td>
+    </tr>
+    <tr data-market="FR" data-class="anchor">
+      <td class="name">Agirc-Arrco simulator</td>
+      <td><span class="mk">FR</span></td><td>Govt (complementary)</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Free</td>
+      <td class="ctr" data-sort="2"><span class="th2">●●○</span></td>
+      <td><span class="chip c-anchor">free anchor</span></td>
+      <td class="read">Complementary-scheme points simulator; feeds the info-retraite umbrella. France-only.</td>
+    </tr>
+    <tr data-market="FR" data-class="analog">
+      <td class="name"><a href="https://prismo-retraite.fr/">Prismo</a></td>
+      <td><span class="mk">FR</span></td><td>Cross-border reconstruction</td>
+      <td class="ctr" data-sort="2"><span class="yes">✓</span></td><td class="model">Advisory (human)</td>
+      <td class="ctr" data-sort="2"><span class="th2">●●○</span></td>
+      <td><span class="chip c-analog">direct/analog</span></td>
+      <td class="read"><b>Strongest FR comp:</b> actually reconstructs French pension <i>and</i> Swiss AVS/LPP — 200+ Franco-Swiss cases. Bespoke human consulting, non-scalable, unpriced. Proves the demand; do it in software.</td>
+    </tr>
+    <tr data-market="FR" data-class="analog">
+      <td class="name"><a href="https://hellofrontalier.ch/">Hello Frontalier</a></td>
+      <td><span class="mk">FR</span></td><td>Hybrid gap tool</td>
+      <td class="ctr" data-sort="2"><span class="yes">✓</span></td><td class="model">Free sim + advisory</td>
+      <td class="ctr" data-sort="2"><span class="th2">●●○</span></td>
+      <td><span class="chip c-analog">direct/analog</span></td>
+      <td class="read">Simulator + mandatory advisor for FR-CH frontaliers (Swiss LPP/3rd + French base/complementary). Free sim as lead-gen. FR-CH only.</td>
+    </tr>
+    <tr data-market="FR" data-class="analog">
+      <td class="name"><a href="https://www.sapiendo-retraite.fr/">Sapiendo</a></td>
+      <td><span class="mk">FR</span></td><td>Digital bilan retraite</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">€345 audit</td>
+      <td class="ctr" data-sort="2"><span class="th2">●●○</span></td>
+      <td><span class="chip c-analog">direct/analog</span></td>
+      <td class="read">Paid digital retirement audit across 22 FR regimes — deep on France, <b>zero cross-border</b>. Credible substitute for the FR leg only.</td>
+    </tr>
+    <tr data-market="FR" data-class="sub">
+      <td class="name"><a href="https://www.origami-co.fr/">Origami &amp; Co</a></td>
+      <td><span class="mk">FR</span></td><td>Bilan retraite (human)</td>
+      <td class="ctr" data-sort="1"><span class="par">~</span></td><td class="model">Advisory</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-sub">substitute</span></td>
+      <td class="read">Human retirement audit; one of the few with an explicit <i>expat</i> client category (depth of foreign-pension reconstruction unverified).</td>
+    </tr>
+    <tr data-market="FR" data-class="seller">
+      <td class="name">Yomoni · Nalo · Ramify · Goodvest · Caravel · Cashbee</td>
+      <td><span class="mk">FR</span></td><td>PER robo (Pillar 3)</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">AUM 0.4–1.65%</td>
+      <td class="ctr" data-sort="0"><span class="th0">○○○</span></td>
+      <td><span class="chip c-seller">product-seller</span></td>
+      <td class="read">Sell the PER wrapper (Pillar 3). No aggregation or gap across pillars/countries. Where a French Pillar-3 conversation terminates — not a competitor on Clerio's job.</td>
+    </tr>
+    <tr data-market="FR" data-class="agg">
+      <td class="name">Finary · Linxo</td>
+      <td><span class="mk">FR</span></td><td>Net-worth / account aggregation</td>
+      <td class="ctr" data-sort="1"><span class="par">~</span></td><td class="model">€4–349/yr</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-agg">aggregator</span></td>
+      <td class="read">Aggregate balances (Finary incl. PER); <b>no state-pension calc</b>, no CH banks (Finary). Adjacent, not a retirement-entitlement engine.</td>
+    </tr>
+
+    <!-- ============ GERMANY ============ -->
+    <tr data-market="DE" data-class="anchor">
+      <td class="name"><a href="https://www.rentenuebersicht.de/">Digitale Rentenübersicht</a></td>
+      <td><span class="mk">DE</span></td><td>Govt dashboard</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Free</td>
+      <td class="ctr" data-sort="3"><span class="th3">●●●</span></td>
+      <td><span class="chip c-anchor">free anchor</span></td>
+      <td class="read">Growing multi-pillar dashboard; API is <b>legally restricted to regulated German providers</b> → structurally can't cross borders. Validates the moat but is the "it's free" objection.</td>
+    </tr>
+    <tr data-market="DE" data-class="analog">
+      <td class="name"><a href="https://www.pensionpilot.de/">PensionPilot.de</a></td>
+      <td><span class="mk">DE</span></td><td>Multi-pillar gap</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Freemium + B2B licence</td>
+      <td class="ctr" data-sort="2"><span class="th2">●●○</span></td>
+      <td><span class="chip c-analog">direct/analog</span></td>
+      <td class="read"><b>Closest DE analog:</b> multi-pillar gap, <b>commission-free</b>, monetizes via B2B licensing — same "unify, don't sell" logic as Clerio. DE-only, manual entry. Worth a head-to-head.</td>
+    </tr>
+    <tr data-market="DE" data-class="watch">
+      <td class="name"><a href="https://horizon65.com/">Horizon65</a></td>
+      <td><span class="mk">DE</span></td><td>Gap-sim + brokerage funnel</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Fee / commission</td>
+      <td class="ctr" data-sort="2"><span class="th2">●●○</span></td>
+      <td><span class="chip c-watch">watch</span></td>
+      <td class="read">Manual-entry gap simulator on a §34 GewO brokerage; sells private-pension contracts. Same "expat, close your gap" positioning, DE-only, pan-EU unshipped. Monetizes richer than a subscription.</td>
+    </tr>
+    <tr data-market="DE" data-class="seller">
+      <td class="name"><a href="https://pensionfriend.de/">PensionFriend</a> (Hypofriend)</td>
+      <td><span class="mk">DE</span></td><td>Gap calc + brokerage</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Freemium → commission</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-seller">product-seller</span></td>
+      <td class="read">Gap calculator + product sales, well-branded expat-services parent (mortgage cross-sell). DE-only. Same funnel shape as Horizon65.</td>
+    </tr>
+    <tr data-market="DE" data-class="sub">
+      <td class="name"><a href="https://www.finanz2go-consulting.com/">Finanz2Go</a></td>
+      <td><span class="mk">DE</span></td><td>Fee-only expat advisor</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Fee-only</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-sub">substitute</span></td>
+      <td class="read">Explicitly commission-free expat pension advisory, 500+ clients. Proves the "clean, unbiased" model works for this audience — a positioning peer, not a product rival. (PerFinEx/FinXpat = commission versions.)</td>
+    </tr>
+    <tr data-market="DE" data-class="seller">
+      <td class="name">Scalable · Trade Republic · growney · Ginmon · MyPension · Raisin Pension</td>
+      <td><span class="mk">DE</span></td><td>Robo / neobroker</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">AUM / fee</td>
+      <td class="ctr" data-sort="0"><span class="th0">○○○</span></td>
+      <td><span class="chip c-seller">product-seller</span></td>
+      <td class="read">Sell/wrap German pension products; racing for the 2027 Altersvorsorgedepot. Distracted by a distribution land-grab, not aggregation.</td>
+    </tr>
+    <tr data-market="DE" data-class="seller">
+      <td class="name">CHECK24 · Finanzfluss · Rentablo · CLARK</td>
+      <td><span class="mk">DE</span></td><td>Rentenlücke calculator</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Free (lead-gen)</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-seller">product-seller</span></td>
+      <td class="read">Single-point pension-gap calculators feeding insurance/broker sales. Same funnel shape as Horizon65, no career-history aggregation.</td>
+    </tr>
+    <tr data-market="DE" data-class="sub">
+      <td class="name"><a href="https://seasn.de/">Seasn</a></td>
+      <td><span class="mk">DE</span></td><td>Free planning app</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Free (academic)</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-sub">substitute</span></td>
+      <td class="read">Non-commercial "financial twin" planner (Goethe Uni). Competes for the "give me clarity" attention but never monetizes; DE/generic, no real entitlement pull.</td>
+    </tr>
+    <tr data-market="DE" data-class="agg">
+      <td class="name">Finanzguru</td>
+      <td><span class="mk">DE</span></td><td>Account aggregator</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Freemium</td>
+      <td class="ctr" data-sort="0"><span class="th0">○○○</span></td>
+      <td><span class="chip c-agg">aggregator</span></td>
+      <td class="read">Bank aggregation; a Rentenübersicht pull is aspirational marketing, and would inherit its DE-only blindness anyway.</td>
+    </tr>
+
+    <!-- ============ BELGIUM ============ -->
+    <tr data-market="BE" data-class="anchor">
+      <td class="name"><a href="https://www.mypension.be/">mypension.be</a></td>
+      <td><span class="mk">BE</span></td><td>Govt dashboard</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Free</td>
+      <td class="ctr" data-sort="3"><span class="th3">●●●</span></td>
+      <td><span class="chip c-anchor">free anchor</span></td>
+      <td class="read"><b>Strongest anchor of all four:</b> ~33% of adults, doubling; P1+P2 (+reportedly P3). <b>But amount forecasting & simulation paused to H2 2027</b> (pension reform), and no cross-border aggregation. Real, time-boxed window.</td>
+    </tr>
+    <tr data-market="BE" data-class="watch">
+      <td class="name"><a href="https://www.easyvest.be/en/pension-app">Easyvest (pension app)</a></td>
+      <td><span class="mk">BE</span></td><td>Gap → ETF</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Free app; ETF 0.4–1%</td>
+      <td class="ctr" data-sort="2"><span class="th2">●●○</span></td>
+      <td><span class="chip c-watch">watch</span></td>
+      <td class="read"><b>Closest BE UX analog:</b> reads mypension.be via itsme, states a target, shows the gap → routes to ETFs. BE-only; monetizes via investment product. Could add countries.</td>
+    </tr>
+    <tr data-market="BE" data-class="watch">
+      <td class="name"><a href="https://techfundingnews.com/warren-10m-seed-belgium-pension-fintech-10000-retiree-savings/">Warren</a></td>
+      <td><span class="mk">BE</span></td><td>Own pension fund (B2B2C)</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Employer subscription</td>
+      <td class="ctr" data-sort="2"><span class="th2">●●○</span></td>
+      <td><span class="chip c-watch">watch</span></td>
+      <td class="read"><b>€10M seed (Jun 2026)</b>, runs its own licensed pension fund via ~100 employers; funds earmarked for expansion into "one or two larger EU markets." A product play, but the best-funded name and most likely to move cross-border.</td>
+    </tr>
+    <tr data-market="BE" data-class="seller">
+      <td class="name">Pensioenmanager.be</td>
+      <td><span class="mk">BE</span></td><td>Broker-channel tool</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Free (broker-funded)</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-seller">product-seller</span></td>
+      <td class="read">Reads mypension.be, analyzes P2/P3 for tax-optimized product sales to SME owners (13,800+). Within-Belgium only.</td>
+    </tr>
+    <tr data-market="BE" data-class="seller">
+      <td class="name">Curvo · KBC · Belfius · BNP Fortis · ING · AG</td>
+      <td><span class="mk">BE</span></td><td>Pensioensparen / bank tools</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">Product-tied</td>
+      <td class="ctr" data-sort="0"><span class="th0">○○○</span></td>
+      <td><span class="chip c-seller">product-seller</span></td>
+      <td class="read">Single-product pension-savings simulators. Several banks explicitly defer to mypension.be for the consolidated view rather than compete.</td>
+    </tr>
+    <tr data-market="BE" data-class="sub">
+      <td class="name">Chase Buchanan · Blevins Franks · Blacktower (Brussels)</td>
+      <td><span class="mk">BE</span></td><td>Expat IFA</td>
+      <td class="ctr" data-sort="1"><span class="par">~</span></td><td class="model">Commission/AUM</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-sub">substitute</span></td>
+      <td class="read">Brussels expat wealth advisers (QROPS/IPP), UK-nationality-skewed, human. The Brussels EU-institution persona is served only by these + mypension.be — <b>nothing bridges the two in software.</b></td>
+    </tr>
+
+    <!-- ============ PAN-EU / GLOBAL ============ -->
+    <tr data-market="EU" data-class="anchor">
+      <td class="name"><a href="https://www.findyourpension.eu/">ETS / findyourpension.eu</a></td>
+      <td><span class="mk eu">EU</span></td><td>Cross-border locator (infra)</td>
+      <td class="ctr" data-sort="1"><span class="par">~</span></td><td class="model">Free (EU-funded)</td>
+      <td class="ctr" data-sort="2"><span class="th2">●●○</span></td>
+      <td><span class="chip c-anchor">free anchor</span></td>
+      <td class="read">The EU's official cross-border attempt — but a <b>state-pillar locator only</b>, pilot, BE/FR/DE/NL/SE (<b>no CH, no LU</b>), no gap. Long-term infra to watch, not a competitor today.</td>
+    </tr>
+    <tr data-market="EU" data-class="sub">
+      <td class="name"><a href="https://hoxtonwealth.com/">Hoxton Wealth</a></td>
+      <td><span class="mk eu">EU</span></td><td>Globally-mobile wealth app</td>
+      <td class="ctr" data-sort="2"><span class="yes">✓</span></td><td class="model">Advisory / AUM</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-sub">substitute</span></td>
+      <td class="read">Closest to Clerio's <i>user</i> (multi-currency, globally-mobile) but advisor-led/HNW; account-linking, not pension calculation.</td>
+    </tr>
+    <tr data-market="EU" data-class="agg">
+      <td class="name">Kubera</td>
+      <td><span class="mk eu">EU</span></td><td>Net-worth tracker</td>
+      <td class="ctr" data-sort="2"><span class="yes">✓</span></td><td class="model">$249/yr</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-agg">aggregator</span></td>
+      <td class="read">Global net-worth tracker, expat-friendly, but pensions are <b>balance line-items only</b> — no projection or gap. A price anchor.</td>
+    </tr>
+    <tr data-market="EU" data-class="seller">
+      <td class="name">ProjectionLab</td>
+      <td><span class="mk eu">EU</span></td><td>Retirement-planning SaaS</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">$129/yr</td>
+      <td class="ctr" data-sort="1"><span class="th1">●○○</span></td>
+      <td><span class="chip c-seller">product-seller</span></td>
+      <td class="read">Models pensions structurally but 6 supported countries — <b>none FR/CH/LU</b> — no multi-currency; "breaks down" for multi-residency. A price anchor.</td>
+    </tr>
+    <tr data-market="EU" data-class="seller">
+      <td class="name">PensionBee</td>
+      <td><span class="mk eu">EU</span></td><td>UK consolidation</td>
+      <td class="ctr" data-sort="0"><span class="no">✕</span></td><td class="model">AUM 0.5–0.95%</td>
+      <td class="ctr" data-sort="0"><span class="th0">○○○</span></td>
+      <td><span class="chip c-seller">product-seller</span></td>
+      <td class="read">UK pension consolidation; explicitly refuses overseas transfers. Out of scope for the FR/CH/LU/DE/BE case.</td>
+    </tr>
+    <tr data-market="EU" data-class="infra">
+      <td class="name">Insurely</td>
+      <td><span class="mk eu">EU</span></td><td>Open-finance data (B2B)</td>
+      <td class="ctr" data-sort="1"><span class="par">~</span></td><td class="model">B2B licence</td>
+      <td class="ctr" data-sort="0"><span class="th0">○○○</span></td>
+      <td><span class="chip c-infra">infra</span></td>
+      <td class="read">B2B pension/insurance data APIs — the "plumbing" a Clerio-like product might buy or compete with on build-vs-buy, not an end-user rival.</td>
+    </tr>
+
+    </tbody>
+  </table>
+  </div>
+
+  <div class="legend">
+    <span><b style="color:var(--ink)">Multi-country:</b></span>
+    <span><span class="yes">✓</span> yes</span><span><span class="par">~</span> partial/manual</span><span><span class="no">✕</span> no</span>
+    &nbsp;&nbsp;
+    <span><b style="color:var(--ink)">Threat:</b></span>
+    <span><span class="th3">●●●</span> high (obstacle)</span><span><span class="th2">●●○</span> watch</span><span><span class="th1">●○○</span> low</span><span><span class="th0">○○○</span> negligible</span>
+  </div>
+
+  <footer>
+    <b>How to read threat:</b> it's the obstacle to Clerio <i>in that market</i>, not company quality — so a strong free government dashboard scores high while a rich robo-advisor scores low. <b>The real ones to watch are the well-funded local gap-tools that already have the UX and just need more countries</b> (Easyvest, Warren, PensionPilot); product-sellers have structural reasons not to build aggregation. <b>No player in any market aggregates + calculates multi-country pensions.</b><br><br>
+    <b>Defunct / dropped:</b> Birdee (BE, closed 2025), Vantik (DE, insolvent 2022), Moka &amp; Yeeld (FR), Grünfin. <b>Grouped rows</b> collapse commodity product-sellers; expand in the companion <b>competitive-landscape.md</b>. <b>Still open:</b> live EIOPA PEPP register count; Warren's stated EU-expansion targets; whether mypension.be's 2027 rebuild adds any cross-border scope.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var state={market:new Set(),class:new Set()};
+  var rows=[].slice.call(document.querySelectorAll('tbody tr'));
+  var countEl=document.getElementById('count');
+  function apply(){
+    var shown=0;
+    rows.forEach(function(tr){
+      var m=tr.getAttribute('data-market');
+      var c=tr.getAttribute('data-class');
+      var okM=state.market.size===0||state.market.has(m);
+      var okC=state.class.size===0||state.class.has(c);
+      var vis=okM&&okC;
+      tr.style.display=vis?'':'none';
+      if(vis)shown++;
+    });
+    countEl.textContent='Showing '+shown+' of '+rows.length;
+  }
+  document.querySelectorAll('.fbtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var g=b.getAttribute('data-g'),v=b.getAttribute('data-v');
+      if(state[g].has(v)){state[g].delete(v);b.classList.remove('on');}
+      else{state[g].add(v);b.classList.add('on');}
+      apply();
+    });
+  });
+  document.getElementById('clear').addEventListener('click',function(){
+    state.market.clear();state.class.clear();
+    document.querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('on');});
+    apply();
+  });
+  // sorting
+  var tbody=document.querySelector('tbody');
+  document.querySelectorAll('thead th').forEach(function(th,idx){
+    th.addEventListener('click',function(){
+      var asc=th.getAttribute('data-asc')!=='true';
+      document.querySelectorAll('thead th').forEach(function(o){o.removeAttribute('data-asc');});
+      th.setAttribute('data-asc',asc);
+      var sorted=rows.slice().sort(function(a,b){
+        var ca=a.children[idx],cb=b.children[idx];
+        var xa=ca.getAttribute('data-sort'),xb=cb.getAttribute('data-sort');
+        if(xa===null)xa=ca.textContent.trim().toLowerCase();
+        if(xb===null)xb=cb.textContent.trim().toLowerCase();
+        var na=parseFloat(xa),nb=parseFloat(xb);
+        if(!isNaN(na)&&!isNaN(nb)){xa=na;xb=nb;}
+        return (xa>xb?1:xa<xb?-1:0)*(asc?1:-1);
+      });
+      sorted.forEach(function(r){tbody.appendChild(r);});
+    });
+  });
+  apply();
+})();
+</script>
+</body>
+</html>

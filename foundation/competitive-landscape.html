@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Competitive Landscape — Clerio</title>
+<style>
+  :root{
+    --navy:#16243d; --navy-2:#22344f; --gold:#b8924a; --bg:#f6f3ec; --surface:#fffdf9;
+    --ink:#23241f; --muted:#6f6e66; --line:#e4ddcf;
+    --verified:#3f7d6e; --estimate:#8a6a23; --assumption:#6f6041; --alert:#9c3d2e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--ink); line-height:1.55;
+    font-family:-apple-system,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+    font-feature-settings:"tnum" 1,"lnum" 1;}
+  .wrap{max-width:920px; margin:0 auto; padding:46px 28px 64px}
+  .serif{font-family:Georgia,"Source Serif Pro",serif}
+  header{border-bottom:1px solid var(--line); padding-bottom:22px; margin-bottom:24px}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); font-weight:600}
+  h1{font-size:29px; line-height:1.18; margin:.35em 0 .2em; font-weight:600; color:var(--navy)}
+  .sub{color:var(--muted); font-size:15px; max-width:70ch}
+  .meta{margin-top:13px; font-size:12.5px; color:var(--muted)} .meta b{color:var(--ink)}
+
+  h2{font-size:13px; letter-spacing:.13em; text-transform:uppercase; color:var(--navy-2);
+     margin:38px 0 6px; font-weight:700; display:flex; align-items:baseline; gap:12px}
+  h2 .big{font-family:Georgia,serif; font-size:21px; letter-spacing:0; text-transform:none; color:var(--gold)}
+  p.lead{font-size:14.5px; margin:6px 0 14px; max-width:72ch}
+
+  /* headline banner */
+  .headline{background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--gold);
+    border-radius:0 8px 8px 0; padding:18px 22px; margin:6px 0 8px}
+  .headline .big{font-family:Georgia,serif; font-size:19px; color:var(--navy); line-height:1.35}
+  .headline p{margin:9px 0 0; font-size:13.5px; color:#4a4a44}
+  .headline b{color:var(--ink)}
+
+  /* the job strip */
+  .job{display:flex; gap:12px; flex-wrap:wrap; margin:12px 0 4px}
+  .job .step{flex:1 1 200px; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:13px 16px}
+  .job .n{font-family:Georgia,serif; color:var(--gold); font-size:15px; font-weight:700}
+  .job .t{font-weight:700; color:var(--navy); font-size:14px; margin:2px 0 3px}
+  .job .d{font-size:12.5px; color:var(--muted)}
+
+  /* tier ladder */
+  .tier{display:flex; gap:0; border:1px solid var(--line); border-radius:8px; overflow:hidden;
+    margin:9px 0; background:var(--surface)}
+  .tier .rail{flex:0 0 88px; padding:13px 14px; border-right:1px solid var(--line); text-align:center}
+  .tier .tno{font-family:Georgia,serif; font-size:20px; font-weight:700; color:var(--navy)}
+  .tier .body{flex:1; padding:12px 16px}
+  .tier .ttl{font-weight:700; color:var(--navy); font-size:14px; margin-bottom:5px; display:flex; gap:9px; align-items:baseline; flex-wrap:wrap}
+  .tier .players{margin:5px 0 4px; line-height:1.9}
+  .tier .read{font-size:12.7px; color:#4a4a44; margin-top:4px}
+  .tier .read b{color:var(--ink)}
+
+  .name{font-weight:600; color:var(--navy-2); white-space:nowrap}
+
+  /* chips */
+  .chip{display:inline-block; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+    font-weight:700; padding:2px 7px; border-radius:20px; white-space:nowrap; vertical-align:middle}
+  .v{background:rgba(63,125,110,.15); color:var(--verified)}
+  .e{background:rgba(184,146,74,.18); color:var(--estimate)}
+  .a{background:rgba(154,138,106,.20); color:var(--assumption)}
+  .c-direct{background:rgba(156,61,46,.13); color:var(--alert)}
+  .c-adj{background:rgba(34,52,79,.12); color:var(--navy-2)}
+  .c-sub{background:rgba(154,138,106,.20); color:var(--assumption)}
+  .c-anchor{background:rgba(63,125,110,.15); color:var(--verified)}
+  .c-price{background:rgba(111,110,102,.16); color:var(--muted)}
+
+  .threat{font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; padding:2px 8px; border-radius:4px}
+  .th-hi{background:rgba(156,61,46,.13); color:var(--alert)}
+  .th-md{background:rgba(184,146,74,.18); color:var(--estimate)}
+  .th-lo{background:rgba(111,110,102,.14); color:var(--muted)}
+
+  /* capability matrix */
+  table{width:100%; border-collapse:collapse; font-size:13px; margin:10px 0 4px}
+  th,td{text-align:left; padding:9px 11px; border-bottom:1px solid var(--line); vertical-align:middle}
+  th{font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:600}
+  th.ctr,td.ctr{text-align:center; width:15%}
+  td.f{font-weight:600; color:var(--navy-2)}
+  tr.hl td{background:rgba(184,146,74,.12)} tr.hl td.f{color:#1f1a0d; font-weight:700}
+  td .note{color:var(--muted); font-size:11.5px}
+  .yes{color:var(--verified); font-weight:700} .no{color:#b56; opacity:.7; font-weight:700}
+  .par{color:var(--estimate); font-weight:700}
+
+  /* two-col cards */
+  .cols{display:flex; gap:16px; flex-wrap:wrap; margin:8px 0}
+  .card{flex:1 1 300px; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:15px 18px}
+  .card h4{margin:0 0 8px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--navy-2)}
+  .card ul{margin:0; padding-left:18px; font-size:13px; color:#4a4a44}
+  .card li{margin:0 0 8px} .card b{color:var(--ink)}
+
+  .pepp{font-size:13px; color:#4a4a44; background:var(--surface); border-left:3px solid var(--gold);
+    padding:13px 18px; border-radius:0 6px 6px 0; margin:12px 0}
+  .pepp b{color:var(--ink)}
+
+  .legend{display:flex; flex-wrap:wrap; gap:9px 18px; font-size:11.5px; color:var(--muted); margin-top:14px; align-items:center}
+  .legend span{display:flex; align-items:center; gap:6px}
+  footer{margin-top:38px; font-size:11.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:16px}
+  footer b{color:var(--ink)}
+
+  @media (max-width:640px){ .tier{flex-direction:column} .tier .rail{flex-basis:auto; border-right:0; border-bottom:1px solid var(--line); text-align:left; display:flex; gap:10px; align-items:center} h1{font-size:24px} .job .step{flex-basis:100%} }
+  @media print{ body{background:#fff} .tier,.card,.headline,.job .step{break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Clerio · Competitive Landscape</div>
+    <h1 class="serif">Who Clerio actually competes against</h1>
+    <p class="sub">The field mapped by <i>job</i>, not by category. Clerio's job is to unify a person's pension entitlements across several countries and show the retirement-income gap. Almost every "competitor" does one slice of that — one country, one pillar, or balances without a projection.</p>
+    <div class="meta">As of <b>July 2026</b> &nbsp;·&nbsp; Core geographies: <b>France · Switzerland · Luxembourg</b> &nbsp;·&nbsp; grading per Foundation canon</div>
+    <div class="legend">
+      <span><span class="chip c-direct">direct</span> same job</span>
+      <span><span class="chip c-adj">adjacent</span> one part of the job</span>
+      <span><span class="chip c-sub">substitute</span> same customer, different mechanism</span>
+      <span><span class="chip c-anchor">free anchor</span> govt tool, sets "should be free"</span>
+      <span><span class="chip c-price">price anchor</span> informs willingness-to-pay only</span>
+    </div>
+  </header>
+
+  <div class="headline">
+    <div class="big">No product does Clerio's actual job: verified, <i>calculated</i>, multi-country pension aggregation ending in a gap. The whitespace is real — the true competitor is inertia and free single-country government tools, not another app.</div>
+    <p><b>What that means:</b> differentiation isn't the problem — activation and trust are. Clerio wins by doing the multi-country <b>state-pension calculation</b> no one else will, and by being the unbiased first step the commissioned-adviser market structurally can't be.</p>
+  </div>
+
+  <h2>The job — three parts, and most rivals do one</h2>
+  <div class="job">
+    <div class="step"><div class="n">1</div><div class="t">Aggregate</div><div class="d">State + workplace + personal pillars, across 2+ countries.</div></div>
+    <div class="step"><div class="n">2</div><div class="t">Calculate</div><div class="d">A real projected income — esp. the state pillar (FR trimestres, CH AVS/AHV, LU CNAP), not just a balance.</div></div>
+    <div class="step"><div class="n">3</div><div class="t">Gap</div><div class="d">Measured against a target, continuously — not a one-off snapshot.</div></div>
+  </div>
+
+  <h2>The map <span class="big">by proximity &amp; threat</span></h2>
+
+  <div class="tier">
+    <div class="rail"><div class="tno">0</div><span class="threat th-hi">high</span></div>
+    <div class="body">
+      <div class="ttl">The real competitor — DIY slog &amp; inertia</div>
+      <div class="read">Three national portals, three logins, three statement formats — the <b>Swiss statement arrives by post, ~3 weeks</b> — three incompatible benefit logics, a self-built spreadsheet, a guessed target. No institution knows about the other two. <b>Most people abandon it.</b> This default-of-doing-nothing is the primary thing to beat. <span class="chip a">assumption</span></div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="rail"><div class="tno">1</div><span class="threat th-md">watch</span></div>
+    <div class="body">
+      <div class="ttl">Closest analogs — same customer, different mechanism</div>
+      <div class="players"><span class="name">Horizon65</span> <span class="chip c-sub">brokerage funnel</span> &nbsp; <span class="name">Hoxton Wealth</span> <span class="chip c-sub">advisor app</span></div>
+      <div class="read"><b>Horizon65</b> (DE) shares the "see &amp; close your gap" positioning but <b>none of the aggregation job</b>: it's a <b>manual-entry gap simulator on a §34 GewO brokerage funnel</b> — no account linking, state pension is a manual estimate, <b>Germany-only</b>, pan-European unshipped. It <i>sells</i> private-pension contracts (fee-for-advice or commission) — richer monetisation than a subscription, weaker product. <b>Hoxton</b> fits the user (globally-mobile) but is advisor-led / HNW. <span class="chip v">verified</span></div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="rail"><div class="tno">2</div><span class="threat th-md">perception</span></div>
+    <div class="body">
+      <div class="ttl">Free government anchors <span class="chip c-anchor">free anchor</span></div>
+      <div class="players"><span class="name">DE Digitale Rentenübersicht</span> · <span class="name">NL mijnpensioenoverzicht</span> · <span class="name">SE minPension</span> · <span class="name">DK PensionsInfo</span> · <span class="name">FR info-retraite</span> · <span class="name">UK Dashboards</span> <span class="chip e">~2027</span> · <span class="name">ETS / findyourpension.eu</span></div>
+      <div class="read">All <b>single-country</b> — none cross borders. They set a "should be free" expectation. <b>ETS</b> is the EU's cross-border attempt but a state-pillar <b>locator only</b>, still a pilot, covers BE/FR/DE/NL/SE — <b>no CH, no LU</b>, no gap. And <b>Switzerland has no dashboard at all</b> — a core market with zero free incumbent. <span class="chip v">verified</span></div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="rail"><div class="tno">3</div><span class="threat th-lo">low</span></div>
+    <div class="body">
+      <div class="ttl">Single-country pension fintechs <span class="chip c-sub">per-leg substitute</span></div>
+      <div class="players"><span class="name">PensionBee</span> · <span class="name">Penfold</span> · <span class="name">VIAC</span> · <span class="name">finpension</span> · <span class="name">frankly</span> · <span class="name">Raisin / WeltSparen</span></div>
+      <div class="read">Each owns one country / one pillar. Relevant only <i>after</i> Clerio surfaces a specific gap → <b>candidate landing points / partners</b>, not aggregation rivals. PensionBee explicitly refuses overseas transfers. <span class="chip v">verified</span></div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="rail"><div class="tno">4</div><span class="threat th-lo">low</span></div>
+    <div class="body">
+      <div class="ttl">Wealth &amp; net-worth aggregators</div>
+      <div class="players"><span class="name">Finary</span> <span class="chip c-sub">substitute (weak)</span> &nbsp; <span class="name">Kubera</span> <span class="chip c-price">price anchor</span> &nbsp; <span class="name">Moneyhub</span> <span class="chip e">closing '26</span></div>
+      <div class="read"><b>Finary</b> has the right user base but <b>no state-pension calc</b> and Swiss banks aren't integrated. <b>Kubera</b> shows pensions as balance line-items only — no projection. Aggregation without calculation isn't the job. <span class="chip v">verified</span></div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="rail"><div class="tno">5</div><span class="threat th-lo">low</span></div>
+    <div class="body">
+      <div class="ttl">Retirement-planning SaaS <span class="chip c-price">price anchor</span></div>
+      <div class="players"><span class="name">ProjectionLab</span> · <span class="name">Boldin</span> · <span class="name">Empower</span></div>
+      <div class="read">Wrong geography. <b>ProjectionLab</b> models pensions structurally but supports 6 countries (<b>none FR/CH/LU</b>) and admits it "breaks down" for multi-residency. Boldin/Empower are US-only. These are the "$120/yr" <b>pricing references</b> in the old deep-research doc — not competitors. <span class="chip v">verified</span></div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="rail"><div class="tno">6</div><span class="threat th-md">money</span></div>
+    <div class="body">
+      <div class="ttl">Human substitutes — where money moves today <span class="chip c-sub">substitute</span></div>
+      <div class="players"><span class="name">Blacktower</span> · <span class="name">Holborn</span> <span class="chip e">FCA-sanctioned</span> · <span class="name">Blevins Franks</span> · <span class="name">Spectrum</span> · <span class="name">Harrison Brook</span> · <span class="name">deVere / AES</span></div>
+      <div class="read">Expat IFAs: historically <b>5–8% upfront + ~1%/yr</b>, opaque pricing, <b>commission conflict of interest</b>, point-in-time not continuous. Strong for the <i>transaction</i>, weak for "just show me my gap." Clerio is the trustworthy <b>first step</b> before that conversation. <span class="chip v">verified</span></div>
+    </div>
+  </div>
+
+  <h2>Capability matrix <span class="big">where the whitespace is</span></h2>
+  <p class="lead">The test that no one passes: does the tool <i>calculate</i> a multi-country <b>state</b> pension (not just show a balance), and gap it?</p>
+  <table>
+    <thead><tr>
+      <th style="width:26%">Player</th>
+      <th class="ctr">Aggregates<br>multi-country</th>
+      <th class="ctr">Calculates<br>state pension</th>
+      <th class="ctr">Retirement<br>gap</th>
+      <th>Reach</th>
+    </tr></thead>
+    <tbody>
+      <tr class="hl"><td class="f">Clerio</td><td class="ctr yes">✓</td><td class="ctr yes">✓</td><td class="ctr yes">✓</td><td><span class="note">FR / CH / LU engines; other EU by anchor</span></td></tr>
+      <tr><td class="f">Horizon65</td><td class="ctr no">✕</td><td class="ctr yes">✓</td><td class="ctr yes">✓</td><td><span class="note">Germany only</span></td></tr>
+      <tr><td class="f">ETS / findyourpension</td><td class="ctr par">~</td><td class="ctr no">✕</td><td class="ctr no">✕</td><td><span class="note">Locator, state pillar, 5 countries — no CH/LU</span></td></tr>
+      <tr><td class="f">National dashboards</td><td class="ctr no">✕</td><td class="ctr yes">✓</td><td class="ctr par">~</td><td><span class="note">Own country only; free</span></td></tr>
+      <tr><td class="f">Finary</td><td class="ctr par">~</td><td class="ctr no">✕</td><td class="ctr par">~</td><td><span class="note">Balances; FR-centric, no CH banks</span></td></tr>
+      <tr><td class="f">Kubera</td><td class="ctr yes">✓</td><td class="ctr no">✕</td><td class="ctr no">✕</td><td><span class="note">Global net worth, balances only</span></td></tr>
+      <tr><td class="f">ProjectionLab</td><td class="ctr no">✕</td><td class="ctr par">~</td><td class="ctr yes">✓</td><td><span class="note">6 countries, none FR/CH/LU</span></td></tr>
+      <tr><td class="f">PensionBee</td><td class="ctr no">✕</td><td class="ctr no">✕</td><td class="ctr no">✕</td><td><span class="note">UK consolidation; refuses overseas</span></td></tr>
+      <tr><td class="f">Expat IFAs</td><td class="ctr par">~</td><td class="ctr par">~</td><td class="ctr par">~</td><td><span class="note">Manual, human, one-off, commissioned</span></td></tr>
+    </tbody>
+  </table>
+  <div class="legend" style="margin-top:8px">
+    <span><span class="yes">✓</span> yes</span>
+    <span><span class="par">~</span> partial / manual</span>
+    <span><span class="no">✕</span> no</span>
+  </div>
+
+  <h2>Moat &amp; threats</h2>
+  <div class="cols">
+    <div class="card">
+      <h4>Structural tailwinds</h4>
+      <ul>
+        <li><b>Switzerland has no dashboard</b> — public or private. A core market with no free incumbent to fight. <span class="chip v">verified</span></li>
+        <li><b>FIDA excludes Pillar-2</b> from mandatory open-data scope (~2026) — the messiest pillar for FR/CH/LU careers stays manual even after open banking, protecting the hard-aggregation moat. <span class="chip v">verified</span></li>
+        <li><b>State-pension calculation</b> from contribution history exists in no tool surveyed — Clerio's defensible core.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Watch-items (years off)</h4>
+      <ul>
+        <li><b>ETS</b> adds CH/LU + projection → erodes the pure-aggregation wedge; differentiation shifts to planning/gap.</li>
+        <li><b>Horizon65</b> ships cross-border — but its PEPP bet rests on a framework with ~2 providers and ~9% awareness.</li>
+        <li><b>FIDA final text</b> pulls Pillar-2 back into scope during trilogue → would lower the moat.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Why not PEPP?</h2>
+  <div class="pepp">
+    The EU already tried to solve fragmentation by <b>manufacturing a new portable product</b> — the Pan-European Personal Pension Product (live 2022). It has <b>largely failed</b>: ~2 authorised providers (Finax, LifeGoals), ~91% consumer non-awareness, killed by a bundled 1% fee cap and no tax harmonisation. Reform ("EuroPension") is pre-trilogue. <b>Two implications:</b> Switzerland is structurally <b>outside</b> PEPP (no EEA residence → no PEPP, ever), so a PEPP-based rival can't even represent a Swiss career; and PEPP is a cautionary tale for the "new product" strategy — the achievable win is the <b>aggregation-and-clarity layer</b>, not a new instrument. <span class="chip v">verified</span>
+  </div>
+
+  <footer>
+    Internal assessment, graded for honest review — companion to <b>competitive-landscape.md</b>. Classifications score each player on <i>Clerio's job</i>, not category label. <b>Open items:</b> MyPensionPlan.lu (a Luxembourg beta, not yet researched — the likeliest LU-specific direct rival); deVere/AES current positioning; Swiss neobank prévoyance features; live EIOPA PEPP register count. Supersedes the competitor table in the Discovery deep-research doc, which mislabels US retirement SaaS as competitors.
+  </footer>
+
+</div>
+</body>
+</html>

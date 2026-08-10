@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Market Size (TAM) — Luxembourg & Beyond</title>
+<style>
+  :root{
+    --navy:#16243d; --navy-2:#22344f; --gold:#b8924a; --bg:#f6f3ec; --surface:#fffdf9;
+    --ink:#23241f; --muted:#6f6e66; --line:#e4ddcf;
+    --verified:#3f7d6e; --estimate:#8a6a23; --assumption:#6f6041;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--ink); line-height:1.55;
+    font-family:-apple-system,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+    font-feature-settings:"tnum" 1,"lnum" 1;}
+  .wrap{max-width:880px; margin:0 auto; padding:46px 28px 64px}
+  .serif{font-family:Georgia,"Source Serif Pro",serif}
+  header{border-bottom:1px solid var(--line); padding-bottom:22px; margin-bottom:28px}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); font-weight:600}
+  h1{font-size:29px; line-height:1.18; margin:.35em 0 .2em; font-weight:600; color:var(--navy)}
+  .sub{color:var(--muted); font-size:15px; max-width:66ch}
+  .meta{margin-top:13px; font-size:12.5px; color:var(--muted)} .meta b{color:var(--ink)}
+
+  h2{font-size:13px; letter-spacing:.13em; text-transform:uppercase; color:var(--navy-2);
+     margin:40px 0 6px; font-weight:700; display:flex; align-items:baseline; gap:12px}
+  h2 .big{font-family:Georgia,serif; font-size:22px; letter-spacing:0; text-transform:none; color:var(--gold)}
+  h3{font-size:13.5px; color:var(--navy-2); margin:22px 0 8px; font-weight:700}
+  p.lead{font-size:14.5px; margin:6px 0 14px; max-width:68ch}
+
+  table{width:100%; border-collapse:collapse; font-size:13.5px; margin:8px 0 4px}
+  th,td{text-align:left; padding:9px 11px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); font-weight:600}
+  td.f{font-family:Georgia,serif; font-weight:600; white-space:nowrap; color:var(--navy)}
+  tr.result td{background:rgba(184,146,74,.10)}
+  tr.result td.f{color:#1f1a0d}
+  tr.memo td{color:var(--muted)} tr.memo td.f{color:var(--muted)}
+  td .src{color:var(--muted); font-size:12.5px}
+
+  .chip{display:inline-block; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+    font-weight:700; padding:2px 6px; border-radius:20px; white-space:nowrap}
+  .v{background:rgba(63,125,110,.15); color:var(--verified)}
+  .e{background:rgba(184,146,74,.18); color:var(--estimate)}
+  .a{background:rgba(154,138,106,.20); color:var(--assumption)}
+
+  .reg{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:6px 18px; margin-top:10px}
+  .reg .row{display:flex; gap:14px; padding:11px 0; border-bottom:1px solid var(--line); font-size:13.5px}
+  .reg .row:last-child{border-bottom:0}
+  .reg .k{flex:0 0 150px; font-weight:600; color:var(--navy)}
+  .reg .val{flex:1; color:#4a4a44}
+  .reg .val b{color:var(--ink)}
+
+  .excl{font-size:13px; color:#4a4a44; background:var(--surface); border-left:3px solid var(--gold);
+    padding:12px 16px; border-radius:0 6px 6px 0; margin:14px 0}
+  .excl b{color:var(--ink)}
+
+  .sources{margin-top:14px; font-size:12.5px; color:#4a4a44; columns:2; column-gap:32px}
+  .sources p{margin:0 0 9px; break-inside:avoid}
+  .sources b{color:var(--ink)}
+
+  footer{margin-top:40px; font-size:11.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:16px}
+  .legend{display:flex; flex-wrap:wrap; gap:10px 20px; font-size:11.5px; color:var(--muted); margin-top:14px}
+  .legend span{display:flex; align-items:center; gap:6px}
+  @media (max-width:600px){ .sources{columns:1} h1{font-size:24px} .reg .k{flex-basis:110px} }
+  @media print{ body{background:#fff} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Prevista · Market Size</div>
+    <h1 class="serif">Total addressable market — Luxembourg & beyond</h1>
+    <p class="sub">TAM only: how many <i>people</i> have the problem Prevista solves — a pension split across two or more countries. Sized in people, independent of price. Each figure below is tagged by how solid it is, and every assumption is stated.</p>
+    <div class="meta">As of <b>June 2026</b> &nbsp;·&nbsp; Definition: <b>career across 2+ countries → pension entitlements in 2+ systems</b>, regardless of current passport or age &nbsp;·&nbsp; the <b>35–60</b> planning band is a segment, not the whole market</div>
+    <div class="legend">
+      <span><span class="chip v">verified</span> hard source / official data</span>
+      <span><span class="chip e">estimate</span> reasoned, ranged, derived</span>
+      <span><span class="chip a">assumption</span> a judgement we are making</span>
+    </div>
+  </header>
+
+  <!-- ============== LUXEMBOURG ============== -->
+  <h2>1 · Luxembourg <span class="big">~140–200K</span></h2>
+  <p class="lead">Built bottom-up from two streams: foreign residents who worked in their home country first, plus Luxembourg nationals (naturalized or returning) who carry a foreign career. We start from official resident counts and apply a single filter — did they build a pension abroad before settling — set <b>per community</b>. <b>All ages</b>; the 35–60 planning band is the highest-engagement core, named but not carved out.</p>
+
+  <h3>The funnel — one anchor, one filter (per community)</h3>
+  <table>
+    <thead><tr><th style="width:42%">Step</th><th>Value</th><th>Basis / source</th><th>Grade</th></tr></thead>
+    <tbody>
+      <tr><td>Foreign residents in Luxembourg</td><td class="f">322,000</td><td><span class="src">STATEC resident population by nationality, 1 Jan 2026 (PT 88.3K, FR 49.3K, IT 25.5K, BE 18.3K, DE 12.1K, ES 10.3K + ~118K others)</span></td><td><span class="chip v">verified</span></td></tr>
+      <tr><td>× worked abroad &amp; built a 2nd entitlement before settling — set per community</td><td class="f">~35–50%</td><td><span class="src">Per-community range 30–70%: Portuguese lowest (30–45%) — STATEC shows 70% first-gen but historically young, low-skill emigration, so "born in PT" ≠ "has a PT pension"; French/German higher (mid-career moves). Blends to ≈35–50% across all communities.</span></td><td><span class="chip e">estimate</span></td></tr>
+      <tr class="result"><td>= Foreign residents with a fragmented pension</td><td class="f">~110–160K</td><td><span class="src">Sum across communities, all ages</span></td><td><span class="chip e">estimate</span></td></tr>
+      <tr><td>+ Luxembourg nationals with a foreign career</td><td class="f">~30–45K</td><td><span class="src">Naturalized first-gen + native Luxembourgers who worked abroad and returned. Signal: PT-origin incl. naturalized ≈142K vs 88K foreign-national → ~50K shifted into the "national" column. The softest input.</span></td><td><span class="chip a">assumption</span></td></tr>
+      <tr class="result"><td>= Luxembourg TAM</td><td class="f">~140–200K</td><td><span class="src">Both streams, all ages. <b>Planning-age core (35–60) ≈ 60–90K</b> — the highest-engagement subset, named not carved out.</span></td><td><span class="chip e">estimate</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Assumptions we are making</h3>
+  <div class="reg">
+    <div class="row"><div class="k">One load-bearing assumption</div><div class="val">The whole TAM rests on the <b>per-community entitlement filter (30–70%)</b>. Swing factor = the Portuguese (Luxembourg's largest community). Reasoned from STATEC first-generation + emigration-profile data; harden via STATEC age-at-migration by nationality.</div></div>
+    <div class="row"><div class="k">Gate is work history, not age</div><div class="val">Counts anyone with entitlements in 2+ systems, any age. The 35–60 band is a <b>segmentation overlay</b> (highest engagement), not a qualifying filter — the earlier version wrongly cut the market to it.</div></div>
+    <div class="row"><div class="k">Nationals layer is softest</div><div class="val">Sized from the naturalization gap and return-migration patterns; no clean per-origin naturalization data pulled yet.</div></div>
+    <div class="row"><div class="k">Converges with the original estimate</div><div class="val">All-ages ~140–200K lands near the original ~130–150K — but now <b>entitlement-sourced and age-explicit</b>, not hand-waved. Same magnitude, honest derivation.</div></div>
+  </div>
+
+  <div class="excl"><b>Not counted:</b> cross-border commuters / frontaliers (~231K — single pension system, no multi-country problem); second-generation residents who never worked abroad; residents who worked only in Luxembourg (one entitlement).</div>
+
+  <!-- ============== BEYOND ============== -->
+  <h2>2 · Beyond Luxembourg — EU <span class="big">~7–10M</span></h2>
+  <p class="lead">One anchor, one filter, then a credibility check. We start from a clean sourced count of intra-EU movers, apply a single sourced filter to get from "lives abroad" to "has a fragmented pension," and test the result against what's observable. <b>Scope is EU-27</b>; the UK and Switzerland are large additional corridors, noted separately, not in this figure.</p>
+
+  <h3>The funnel — one anchor, one filter</h3>
+  <table>
+    <thead><tr><th style="width:42%">Step</th><th>Value</th><th>Basis / source</th><th>Grade</th></tr></thead>
+    <tbody>
+      <tr><td>EU citizens living in another EU member state (all ages)</td><td class="f">14.1M</td><td><span class="src">Eurostat <i>migr_pop1ctz</i>, 1 Jan 2025 (3.1% of EU population). A clean residency stock — but a residency status, not yet a pension fact.</span></td><td><span class="chip v">verified</span></td></tr>
+      <tr><td>× worked in their origin country before moving → built a 2nd entitlement</td><td class="f">~50–70%</td><td><span class="src">A sourced range, not a guess: 47% of EU movers migrate primarily <i>for work</i> (Eurofound / EU-LFS); median age at migration is 33 and only ~11% are minors (Eurostat) — so a clear majority arrived old enough to have a prior-country career. The lower bound trims students, young, and family movers with no prior record.</span></td><td><span class="chip e">estimate</span></td></tr>
+      <tr class="result"><td>= TAM — people with a fragmented pension across 2+ EU countries</td><td class="f">~7–10M</td><td><span class="src">All ages. People become acquirable at <b>trigger moments</b> — most often a cross-border move (mid-career, the highest-volume trigger) or approaching a cross-border retirement decision (pre-retirement ≈55–65, the highest value per user). Spans the working-age range; not carved out as a separate number here.</span></td><td><span class="chip e">estimate</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Credibility check — is the problem real and active?</h3>
+  <table>
+    <thead><tr><th style="width:42%">Signal</th><th>Value</th><th>Basis / source</th><th>Grade</th></tr></thead>
+    <tbody>
+      <tr><td>Money visibly left on the table</td><td class="f">CHF ~6bn</td><td><span class="src">~950K dormant Swiss vested-benefit accounts (aeis.ch, 2024) — people who moved or changed jobs and lost track</span></td><td><span class="chip v">verified</span></td></tr>
+      <tr><td>Appetite for "see my pension picture"</td><td class="f">millions</td><td><span class="src">National pension-dashboard logins: BE 3.09M, FR 45.6M, NL 8.11M / yr (gov't releases)</span></td><td><span class="chip v">verified</span></td></tr>
+      <tr><td>Active search demand</td><td class="f">real</td><td><span class="src">Native-language terms carry genuine volume (Freizügigkeitskonto, retraite à l'étranger, QROPS). <b>GTM note:</b> the <i>category</i> itself isn't searched — acquisition is per-country, in-language.</span></td><td><span class="chip v">verified</span></td></tr>
+      <tr><td>Commercial competitor in this slot</td><td class="f">none</td><td><span class="src">FindYourPension is grant-funded / BE-only; incumbents are human IFAs. No VC-funded multi-country aggregator.</span></td><td><span class="chip e">assessment</span></td></tr>
+    </tbody>
+  </table>
+  <p class="lead" style="margin-top:6px">These confirm the TAM population has a real, felt, monetizable, <b>unserved</b> problem. They do <b>not</b> confirm the figure is exactly 7–10M — only that it is plausible and the problem is real.</p>
+
+  <h3>Assumptions &amp; honesty notes</h3>
+  <div class="reg">
+    <div class="row"><div class="k">One load-bearing assumption</div><div class="val">The whole TAM rests on the <b>50–70% entitlement filter</b>. It's a sourced range (work-motivation + age-at-migration), not invented — but it's the number to attack. Harden it by pulling Eurostat <i>migr_imm1ctz</i> age-at-arrival bands for an exact "25+" share.</div></div>
+    <div class="row"><div class="k">Anchor came in lower than expected</div><div class="val">We'd assumed ~17M; the clean EU-27 figure is <b>14.1M</b> (the 17M was the older EU-28 count, including the UK). Using the verified number, not the remembered one.</div></div>
+    <div class="row"><div class="k">Materiality not filtered</div><div class="val">"2+ entitlements" includes short or small second stints that may never vest meaningfully — so 7–10M is generous as a <i>demand</i> figure; a materiality haircut lowers it.</div></div>
+    <div class="row"><div class="k">Undercount, opposite direction</div><div class="val"><b>Return-migrants</b> (worked abroad, came home) have the problem but aren't in a "living abroad" stock — pushing the true figure up. Roughly offsets the materiality haircut.</div></div>
+  </div>
+
+  <!-- ============== SOURCES ============== -->
+  <h2>Sources</h2>
+  <div class="sources">
+    <p><b>STATEC</b> — Luxembourg national statistics. Resident population by nationality, 1 Jan 2026; age structure; 2021 census generation split (Portuguese 70% first-gen). Frontalier counts (~231K).</p>
+    <p><b>EC — Annual Report on Intra-EU Labour Mobility 2024</b> — 10.1M working-age EU/EFTA citizens living + working in another member state (ref. 2022/23).</p>
+    <p><b>Eurostat</b> — 1.9M EU/EFTA aged 65+ living outside country of citizenship (2018); ~17M citizens living in another member state (gross ceiling).</p>
+    <p><b>HIVA-KU Leuven for the European Commission</b> — "Cross-border pensions, Reference Year 2024": 6.4M cross-border pensions / €31bn paid (payment flows); ~1.48M people drawing pensions from 2+ member states; 3.2% of EU pensioners draw from 2+ states (13% in Luxembourg).</p>
+    <p><b>EU Employment &amp; Social Affairs Council (2024)</b> — ~6 million people have worked in more than one EU country, cited in the 14-state push for faster cross-border pensions (reported via Europe Street News). A politically-cited figure, used as corroboration.</p>
+    <p><b>Portuguese-origin community estimate</b> — STATEC / community sources: ~142K including naturalized vs 88.3K foreign-national.</p>
+  </div>
+
+  <footer>
+    Internal estimate, graded for honest review. Figures are <b>ranges, not forecasts</b>, and size the addressable <i>population</i> — not revenue or subscribers. The two soft inputs (entitlement share; the Luxembourg-nationals layer) are the next items to replace with hard STATEC data. Luxembourg is the proof market; the EU figure is the long-run expansion ceiling.
+  </footer>
+
+</div>
+</body>
+</html>

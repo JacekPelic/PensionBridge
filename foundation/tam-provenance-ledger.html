@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TAM Provenance Ledger</title>
+<style>
+  :root{
+    --navy:#16243d; --navy-2:#22344f; --gold:#b8924a; --bg:#f6f3ec; --surface:#fffdf9;
+    --ink:#23241f; --muted:#6f6e66; --line:#e4ddcf;
+    --fact:#3f7d6e; --deriv:#3a5a86; --assum:#b06a2c; --flag:#a8332a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--ink); line-height:1.5;
+    font-family:-apple-system,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+    font-feature-settings:"tnum" 1,"lnum" 1;}
+  .wrap{max-width:960px; margin:0 auto; padding:44px 26px 60px}
+  .serif{font-family:Georgia,"Source Serif Pro",serif}
+  header{border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:8px}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); font-weight:600}
+  h1{font-size:27px; line-height:1.18; margin:.35em 0 .2em; font-weight:600; color:var(--navy)}
+  .sub{color:var(--muted); font-size:14.5px; max-width:70ch}
+
+  .legend{display:flex; flex-wrap:wrap; gap:9px 16px; font-size:12px; color:var(--muted); margin:16px 0 4px}
+  .legend span{display:flex; align-items:center; gap:6px}
+  .tag{display:inline-block; font-size:10px; letter-spacing:.05em; text-transform:uppercase; font-weight:700;
+    padding:2px 7px; border-radius:4px; white-space:nowrap}
+  .t-fact{background:rgba(63,125,110,.16); color:var(--fact)}
+  .t-deriv{background:rgba(58,90,134,.15); color:var(--deriv)}
+  .t-assum{background:rgba(176,106,44,.16); color:var(--assum)}
+  .flag{color:var(--flag); font-weight:700}
+
+  .tally{display:flex; gap:10px; flex-wrap:wrap; margin:18px 0 6px}
+  .tally div{flex:1; min-width:150px; background:var(--surface); border:1px solid var(--line);
+    border-radius:8px; padding:12px 14px}
+  .tally .n{font-family:Georgia,serif; font-size:24px; font-weight:600}
+  .tally .l{font-size:11.5px; color:var(--muted); margin-top:2px}
+  .tally .f .n{color:var(--fact)} .tally .d .n{color:var(--deriv)} .tally .a .n{color:var(--assum)}
+
+  h2{font-size:12.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--navy-2);
+     margin:34px 0 8px; font-weight:700}
+  table{width:100%; border-collapse:collapse; font-size:13px}
+  th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:600}
+  td.metric{font-weight:600; color:var(--navy); width:30%}
+  td.val{font-family:Georgia,serif; font-weight:600; white-space:nowrap; width:12%}
+  td.src{color:#52524c; font-size:12.5px}
+  td.conf{font-size:11px; text-transform:uppercase; letter-spacing:.04em; white-space:nowrap; color:var(--muted)}
+  tr.lb td{background:rgba(168,51,42,.05)}
+  tr.lb td.metric{border-left:3px solid var(--flag); padding-left:7px}
+
+  .callout{background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--flag);
+    border-radius:0 8px 8px 0; padding:14px 18px; margin:14px 0}
+  .callout h3{margin:0 0 8px; font-size:13.5px; color:var(--flag)}
+  .callout ul{margin:0; padding-left:18px} .callout li{font-size:13px; margin-bottom:6px; color:#4a4a44}
+  .callout li b{color:var(--ink)}
+
+  .verdict{background:var(--navy); color:#eef1f6; border-radius:10px; padding:20px 22px; margin-top:30px}
+  .verdict h3{margin:0 0 10px; font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold)}
+  .verdict p{margin:0 0 10px; font-size:14px; max-width:74ch}
+  .verdict .row{display:flex; gap:12px; padding:8px 0; border-top:1px solid rgba(255,255,255,.12); font-size:13.5px}
+  .verdict .k{flex:0 0 130px; color:var(--gold); font-weight:600}
+  .verdict .v{flex:1}
+
+  footer{margin-top:30px; font-size:11.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:14px}
+  @media (max-width:640px){ td.metric{width:auto} .tally div{min-width:120px} h1{font-size:23px} }
+  @media print{ body{background:#fff} .verdict{background:#16243d !important; -webkit-print-color-adjust:exact; print-color-adjust:exact} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Prevista · Market Size — Audit View</div>
+    <h1 class="serif">TAM provenance ledger</h1>
+    <p class="sub">Every number behind the market sizing, classified by what kind of claim it is. The plumbing, not the faucet — so a skeptic can see exactly where each figure stops being measured and starts being assumed. <span class="flag">●</span> marks the load-bearing assumptions: the few that actually move the verdict.</p>
+    <div class="legend">
+      <span><span class="tag t-fact">fact</span> measured, named &amp; dated source</span>
+      <span><span class="tag t-deriv">derivation</span> arithmetic on facts</span>
+      <span><span class="tag t-assum">assumption</span> a rate we <i>chose</i>, unsourced</span>
+      <span><span class="flag">●</span> load-bearing</span>
+    </div>
+    <div class="tally">
+      <div class="f"><div class="n">facts</div><div class="l">Carry the market's <b>existence</b> and the population scale</div></div>
+      <div class="d"><div class="n">derivations</div><div class="l">Arithmetic — check the math &amp; the independence traps</div></div>
+      <div class="a"><div class="n">assumptions</div><div class="l">Carry the precise <b>size</b> — 3 of them do most of the work</div></div>
+    </div>
+  </header>
+
+  <!-- LUXEMBOURG -->
+  <h2>A · Luxembourg sizing</h2>
+  <table>
+    <thead><tr><th>Metric</th><th>Value</th><th>Type</th><th>Source / basis</th><th>Conf.</th></tr></thead>
+    <tbody>
+      <tr><td class="metric">Total population, Luxembourg</td><td class="val">690,959</td><td><span class="tag t-fact">fact</span></td><td class="src">STATEC, 1 Jan 2026</td><td class="conf">high</td></tr>
+      <tr><td class="metric">Foreign residents</td><td class="val">~322,050</td><td><span class="tag t-fact">fact</span></td><td class="src">STATEC, 1 Jan 2026 (46.6% of pop)</td><td class="conf">high</td></tr>
+      <tr><td class="metric">By nationality (PT/FR/IT/BE/DE/ES)</td><td class="val">88.3K…10.3K</td><td><span class="tag t-fact">fact</span></td><td class="src">STATEC, 1 Jan 2026 (PT 88,260 · FR 49,255 · IT 25,529 · BE 18,253 · DE 12,107 · ES 10,276)</td><td class="conf">high</td></tr>
+      <tr><td class="metric">Frontaliers (excluded from TAM)</td><td class="val">~231,290</td><td><span class="tag t-fact">fact</span></td><td class="src">STATEC, Q1 2024 — single-system, no multi-country problem</td><td class="conf">high</td></tr>
+      <tr><td class="metric">Portuguese first-generation share</td><td class="val">~70%</td><td><span class="tag t-fact">fact</span></td><td class="src">STATEC 2021 census</td><td class="conf">high</td></tr>
+      <tr><td class="metric">Portuguese-origin incl. naturalized</td><td class="val">~142K</td><td><span class="tag t-fact">fact</span></td><td class="src">STATEC / community, 2022 (vs 88K foreign-national → ~50K naturalized)</td><td class="conf">med</td></tr>
+      <tr><td class="metric">Largest age cohort (35–39)</td><td class="val">~29K</td><td><span class="tag t-fact">fact</span></td><td class="src">Statista / STATEC, 2023</td><td class="conf">med</td></tr>
+      <tr><td class="metric">Share aged 35–60</td><td class="val">~40%</td><td><span class="tag t-deriv">derivation</span></td><td class="src">Interpolated from STATEC age brackets — <i>verifiable via LUSTAT DF_B1113</i></td><td class="conf">med</td></tr>
+      <tr class="lb"><td class="metric"><span class="flag">●</span> Entitlement rate (worked abroad w/ vested pension)</td><td class="val">30–70%</td><td><span class="tag t-assum">assumption</span></td><td class="src"><b>No source.</b> Reasoned per community (PT lowest). The swing factor.</td><td class="conf">low</td></tr>
+      <tr class="lb"><td class="metric"><span class="flag">●</span> "Other foreign" 118K bucket rate</td><td class="val">25–40%</td><td><span class="tag t-assum">assumption</span></td><td class="src"><b>No source.</b> Heterogeneous catch-all (UK/NL/PL/RO + TCN) — widest single swing (~9–19K)</td><td class="conf">low</td></tr>
+      <tr><td class="metric">Foreign-resident active stock</td><td class="val">45–65K</td><td><span class="tag t-deriv">derivation</span></td><td class="src">facts × the two assumptions above</td><td class="conf">low–med</td></tr>
+      <tr class="lb"><td class="metric"><span class="flag">●</span> LU nationals w/ foreign career</td><td class="val">17–28K</td><td><span class="tag t-assum">assumption</span></td><td class="src">Naturalized (~12–18K) + native returnees (~5–10K). Softest input — no per-origin data pulled</td><td class="conf">low</td></tr>
+      <tr><td class="metric">Luxembourg TAM</td><td class="val">60–90K</td><td><span class="tag t-deriv">derivation</span></td><td class="src">Sum of both streams</td><td class="conf">low–med</td></tr>
+      <tr><td class="metric">High-value core — EU institutions</td><td class="val">~12–14K</td><td><span class="tag t-fact">fact</span></td><td class="src">Institutional disclosures (EP/EIB/CJEU/ECA/EIF/ESM)</td><td class="conf">med–high</td></tr>
+      <tr><td class="metric">High-value core — Big Four</td><td class="val">~10.3K</td><td><span class="tag t-fact">fact</span></td><td class="src">PwC/Deloitte/EY/KPMG LU reports</td><td class="conf">high</td></tr>
+    </tbody>
+  </table>
+
+  <!-- EUROPE -->
+  <h2>B · Europe (EU + EFTA) sizing</h2>
+  <table>
+    <thead><tr><th>Metric</th><th>Value</th><th>Type</th><th>Source / basis</th><th>Conf.</th></tr></thead>
+    <tbody>
+      <tr><td class="metric">EU/EFTA working-age (20–64) citizens working in another member state</td><td class="val">10.1M</td><td><span class="tag t-fact">fact</span></td><td class="src">EC Annual Report on Intra-EU Labour Mobility 2024 (ref. 2022/23)</td><td class="conf">high</td></tr>
+      <tr><td class="metric">All EU citizens living in another member state (gross ceiling)</td><td class="val">~17M</td><td><span class="tag t-fact">fact</span></td><td class="src">Eurostat — upper bound, includes children/students/retirees</td><td class="conf">high</td></tr>
+      <tr><td class="metric">Working-age movers, all activity</td><td class="val">~13.5M</td><td><span class="tag t-deriv">derivation</span></td><td class="src">Reconstructed residual (17M − under-20 − 65+)</td><td class="conf">med</td></tr>
+      <tr><td class="metric">Retirees 65+ living abroad (adjacent)</td><td class="val">1.9M</td><td><span class="tag t-fact">fact</span></td><td class="src">Eurostat, 2018</td><td class="conf">high</td></tr>
+      <tr><td class="metric">EU pensioners drawing from 2+ states</td><td class="val">3.2% (13% LU)</td><td><span class="tag t-fact">fact</span></td><td class="src">HIVA-KU Leuven for EC, RY2024</td><td class="conf">high</td></tr>
+      <tr><td class="metric">Share of movers aged 35–60</td><td class="val">~45%</td><td><span class="tag t-deriv">derivation</span></td><td class="src">Interpolated — <i>readable straight off the EC report's age bands, not yet pulled</i></td><td class="conf">low–med</td></tr>
+      <tr class="lb"><td class="metric"><span class="flag">●</span> Entitlement rate (2+ countries w/ real pension)</td><td class="val">~50%</td><td><span class="tag t-assum">assumption</span></td><td class="src"><b>No source.</b> Flat rate applied EU-wide; also <b>correlated with age</b> (independence flaw — likely understates within 35–60)</td><td class="conf">low</td></tr>
+      <tr><td class="metric">EU active TAM</td><td class="val">~2–3M<br><span style="font-weight:400;color:var(--muted)">(band 1.8–3.6M)</span></td><td><span class="tag t-deriv">derivation</span></td><td class="src">10.1M × age × entitlement; band = bear/bull on the two rates</td><td class="conf">low</td></tr>
+    </tbody>
+  </table>
+
+  <!-- DEMAND -->
+  <h2>C · Demand evidence — revealed, not modeled (the strong hand)</h2>
+  <table>
+    <thead><tr><th>Signal</th><th>Value</th><th>Type</th><th>Source / basis</th><th>Conf.</th></tr></thead>
+    <tbody>
+      <tr><td class="metric">Unclaimed CH vested-benefits accounts</td><td class="val">CHF 6–6.75bn</td><td><span class="tag t-fact">fact</span></td><td class="src">aeis.ch / Swiss CHSS, 2025 (~960K dormant accounts; driven by job/country moves)</td><td class="conf">high</td></tr>
+      <tr><td class="metric">Cross-border pensions paid (EU)</td><td class="val">6.4M / €31bn</td><td><span class="tag t-fact">fact</span></td><td class="src">HIVA-KU Leuven for EC, 2024 — <i>payment flows, not people</i></td><td class="conf">high</td></tr>
+      <tr><td class="metric">National pension-dashboard usage (BE/FR/NL)</td><td class="val">3.09M / 45.6M / 8.11M</td><td><span class="tag t-fact">fact</span></td><td class="src">Government releases — proves appetite for "see my pension picture"</td><td class="conf">high</td></tr>
+      <tr><td class="metric">QROPS transfers (UK, 2023–24)</td><td class="val">7,100 / £1.4bn</td><td><span class="tag t-fact">fact</span></td><td class="src">HMRC — avg transfer £197K (high-value)</td><td class="conf">high</td></tr>
+      <tr><td class="metric">VC-funded multi-country aggregator competitor</td><td class="val">none found</td><td><span class="tag t-assum">assessment</span></td><td class="src">Market scan — FindYourPension grant-funded/BE-only; incumbents are human IFAs</td><td class="conf">med</td></tr>
+    </tbody>
+  </table>
+
+  <!-- LOAD-BEARING -->
+  <div class="callout">
+    <h3>● The load-bearing assumptions — where to spend all the diligence</h3>
+    <ul>
+      <li><b>Entitlement rate</b> (LU per-community 30–70% &amp; EU 50%) — unsourced, and the single biggest driver of the headline. Ground it with revealed data: HIVA corridor-level cross-border-pension counts + age-at-immigration.</li>
+      <li><b>The "other foreign 118K" bucket</b> (LU) — a heterogeneous catch-all on a blended guess; widest single swing in the LU number.</li>
+      <li><b>The LU nationals layer</b> — softest input; needs naturalized-by-origin data.</li>
+      <li><b>Not load-bearing:</b> the age shares (~40% / ~45%) — interpolated but bounded and cheaply verifiable from STATEC LUSTAT and the EC report. Don't waste diligence here.</li>
+    </ul>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="verdict">
+    <h3>How to read this ledger</h3>
+    <p>Two different claims, graded separately. The <b>existence</b> of the market rests on facts (Section C is observed behavior, not a model — the strong hand). The precise <b>size</b> rests on three assumptions, flagged ●. So the honest position is: the order of magnitude is real; the point estimate is a band, not a number.</p>
+    <div class="row"><div class="k">Proven (facts)</div><div class="v">Population scale (LU 322K foreign; EU 10.1M movers) and that the pain is real &amp; money is observably on the table (CHF 6bn unclaimed; millions of dashboard logins).</div></div>
+    <div class="row"><div class="k">A band, not a point</div><div class="v">LU TAM 60–90K · EU TAM ~2–3M (1.8–3.6M). The width comes almost entirely from the ● assumptions.</div></div>
+    <div class="row"><div class="k">Not yet proven</div><div class="v">Willingness to pay and reachability at a viable CAC — the real funding gate, and a real-world test, not a spreadsheet.</div></div>
+  </div>
+
+  <footer>
+    Audit companion to <b>tam-note.html</b>. Sources: STATEC; EC Annual Report on Intra-EU Labour Mobility 2024; Eurostat; HIVA-KU Leuven "Cross-border pensions RY2024"; aeis.ch / Swiss CHSS; HMRC; national pension-dashboard releases. Figures are ranges, not forecasts; they size the addressable population, not revenue.
+  </footer>
+
+</div>
+</body>
+</html>
