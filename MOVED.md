@@ -2,7 +2,7 @@
 
 **On 10 August 2026 the pension-domain knowledge left this repo.**
 
-`knowledge/` and `research/` now live at **[JacekPelic/clerio-knowledge](https://github.com/JacekPelic/clerio-knowledge)**,
+`knowledge/` and `research/` now live at **[ClerioWealth/clerio-knowledge](https://github.com/ClerioWealth/clerio-knowledge)**,
 checked out locally at `~/git/clerio-knowledge`. Nothing was lost in the move: all 251 content
 files were verified byte-identical, path by path, before the originals here were removed.
 
