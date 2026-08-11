@@ -31,7 +31,12 @@
 | Italian | 25,529 | | Total foreign | ~322,050 (46.6%) |
 | Belgian | 18,253 | | Total population | 690,959 |
 
-Frontaliers (~231K cross-border commuters) are **excluded** — they contribute to one system and don't have the problem.
+Frontaliers (~231K cross-border commuters) are **not counted in this figure**, which is resident-based by construction. They are a **separate segment, not a non-segment** — an earlier version of this note excluded them on the grounds that "they contribute to one system and don't have the problem", and that reasoning is wrong twice over:
+
+- **Most have ≥2 systems, not one.** A frontalier accrues in Luxembourg and typically has a home-country career on either side of it. By this section's own definition — multi-country career — they qualify; they simply don't live here.
+- **They carry an exposure residents do not.** Luxembourg's pillar 2 is exempt at payout *because* a 20% entry tax was paid at funding. Germany and Belgium wrote treaty clauses recognising that; **France did not**. A French-resident frontalier's Luxembourg workplace pot is taxed again by a state that received nothing from the first tax. See `clerio-knowledge/maps/cross-border-pension-taxation.md`.
+
+**Sizing them is OPEN** and deliberately not folded into the estimates below — a separate stream with its own reachability and product-fit questions, not a line item in the resident stock.
 
 **ESTIMATE — age 35–60 share of foreign residents ≈ 40%.** Basis: STATEC confirms foreigners over-represented in 30–54; the 35–39 cohort alone is ~29K (largest single bracket); interpolating 35–60 gives ~38–42% of the ~322K foreign pool. Per-nationality age data is OPEN (see §7).
 
